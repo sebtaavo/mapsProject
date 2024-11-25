@@ -25,7 +25,6 @@
 
 <script>
 import { GoogleMap, Marker } from 'vue3-google-map';
-
 import { APIkey } from '../js/apiKEY.js';
 
 export default {

@@ -13,7 +13,7 @@
       </div>
   
       <div class="join-input-container">
-        <input type="text" placeholder="Join Through Key" class="join-input" id="join-input" />
+        <input type="text" placeholder="     Join Through Key" class="join-input" id="join-input" />
       </div>
   
       <div class="categories">
@@ -39,8 +39,3 @@
     },
   };
   </script>
-  
-  <style scoped>
-  /* Add your styles here */
-  </style>
-  
