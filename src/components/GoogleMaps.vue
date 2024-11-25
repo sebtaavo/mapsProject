@@ -2,7 +2,7 @@
 <template>
     <div>
         <GoogleMap
-            api-key="key here"
+            :api-key= "apiKey"
             style="width: 100%; height: 500px"
             :center="{lat: lat, lng: lng}"
             :zoom="15"
@@ -15,6 +15,7 @@
 
 <script>
 import{GoogleMap, Marker} from 'vue3-google-map';
+import{APIkey} from '../js/apiKEY.js';
 export default {
     components:{
         GoogleMap,
@@ -22,7 +23,7 @@ export default {
     },
     data(){
         return{
-            apiKey: "",
+            apiKey: APIkey,
             lat: null,
             lng: null,
         }
