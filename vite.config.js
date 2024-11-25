@@ -5,7 +5,7 @@ import vuePlugin from '@vitejs/plugin-vue';
 export default defineConfig({
     plugins: [
         vueJsxPlugin(),
-       //  vuePlugin(),      for .vue files
+       vuePlugin(),
     ],
     server: {
         port: 8080,
