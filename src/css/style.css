@@ -1,14 +1,59 @@
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('fonts/SF-Pro-Display-Regular.otf') format('opentype'); /* Reference the font file */
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
-    background-color: #1a202c;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+  background-color: #1a202c;
+  color: #ffffff;
+  font-family: 'SF Pro Display';
+  margin: 0;
+  padding: 0;
+}
+
+  /* Style the profile icon */
+  .icon-container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    background: none; /* Remove button background */
+    border: none; /* Remove button border */
+    padding: 0; /* Remove default button padding */
+    cursor: pointer; /* Indicate interactivity */
+    transition: color 0s ease, transform 0s ease; /* Smooth transitions */
+    margin-right: 48px;
   }
+  
+  .icon-container:hover .profile-text {
+    color: #664DFF; /* Change text color on hover */
+  }
+  
+  .icon-container:hover .profile-icon {
+    content: url('./images/PurpleUser.svg'); /* Swap the SVG image */
+  }
+  
+  .profile-icon {
+    width: 2rem; /* Adjust the size of the icon */
+    height: 1.7rem;
+    margin-top: 0.5rem;
+    transition: transform 0.2s ease, content 0.2s ease; /* Smooth transitions */
+  }
+  
+  .profile-text {
+    display: block;
+    margin-top: 0rem; /* Adjust space between the image and the text */
+    font-size: 0.8rem; /* Adjust font size */
+    color: #ffffff; /* Default text color */
+    transition: color 0.1s ease; /* Smooth color transition */
+  }
+  
   
   .main-container {
     display: flex;
-    height: 100vh;
+    height: 93.205vh;
+    margin-top: 4.2rem; /* Add margin to account for the fixed navbar */
   }
   
   /* Left Section */
@@ -23,12 +68,24 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: #181A1B;
-    padding: 1rem 1.5rem;
+    padding: 0.55rem 1.5rem;
+    position: fixed; /* Make it stay at the top */
+    top: 0;
+    left: 0;
+    width: 100%; /* Stretch across the viewport */
+    z-index: 20; /* Ensure it appears above the sidebar */
   }
+  .user-icon {
+    height: 1.5rem;
+    width: 1.5rem;
+    margin-right: 0.5rem;
+  }
+  
   
   .logo {
     display: flex;
     align-items: center;
+    
   }
   
   .logo .icon {
@@ -37,38 +94,55 @@ body {
     color: #9f7aea;
     margin-right: 0.5rem;
   }
+
+  
   
   .title {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 0;
+    user-select: none;
   }
   
-  .icon-container .icon {
-    height: 1.5rem;
-    width: 1.5rem;
-  }
   
+
+
   .search-bar {
     position: absolute;
-    top: 1rem; /* Adjust as needed */
+    top: 1rem;
     left: 50%;
     transform: translateX(-50%);
-    width: 30%; /* Make it responsive */
+    width: 30%;
     z-index: 10;
   }
   
+  .search-input-container {
+    position: relative;
+    width: 100%;
+  }
   
   .search-input {
     width: 100%;
-    padding: 0.5rem 1rem;
+    padding: 0.56rem 1rem 0.5rem 1rem; /* Adjust left padding to fit the text */
+    padding-right: 2.5rem; /* Add padding to the right to fit the icon */
     border-radius: 9999px;
+    background-image: url('./images/Search.svg');
+    background-repeat: no-repeat;
+    background-position: left 8.6rem center; /* Move SVG to the right */
+    background-size: 32px 20px;
     background-color: #1E2021;
     border: 1px solid #4a5568;
+    color: #ffffff;
+    font-size: 1rem;
   }
-
-.search-input::placeholder {
-  color: #a0aec0; /* Placeholder text color */
-}
+  
+  .search-input:not(:placeholder-shown) {
+    background-image: none; /* Remove the SVG when text is entered */
+  }
+  
+  .search-input::placeholder {
+    color: #a0aec0;
+  }
+  
   
 .map-section {
   position: relative;
@@ -93,19 +167,25 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
+    z-index: 10;
   }
   
+  
   .group-members {
+    font-size: 1.5rem;
+    margin-top: -3rem;
     padding: 1.5rem;
   }
   
   .heading {
-    font-size: 1.125rem;
+    font-size: 2.7rem;
     font-weight: 600;
     margin-bottom: 1rem;
   }
   
   .member-list {
+    
     list-style: none;
     padding: 0;
     margin: 0;
@@ -113,13 +193,29 @@ body {
   
   .member-item {
     display: flex;
-    align-items: center;
+    align-items: center; /* Vertically center the text with the icon */
     margin-bottom: 1rem;
+    color: #ffffff; /* Text color */
   }
-  
+  .member-icon {
+    width: 1.5rem; /* Adjust the size of the icon */
+    height: 1.5rem;
+    margin-right: 1rem; /* Space between icon and text */
+    vertical-align: middle; /* Align icon with text */
+  }
+  .member-item img {
+    margin-right: 10px; /* Space between the icon and the name */
+  } 
+  .member-item span {
+    display: inline-block;
+    vertical-align: middle;
+  }
   .group-button {
-    margin-top: 1rem;
+    margin-top: 0rem;
+    user-select: none;
+    font-size: 1.2rem;
     width: 100%;
+    height: 15%;
     padding: 0.5rem;
     background-color: #1E2021;
     color: #ffffff;
@@ -133,36 +229,43 @@ body {
   }
   
   .categories {
-    padding: 1.5rem;
+    padding: 1rem;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
   }
   
   .category-button {
+    user-select: none;
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #9f7aea;
-    background: none;
+    color: #664DFF;
+    background-color: #181728;
     border: none;
     cursor: pointer;
-  }
+    height: 75px;
+    width: 75px;
+    border-radius: 15px;
+    transition: color 0.2s ease;
+    transition: background-color 0.2s ease;
+}
+
+.category-button span {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;  /* Vertically centers the text */
+  justify-content: center;  /* Ensures horizontal centering */
+  height: 100%;  /* Make sure the span takes the full height of its parent */
+}
+
+.category-button:hover {
+    color: white;
+    background-color: #9f7aea;
+}
+
   
-  /* Custom styles for Leaflet map */
-  .leaflet-container {
-    background-color: #1a202c;
-  }
   
-  .leaflet-control-zoom a {
-    background-color: #2d3748;
-    color: #ffffff;
-    border: none;
-  }
-  
-  .leaflet-control-zoom a:hover {
-    background-color: #4a5568;
-  }
   .map-and-search {
     position: relative;
     flex: 1;
