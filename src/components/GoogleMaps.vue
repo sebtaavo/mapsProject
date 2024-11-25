@@ -63,17 +63,48 @@
           </li>
         </ul>
         <button class="group-button">Other Groups</button>
+        <hr class="divider" />      
       </div>
-      <div class="categories">
-    <button class="category-button"><span>Cinemas</span></button>
-    <button class="category-button"><span>Bars</span></button>
-    <button class="category-button"><span>Beaches</span></button>
-    <button class="category-button"><span>Zoos</span></button>
-    <button class="category-button"><span>Basketball Courts</span></button>
-    <button class="category-button"><span>Football Fields</span></button>
-    <button class="category-button"><span>Cafes</span></button>
-    <button class="category-button"><span>Libraries</span></button>
+
+    <div class="join-input-container">
+      <input type="text" placeholder="     Join Through Key" class="join-input" id="join-input" />
+    </div>
+      
+    <div class="categories">
+    <button class="category-button">
+        <img src="./images/Popcorn (1).svg" class="category-icon" alt="Cinemas Icon" />
+        <span>Cinemas</span>
+    </button>
+    <button class="category-button">
+        <img src="./images/Glass Martini alt (1).svg" class="category-icon" alt="Bars Icon" />
+        <span>Bars</span>
+    </button>
+    <button class="category-button">
+        <img src="./images/Waves (1).svg" class="category-icon" alt="Beaches Icon" />
+        <span>Beaches</span>
+    </button>
+    <button class="category-button">
+        <img src="./images/Paw (1).svg" class="category-icon" alt="Zoos Icon" />
+        <span>Zoos</span>
+    </button>
+    <button class="category-button">
+        <img src="./images/Basketball sharp (1).svg" class="category-icon" alt="Basketball Courts Icon" />
+        <span>Basketball Courts</span>
+    </button>
+    <button class="category-button">
+        <img src="./images/Football (1).svg" class="category-icon" alt="Football Fields Icon" />
+        <span>Football Fields</span>
+    </button>
+    <button class="category-button">
+        <img src="./images/Coffee cup (1).svg" class="category-icon" alt="Cafes Icon" />
+        <span>Cafes</span>
+    </button>
+    <button class="category-button">
+        <img src="./images/Library (1).svg" class="category-icon" alt="Libraries Icon" />
+        <span>Libraries</span>
+    </button>
 </div>
+
     </div>
   </div>
 </template>

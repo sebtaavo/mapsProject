@@ -6,7 +6,7 @@
 }
 
 body {
-  background-color: #1a202c;
+  background-color: #181A1B;
   color: #ffffff;
   font-family: 'SF Pro Display';
   margin: 0;
@@ -53,7 +53,7 @@ body {
   .main-container {
     display: flex;
     height: 93.205vh;
-    margin-top: 4.2rem; /* Add margin to account for the fixed navbar */
+    margin-top: 3.818rem; /* Add margin to account for the fixed navbar */
   }
   
   /* Left Section */
@@ -68,7 +68,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: #181A1B;
-    padding: 0.55rem 1.5rem;
+    padding: 0.35rem 1.5rem;
     position: fixed; /* Make it stay at the top */
     top: 0;
     left: 0;
@@ -103,6 +103,13 @@ body {
     user-select: none;
   }
   
+  .divider {
+    border: none; /* Remove default border style */
+    border-top: 2px solid #1E2021; /* Add a solid line */
+    margin: 1rem auto 0 auto; /* Add spacing above, center horizontally */
+    width: 100%; /* Adjust the width of the line */
+    user-select: none;
+  }
   
 
 
@@ -142,12 +149,54 @@ body {
   .search-input::placeholder {
     color: #a0aec0;
   }
+
+
+
+  
+  .join-input-container {
+    user-select: none;
+    position: relative;
+    width: 100%;
+    text-align: center;
+    margin-top: 0.5rem; /* Space between members and input */
+    margin-bottom: 0; /* No extra space below the input */
+}
+
+
+.join-input {
+    width: 90%;
+    padding: 0.56rem 1rem 0.5rem 1rem; /* Adjust padding */
+    padding-right: 2.5rem;
+    border-radius: 0;
+    background-color: #1E2021;
+    border: 1px solid #4a5568;
+    color: #ffffff;
+    font-size: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
+.join-input:not(:placeholder-shown) {
+    text-align: left;
+}
+
+.join-input::placeholder {
+    color: #a0aec0;
+    text-align: center;
+}
+
+
+
+
+
   
   
 .map-section {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 100.6%;
 }
   
 .map-container {
@@ -166,7 +215,6 @@ body {
     background-color: #181A1B;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     position: relative;
     z-index: 10;
   }
@@ -176,6 +224,7 @@ body {
     font-size: 1.5rem;
     margin-top: -3rem;
     padding: 1.5rem;
+    user-select: none;
   }
   
   .heading {
@@ -211,6 +260,7 @@ body {
     vertical-align: middle;
   }
   .group-button {
+    border: 1px solid #4a5568;
     margin-top: 0rem;
     user-select: none;
     font-size: 1.2rem;
@@ -220,7 +270,6 @@ body {
     background-color: #1E2021;
     color: #ffffff;
     border-radius: 9999px;
-    border: none;
     cursor: pointer;
   }
   
@@ -229,6 +278,10 @@ body {
   }
   
   .categories {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     padding: 1rem;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -247,8 +300,16 @@ body {
     height: 75px;
     width: 75px;
     border-radius: 15px;
-    transition: color 0.2s ease;
-    transition: background-color 0.2s ease;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    text-align: center;
+    margin-bottom: -0.2rem;
+}
+
+.category-icon {
+  margin-top: 12px;
+    width: 24px; /* Adjust icon size */
+    height: 24px;
+    margin-bottom: 0rem; /* Add space between icon and text */
 }
 
 .category-button span {
