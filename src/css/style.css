@@ -345,3 +345,34 @@ body {
   color: white;
   background-color: #9f7aea;
 }
+
+/**********************************
+ * Gör sidan responsive
+ **********************************/
+
+@media (max-width: 600px) {
+  .sidebar {
+    width: 100%;
+    position: relative; 
+    order: 1; 
+    height: auto; 
+  }
+
+  .categories {
+    position: relative; 
+    bottom: 0;
+  }
+
+  .main-container {
+    flex-direction: column; 
+  }
+
+  .map-section {
+    height: 50vh;
+  }
+
+  body {
+    overflow-y: auto; 
+  }
+}
+
