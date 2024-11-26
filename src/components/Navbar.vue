@@ -21,44 +21,39 @@ export default {
   name: 'Navbar',
   data() {
     return {
-      authButtonText: 'Log in or out',  // Default button text
+      authButtonText: 'Log in',  // Start with 'Log in'
       user: null,  // Store the user object
+      auth: null,  // Store the auth instance
+      provider: null  // Store the auth provider
     };
   },
-  mounted() {
-    // Initialize Firebase authentication
+  created() {
+    // Initialize Firebase authentication in the created hook
     const app = initializeApp(config);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
+    this.auth = getAuth(app);
+    this.provider = new GoogleAuthProvider();
 
     // Listen to authentication state changes
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(this.auth, (user) => {
+      // Ensure we're using this.user to update the component's state
       this.user = user;
-      this.authButtonText = user ? 'Log out' : 'Log in'; // Update button text based on auth state
-
-      if (user) {
-        console.log('User ID:', user.uid);
-        console.log("User's name:", user.displayName);
-        console.log('User Email:', user.email);  
-      } else {
-        console.log('No user logged in'); // If no user is logged in
-      }
+      this.authButtonText = user ? 'Log out' : 'Log in';
     });
   },
   methods: {
     async handleAuthClick() {
-      const auth = getAuth();
-      const provider = new GoogleAuthProvider();
-
-      if (this.user) {
-        // Sign out if the user is already logged in
-        await signOut(auth);
-        this.user = null;
-      } else {
-        // Sign in with Google
-        await signInWithPopup(auth, provider);
+      try {
+        if (this.user) {
+          // Sign out if the user is already logged in
+          await signOut(this.auth);
+        } else {
+          // Sign in with Google
+          await signInWithPopup(this.auth, this.provider);
+        }
+      } catch (error) {
+        console.error('Authentication error:', error);
       }
     },
   },
-};
+}
 </script>
