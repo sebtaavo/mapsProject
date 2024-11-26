@@ -10,13 +10,20 @@
     <div class="map-section">
       <div class="map-container">
         <GoogleMap
+          v-if="lat !== null && lng !== null"
           :api-key="apiKey"
           style="width: 100%; height: 100%"
           :center="{ lat: lat, lng: lng }"
           :zoom="15"
         >
-          <Marker :options="{ position: { lat: lat, lng: lng }, label: { text: 'S', color: 'blue' }, title: 'Your Location' }" />
-          <Marker :options="{ position: { lat: lat + 0.001, lng: lng } }" />
+        <Marker
+                v-if="lat !== null && lng !== null"
+                :options="{ position: { lat: lat, lng: lng }, label: { text: 'S', color: 'blue' }, title: 'Your Location' }"
+              />
+              <Marker
+                v-if="lat !== null && lng !== null"
+                :options="{ position: { lat: lat + 0.001, lng: lng } }"
+              />
         </GoogleMap>
       </div>
     </div>
