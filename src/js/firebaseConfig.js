@@ -1,4 +1,5 @@
-// Import the functions you need from the SDKs you need
+
+import { APIkey2 } from '@/js/apiKEY.js';// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore } from 'firebase/firestore';
 // TODO: Add SDKs for Firebase products that you want to use
@@ -6,7 +7,7 @@ import { getFirestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBBcfE7GxMX7LAt1OBLrSs18EoXyZy6VJc",
+  apiKey: APIkey2,
   authDomain: "groupsfinder.firebaseapp.com",
   projectId: "groupsfinder",
   storageBucket: "groupsfinder.firebaseapp.com",
