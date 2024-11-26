@@ -2,6 +2,7 @@ import './css/style.css';  // Adjust the path if needed based on your folder str
 import { createApp, h } from 'vue';
 import { VueRoot } from './VueRoot.jsx';
 import Vue3Geolocation from 'vue3-geolocation';
+import './js/firebaseAuth.js';
 
 const app = createApp({
   render: () => h(VueRoot, { model: {} }),

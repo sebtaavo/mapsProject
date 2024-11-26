@@ -85,6 +85,7 @@ body {
    height: 1.5rem;
    width: 1.5rem;
    margin-right: 0.5rem;
+   margin-top: 0.7rem;
  }
  
  .logo {
@@ -94,6 +95,7 @@ body {
  
  .title {
    font-size: 1.25rem;
+   margin-top: 0.7rem;
    font-weight: 0;
    user-select: none;
  }
@@ -104,33 +106,19 @@ body {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  background: none;
+  background: #9f7aea;
+  border-radius: 9999px;
   border: none;
-  padding: 0;
+  padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: color 0s ease, transform 0s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
   margin-right: 48px;
-}
-  
-.icon-container:hover .profile-text {
-  color: #664DFF;
+  margin-top: 0.6rem;
 }
 
-.icon-container:hover .profile-icon {
-  content: url('@/images/PurpleUser.svg');
-}
-  
-.profile-icon {
-  width: 2rem;
-  height: 1.7rem;
-  margin-top: 0.5rem;
-  transition: transform 0.2s ease, content 0.2s ease;
-}
-
-.profile-text {
-  font-size: 0.8rem;
-  color: #ffffff;
-  transition: color 0.1s ease;
+.icon-container:hover {
+  background-color: #8c5ce9;
+  transform: scale(1.05);
 }
 
 /**********************************
