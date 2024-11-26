@@ -1,6 +1,48 @@
+/**********************************
+ * Förklaringar av använda CSS-operationer
+ **********************************
+
+font-size: Bestämmer hur stor texten ska vara.
+font-family: Anger vilken typsnittsstil som ska användas för texten.
+font-weight: Bestämmer hur tjock eller fet texten är.
+color: Anger färgen på texten.
+background-color: Definierar färgen på en elements bakgrund.
+margin: Skapar utrymme utanför elementets kant.
+padding: Skapar utrymme innanför elementets kant.
+display: Bestämmer hur ett element visas (t.ex. block, inline, flex).
+flex-direction: Definierar riktningen för objekt i en flex-behållare (t.ex. rad, kolumn).
+justify-content: Justerar objekt horisontellt i en flex-behållare.
+align-items: Justerar objekt vertikalt i en flex-behållare.
+position: Anger hur ett element är placerat (t.ex. relativt, absolut, fast).
+top/left/right/bottom: Anger positionens avstånd från respektive kant.
+z-index: Kontrollerar ordningen för överlappande element.
+border: Lägger till en kant runt elementet och anger dess stil, bredd och färg.
+border-radius: Rundar av hörnen på ett element.
+width/height: Anger storleken på ett element.
+transition: Lägger till mjuka animationer för ändringar av egenskaper (t.ex. färg, storlek).
+cursor: Ändrar muspekaren när den svävar över ett element.
+box-shadow: Lägger till skuggeffekter på element.
+list-style: Definierar utseendet på listobjekt (t.ex. inga, punkter).
+user-select: Kontrollerar om användare kan markera text eller element.
+text-align: Justerar text horisontellt inom sin behållare.
+grid-template-columns: Anger kolumnlayouten för en grid-behållare.
+gap: Anger avståndet mellan grid-objekt.
+
+**********************************/
+
+/**********************************
+ * Dessa kommentarer används för att visa en huvuddel
+ **********************************/
+
+/* Dessa kommentarer används för att visa en del inom en huvuddel */
+
+/**********************************
+ * Font och generellt
+ **********************************/
+
 @font-face {
   font-family: 'SF Pro Display';
-  src: url('fonts/SF-Pro-Display-Regular.otf') format('opentype'); /* Reference the font file */
+  src: url('fonts/SF-Pro-Display-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
@@ -13,321 +55,324 @@ body {
   padding: 0;
 }
 
-  /* Style the profile icon */
-  .icon-container {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    background: none; /* Remove button background */
-    border: none; /* Remove button border */
-    padding: 0; /* Remove default button padding */
-    cursor: pointer; /* Indicate interactivity */
-    transition: color 0s ease, transform 0s ease; /* Smooth transitions */
-    margin-right: 48px;
-  }
-  
-  .icon-container:hover .profile-text {
-    color: #664DFF; /* Change text color on hover */
-  }
-  
-  .icon-container:hover .profile-icon {
-    content: url('./images/PurpleUser.svg'); /* Swap the SVG image */
-  }
-  
-  .profile-icon {
-    width: 2rem; /* Adjust the size of the icon */
-    height: 1.7rem;
-    margin-top: 0.5rem;
-    transition: transform 0.2s ease, content 0.2s ease; /* Smooth transitions */
-  }
-  
-  .profile-text {
-    display: block;
-    margin-top: 0rem; /* Adjust space between the image and the text */
-    font-size: 0.8rem; /* Adjust font size */
-    color: #ffffff; /* Default text color */
-    transition: color 0.1s ease; /* Smooth color transition */
-  }
-  
-  
-  .main-container {
-    display: flex;
-    height: 93.205vh;
-    margin-top: 3.818rem; /* Add margin to account for the fixed navbar */
-  }
-  
-  /* Left Section */
-  .left-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #181A1B;
-    padding: 0.35rem 1.5rem;
-    position: fixed; /* Make it stay at the top */
-    top: 0;
-    left: 0;
-    width: 100%; /* Stretch across the viewport */
-    z-index: 20; /* Ensure it appears above the sidebar */
-  }
-  .user-icon {
-    height: 1.5rem;
-    width: 1.5rem;
-    margin-right: 0.5rem;
-  }
-  
-  
-  .logo {
-    display: flex;
-    align-items: center;
-    
-  }
-  
-  .logo .icon {
-    height: 1.5rem;
-    width: 1.5rem;
-    color: #9f7aea;
-    margin-right: 0.5rem;
-  }
+.main-container {
+  display: flex;
+  height: 93.205vh;
+  margin-top: 3.818rem;
+}
 
-  
-  
-  .title {
-    font-size: 1.25rem;
-    font-weight: 0;
-    user-select: none;
-  }
-  
-  .divider {
-    border: none; /* Remove default border style */
-    border-top: 2px solid #1E2021; /* Add a solid line */
-    margin: 1rem auto 0 auto; /* Add spacing above, center horizontally */
-    width: 100%; /* Adjust the width of the line */
-    user-select: none;
-  }
-  
+/**********************************
+ * Navbaren (Hela baren på toppen)
+ **********************************/
 
-
-  .search-bar {
-    position: absolute;
-    top: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30%;
-    z-index: 10;
-  }
-  
-  .search-input-container {
-    position: relative;
-    width: 100%;
-  }
-  
-  .search-input {
-    width: 100%;
-    padding: 0.56rem 1rem 0.5rem 1rem; /* Adjust left padding to fit the text */
-    padding-right: 2.5rem; /* Add padding to the right to fit the icon */
-    border-radius: 9999px;
-    background-image: url('./images/Search.svg');
-    background-repeat: no-repeat;
-    background-position: left 8.6rem center; /* Move SVG to the right */
-    background-size: 32px 20px;
-    background-color: #1E2021;
-    border: 1px solid #4a5568;
-    color: #ffffff;
-    font-size: 1rem;
-  }
-  
-  .search-input:not(:placeholder-shown) {
-    background-image: none; /* Remove the SVG when text is entered */
-  }
-  
-  .search-input::placeholder {
-    color: #a0aec0;
-  }
-
-
-
-  
-  .join-input-container {
-    user-select: none;
-    position: relative;
-    width: 100%;
-    text-align: center;
-    margin-top: 0.5rem; /* Space between members and input */
-    margin-bottom: 0; /* No extra space below the input */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #181A1B;
+  padding: 0.35rem 1.5rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 20;
 }
 
 
+ /* Logga (Högst upp till vänster)*/
+
+ .user-icon,
+ .logo .icon {
+   height: 1.5rem;
+   width: 1.5rem;
+   margin-right: 0.5rem;
+ }
+ 
+ .logo {
+   display: flex;
+   align-items: center;
+ }
+ 
+ .title {
+   font-size: 1.25rem;
+   font-weight: 0;
+   user-select: none;
+ }
+
+/* Profil (Högst upp till höger)*/
+
+.icon-container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0s ease, transform 0s ease;
+  margin-right: 48px;
+}
+  
+.icon-container:hover .profile-text {
+  color: #664DFF;
+}
+
+.icon-container:hover .profile-icon {
+  content: url('@/images/PurpleUser.svg');
+}
+  
+.profile-icon {
+  width: 2rem;
+  height: 1.7rem;
+  margin-top: 0.5rem;
+  transition: transform 0.2s ease, content 0.2s ease;
+}
+
+.profile-text {
+  font-size: 0.8rem;
+  color: #ffffff;
+  transition: color 0.1s ease;
+}
+
+/**********************************
+ * Karta och sök
+ **********************************/
+
+ .map-section,
+ .map-container,
+ #map {
+   width: 100%;
+   height: 100.3%;
+ }
+ 
+ .search-bar {
+   position: absolute;
+   top: 1rem;
+   left: 50%;
+   transform: translateX(-50%);
+   width: 30%;
+   z-index: 10;
+ }
+ 
+ .search-input-container {
+   position: relative;
+   width: 100%;
+ }
+ 
+ .search-input {
+   width: 100%;
+   padding: 0.56rem 1rem 0.5rem;
+   padding-right: 2.5rem;
+   border-radius: 9999px;
+   background-color: #1E2021;
+   border: 1px solid #4a5568;
+   color: #ffffff;
+   font-size: 1rem;
+   background-image: url('@/images/Search.svg');
+   background-repeat: no-repeat;
+   background-position: left 8.6rem center;
+   background-size: 32px 20px;
+ }
+ 
+ .search-input:not(:placeholder-shown) {
+   background-image: none;
+ }
+ 
+ .search-input::placeholder {
+   color: #a0aec0;
+ }
+
+ .map-and-search {
+  position: relative;
+  flex: 1;
+}
+
+.left-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+  
+/**********************************
+ * Sidofält
+ **********************************/
+
+ .sidebar {
+  width: 24rem;
+  background-color: #181A1B;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
+}
+
+/* Gruppmedlemmar*/
+.group-members {
+  font-size: 1.5rem;
+  margin-top: -3rem;
+  padding: 1.5rem;
+  user-select: none;
+}
+
+.heading {
+  font-size: 2.7rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.member-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.member-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 1rem;
+}
+
+/* Andra grupper*/
+.group-button {
+  border: 1px solid #4a5568;
+  font-size: 1.2rem;
+  width: 100%;
+  height: 15%;
+  padding: 0.5rem;
+  background-color: #1E2021;
+  color: #ffffff;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+.group-button:hover {
+  background-color: #9f7aea;
+}
+
+/* Divider */
+
+.divider {
+  border: none;
+  border-top: 2px solid #41474b; 
+  margin: 1rem auto 0 auto; 
+  width: 100%; 
+  user-select: none;
+}
+  
+/* Joina med key */
+
+.join-input-container {
+  user-select: none;
+  position: relative;
+  width: 100%;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
 .join-input {
-    width: 90%;
-    padding: 0.56rem 1rem 0.5rem 1rem; /* Adjust padding */
-    padding-right: 2.5rem;
-    border-radius: 0;
-    background-color: #1E2021;
-    border: 1px solid #4a5568;
-    color: #ffffff;
-    font-size: 1rem;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: left;
+  width: 90%;
+  padding: 0.56rem 1rem 0.5rem;
+  padding-right: 2.5rem;
+  background-color: #1E2021;
+  border: 1px solid #4a5568;
+  color: #ffffff;
+  font-size: 1rem;
+  display: block;
+  margin: 0 auto;
+  text-align: left;
 }
 
 .join-input:not(:placeholder-shown) {
-    text-align: left;
+  text-align: left;
 }
 
 .join-input::placeholder {
-    color: #a0aec0;
-    text-align: center;
+  color: #a0aec0;
+  text-align: center;
 }
 
+/* Förslagsknapparna */
 
-
-
-
-  
-  
-.map-section {
-  position: relative;
-  width: 100%;
-  height: 100.6%;
+.categories {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+  gap: 1rem;
 }
-  
-.map-container {
-  width: 100%;
-  height: 100%;
-}
-  
-  #map {
-    width: 100%;
-    height: 100%;
-  }
-  
-  /* Right Section */
-  .sidebar {
-    width: 24rem;
-    background-color: #181A1B;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    z-index: 10;
-  }
-  
-  
-  .group-members {
-    font-size: 1.5rem;
-    margin-top: -3rem;
-    padding: 1.5rem;
-    user-select: none;
-  }
-  
-  .heading {
-    font-size: 2.7rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-  
-  .member-list {
-    
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .member-item {
-    display: flex;
-    align-items: center; /* Vertically center the text with the icon */
-    margin-bottom: 1rem;
-    color: #ffffff; /* Text color */
-  }
-  .member-icon {
-    width: 1.5rem; /* Adjust the size of the icon */
-    height: 1.5rem;
-    margin-right: 1rem; /* Space between icon and text */
-    vertical-align: middle; /* Align icon with text */
-  }
-  .member-item img {
-    margin-right: 10px; /* Space between the icon and the name */
-  } 
-  .member-item span {
-    display: inline-block;
-    vertical-align: middle;
-  }
-  .group-button {
-    border: 1px solid #4a5568;
-    margin-top: 0rem;
-    user-select: none;
-    font-size: 1.2rem;
-    width: 100%;
-    height: 15%;
-    padding: 0.5rem;
-    background-color: #1E2021;
-    color: #ffffff;
-    border-radius: 9999px;
-    cursor: pointer;
-  }
-  
-  .group-button:hover {
-    background-color: #9f7aea;
-  }
-  
-  .categories {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-  }
-  
-  .category-button {
-    user-select: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #664DFF;
-    background-color: #181728;
-    border: none;
-    cursor: pointer;
-    height: 75px;
-    width: 75px;
-    border-radius: 15px;
-    transition: color 0.2s ease, background-color 0.2s ease;
-    text-align: center;
-    margin-bottom: -0.2rem;
+
+.category-button {
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #664DFF;
+  background-color: #181728;
+  border: none;
+  cursor: pointer;
+  height: 75px;
+  width: 75px;
+  border-radius: 15px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  margin-bottom: -0.2rem;
 }
 
 .category-icon {
   margin-top: 12px;
-    width: 24px; /* Adjust icon size */
-    height: 24px;
-    margin-bottom: 0rem; /* Add space between icon and text */
+  width: 24px;
+  height: 24px;
 }
 
 .category-button span {
   font-size: 1rem;
   display: flex;
-  align-items: center;  /* Vertically centers the text */
-  justify-content: center;  /* Ensures horizontal centering */
-  height: 100%;  /* Make sure the span takes the full height of its parent */
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 
 .category-button:hover {
-    color: white;
-    background-color: #9f7aea;
+  color: white;
+  background-color: #9f7aea;
 }
 
-  
-  
-  .map-and-search {
-    position: relative;
-    flex: 1;
+/**********************************
+ * Gör sidan responsive
+ **********************************/
+
+@media (max-width: 600px) {
+  .sidebar {
+    width: 100%;
+    position: relative; 
+    order: 1; 
+    height: auto; 
   }
+
+  .categories {
+    position: relative; 
+    bottom: 0;
+  }
+
+  .main-container {
+    flex-direction: column; 
+  }
+
+  .map-section {
+    height: 50vh;
+  }
+
+  body {
+    overflow-y: auto; 
+  }
+}
+
