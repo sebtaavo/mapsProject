@@ -3,28 +3,36 @@
     <div class="group-members">
       <h2 class="heading">Group Members</h2>
       <ul class="member-list">
-        <li v-if="groupMembers.length === 0" class="member-item">
+        <li v-if="!user" class="member-item">
+          Please log in to join a group.
+        </li>
+        <li v-else-if="groupMembers.length === 0" class="member-item">
           Join a group to see group members.
         </li>
         <li v-for="member in groupMembers" :key="member.uid" class="member-item">
           <img :src="member.icon || 'path_to_default_icon_or_gravatar'" class="member-icon" alt="User Icon" />
           {{ member.name }}
+          <span v-if="member.uid === adminUid" class="admin-label">(Admin)</span>
         </li>
       </ul>
-
-      <!-- Show "Leave Group" button only if the user is in a group -->
       <button v-if="groupMembers.length !== 0" class="group-button" @click="leaveGroup">Leave Group</button>
       <hr class="divider" />
+    </div>
+
+    <div v-if="user && !groupKey" class="create-group-container">
+      <button class="create-group-button" @click="createGroup">
+        Create Your Group
+      </button>
     </div>
 
     <div class="join-input-container">
       <input
         type="text"
         v-model="groupKey"
-        placeholder="     Join Through Key"
+        placeholder="Join Through Key"
         class="join-input"
         id="join-input"
-        @keyup.enter="joinGroup" 
+        @keyup.enter="joinGroup"
       />
     </div>
 
@@ -43,18 +51,20 @@
 
 <script>
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, getDoc, updateDoc, arrayRemove } from "firebase/firestore";
-import { categories } from '../js/Data.js';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayRemove } from "firebase/firestore";
+import { categories } from '@/js/Data.js';
+import { v4 as uuidv4 } from 'uuid'; // For generating unique group keys
 
 export default {
   name: 'Sidebar',
   data() {
     return {
-      groupKey: '', // Store the group key input by the user
-      groupMembers: [], // This will hold the members of the group
-      categories,   // Existing categories
-      user: null,   // Current logged in user
-      groupStatus: '' // Feedback for the user (e.g., success or error)
+      groupKey: '', // Group key input by the user
+      groupMembers: [], // List of members in the group
+      categories, // Sidebar categories
+      user: null, // Current logged-in user
+      adminUid: '', // Admin UID for the current group
+      groupStatus: '' // Feedback status for group actions
     };
   },
   mounted() {
@@ -62,116 +72,162 @@ export default {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.user = user;
-        this.checkUserGroup(); // Check if the user is part of a group when mounted
+        this.checkUserGroup();
       } else {
         this.user = null;
+        this.groupMembers = [];
+        this.groupKey = '';
       }
     });
   },
   methods: {
-  // Method to handle group joining
-  async joinGroup() {
-    if (!this.groupKey || !this.user) {
-      this.groupStatus = "Please enter a group key and make sure you're logged in.";
-      return;
-    }
+    // Create a new group and assign the current user as admin
+    async createGroup() {
+      if (!this.user) {
+        this.groupStatus = "You need to be logged in to create a group.";
+        return;
+      }
 
-    const db = getFirestore();
-    const groupRef = doc(db, "groups", this.groupKey); // Reference to the group in Firestore
+      const db = getFirestore();
+      const newGroupKey = uuidv4(); // Generate a unique group key
+      const groupRef = doc(db, "groups", newGroupKey);
 
-    try {
-      // Fetch the group data from Firestore
-      const groupSnap = await getDoc(groupRef);
-
-      if (groupSnap.exists()) {
-        const groupData = groupSnap.data();
-        const members = groupData.members || [];
-
-        // Check if the user is already a member of the group
-        const isMember = members.some(member => member.uid === this.user.uid);
-
-        if (isMember) {
-          this.groupStatus = "You are already a member of this group.";
-          return;
-        }
-
-        // Add the current user to the group
-        await updateDoc(groupRef, {
+      try {
+        await setDoc(groupRef, {
+          adminUid: this.user.uid,
           members: [
-            ...members,
             {
               uid: this.user.uid,
               name: this.user.displayName,
               email: this.user.email,
-              icon: this.user.photoURL || 'path_to_default_icon_or_gravatar' // Add photo if available
+              icon: this.user.photoURL || 'path_to_default_icon_or_gravatar'
             }
           ]
         });
 
-        // Update the feedback message
-        this.groupStatus = `Successfully joined group ${this.groupKey}!`;
+        // Save the group key locally and set admin UID
+        this.groupKey = newGroupKey;
+        this.adminUid = this.user.uid;
 
-        // Save the group key in local storage to persist membership across page reloads
-        localStorage.setItem('userGroup', this.groupKey);
+        // Add the group key to the user's document in Firestore
+        const userRef = doc(db, "users", this.user.uid);
+        await setDoc(userRef, { groupKey: newGroupKey });
 
-        // Update group members locally
         this.groupMembers = [
-          ...members,
           {
             uid: this.user.uid,
             name: this.user.displayName,
             icon: this.user.photoURL || 'path_to_default_icon_or_gravatar'
           }
         ];
-      } else {
-        // Group not found
-        this.groupStatus = `Group with key ${this.groupKey} not found.`;
-      }
-    } catch (error) {
-      console.error("Error joining group: ", error);
-      this.groupStatus = "An error occurred while joining the group.";
-    }
-  },
 
-  // Check if the user is already part of a group on page load
-  async checkUserGroup() {
-    const groupKey = localStorage.getItem('userGroup');
-    if (groupKey) {
-      this.groupKey = groupKey;
-      // Now, fetch and display the group members
+        this.groupStatus = `Group created successfully! Share your key: ${newGroupKey}`;
+      } catch (error) {
+        console.error("Error creating group: ", error);
+        this.groupStatus = "An error occurred while creating the group.";
+      }
+    },
+
+    // Join an existing group
+    async joinGroup() {
+      if (!this.groupKey || !this.user) {
+        this.groupStatus = "Please enter a group key and make sure you're logged in.";
+        return;
+      }
+
       const db = getFirestore();
-      const groupRef = doc(db, "groups", groupKey);
+      const groupRef = doc(db, "groups", this.groupKey);
+
       try {
         const groupSnap = await getDoc(groupRef);
         if (groupSnap.exists()) {
           const groupData = groupSnap.data();
-          this.groupMembers = groupData.members || [];
+          const members = groupData.members || [];
+
+          // Check if user is already a member
+          const isMember = members.some(member => member.uid === this.user.uid);
+          if (isMember) {
+            this.groupStatus = "You are already a member of this group.";
+            return;
+          }
+
+          // Add the user to the group
+          await updateDoc(groupRef, {
+            members: [
+              ...members,
+              {
+                uid: this.user.uid,
+                name: this.user.displayName,
+                email: this.user.email,
+                icon: this.user.photoURL || 'path_to_default_icon_or_gravatar'
+              }
+            ]
+          });
+
+          // Update user's document with the group key
+          const userRef = doc(db, "users", this.user.uid);
+          await setDoc(userRef, { groupKey: this.groupKey });
+
+          // Update local state
+          this.groupMembers = [
+            ...members,
+            {
+              uid: this.user.uid,
+              name: this.user.displayName,
+              icon: this.user.photoURL || 'path_to_default_icon_or_gravatar'
+            }
+          ];
+          this.adminUid = groupData.adminUid;
+          this.groupStatus = `Successfully joined group ${this.groupKey}!`;
+        } else {
+          this.groupStatus = `Group with key ${this.groupKey} not found.`;
         }
       } catch (error) {
-        console.error("Error fetching group data: ", error);
+        console.error("Error joining group: ", error);
+        this.groupStatus = "An error occurred while joining the group.";
       }
-    }
-  },
+    },
 
-  // Method to leave the group
-  async leaveGroup() {
-    if (!this.groupKey || !this.user) {
-      this.groupStatus = "You are not currently in a group.";
-      return;
-    }
+    // Check if the user is part of a group
+    async checkUserGroup() {
+      const db = getFirestore();
+      const userRef = doc(db, "users", this.user.uid);
 
-    const db = getFirestore();
-    const groupRef = doc(db, "groups", this.groupKey); // Reference to the group in Firestore
+      try {
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          this.groupKey = userData.groupKey || '';
 
-    try {
-      // Fetch the group data from Firestore
-      const groupSnap = await getDoc(groupRef);
+          if (this.groupKey) {
+            // Fetch group members
+            const groupRef = doc(db, "groups", this.groupKey);
+            const groupSnap = await getDoc(groupRef);
 
-      if (groupSnap.exists()) {
-        const groupData = groupSnap.data();
-        const members = groupData.members || [];
+            if (groupSnap.exists()) {
+              const groupData = groupSnap.data();
+              this.groupMembers = groupData.members || [];
+              this.adminUid = groupData.adminUid || '';
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user group: ", error);
+      }
+    },
 
-        // Remove the current user from the group
+    // Leave the current group
+    async leaveGroup() {
+      if (!this.groupKey || !this.user) {
+        this.groupStatus = "You are not currently in a group.";
+        return;
+      }
+
+      const db = getFirestore();
+      const groupRef = doc(db, "groups", this.groupKey);
+
+      try {
+        // Remove the user from the group
         await updateDoc(groupRef, {
           members: arrayRemove({
             uid: this.user.uid,
@@ -181,24 +237,19 @@ export default {
           })
         });
 
-        // Update the feedback message
-        this.groupStatus = `Successfully left group ${this.groupKey}.`;
+        // Clear the user's group data
+        const userRef = doc(db, "users", this.user.uid);
+        await setDoc(userRef, { groupKey: '' });
 
-        // Clear the group data locally
+        this.groupKey = '';
         this.groupMembers = [];
-
-        // Remove the group key from local storage
-        localStorage.removeItem('userGroup');
-      } else {
-        // Group not found
-        this.groupStatus = `Group with key ${this.groupKey} not found.`;
+        this.adminUid = '';
+        this.groupStatus = "Successfully left the group.";
+      } catch (error) {
+        console.error("Error leaving group: ", error);
+        this.groupStatus = "An error occurred while leaving the group.";
       }
-    } catch (error) {
-      console.error("Error leaving group: ", error);
-      this.groupStatus = "An error occurred while leaving the group.";
     }
   }
-}
-
 };
 </script>
