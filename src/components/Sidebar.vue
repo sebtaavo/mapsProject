@@ -9,10 +9,21 @@
         <li v-else-if="groupMembers.length === 0" class="member-item">
           Join a group to see group members.
         </li>
-        <li v-for="member in groupMembers" :key="member.uid" class="member-item">
+        <li
+          v-for="(member, index) in groupMembers"
+          :key="member.uid"
+          class="member-item"
+        >
           <img :src="member.icon || 'path_to_default_icon_or_gravatar'" class="member-icon" alt="User Icon" />
           {{ member.name }}
           <span v-if="member.uid === adminUid" class="admin-label">(Admin)</span>
+          <button
+            v-if="user.uid === adminUid && member.uid !== adminUid"
+            class="kick-button"
+            @click="kickMember(member)"
+          >
+            Kick
+          </button>
         </li>
       </ul>
       <button v-if="groupMembers.length !== 0" class="group-button" @click="leaveGroup">Leave Group</button>
@@ -51,9 +62,9 @@
 
 <script>
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayRemove } from "firebase/firestore";
-import { categories } from '@/js/Data.js';
-import { v4 as uuidv4 } from 'uuid'; // For generating unique group keys
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayRemove, onSnapshot } from "firebase/firestore";
+import { categories } from '../js/Data.js';
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   name: 'Sidebar',
@@ -64,7 +75,7 @@ export default {
       categories, // Sidebar categories
       user: null, // Current logged-in user
       adminUid: '', // Admin UID for the current group
-      groupStatus: '' // Feedback status for group actions
+      groupStatus: '', // Feedback status for group actions
     };
   },
   mounted() {
@@ -81,7 +92,7 @@ export default {
     });
   },
   methods: {
-    // Create a new group and assign the current user as admin
+    // Create a new group
     async createGroup() {
       if (!this.user) {
         this.groupStatus = "You need to be logged in to create a group.";
@@ -89,7 +100,7 @@ export default {
       }
 
       const db = getFirestore();
-      const newGroupKey = uuidv4(); // Generate a unique group key
+      const newGroupKey = uuidv4();
       const groupRef = doc(db, "groups", newGroupKey);
 
       try {
@@ -105,22 +116,13 @@ export default {
           ]
         });
 
-        // Save the group key locally and set admin UID
-        this.groupKey = newGroupKey;
-        this.adminUid = this.user.uid;
-
-        // Add the group key to the user's document in Firestore
         const userRef = doc(db, "users", this.user.uid);
         await setDoc(userRef, { groupKey: newGroupKey });
 
-        this.groupMembers = [
-          {
-            uid: this.user.uid,
-            name: this.user.displayName,
-            icon: this.user.photoURL || 'path_to_default_icon_or_gravatar'
-          }
-        ];
+        this.groupKey = newGroupKey;
+        this.adminUid = this.user.uid;
 
+        this.listenToGroupUpdates(newGroupKey);
         this.groupStatus = `Group created successfully! Share your key: ${newGroupKey}`;
       } catch (error) {
         console.error("Error creating group: ", error);
@@ -128,7 +130,7 @@ export default {
       }
     },
 
-    // Join an existing group
+    // Join a group
     async joinGroup() {
       if (!this.groupKey || !this.user) {
         this.groupStatus = "Please enter a group key and make sure you're logged in.";
@@ -144,14 +146,11 @@ export default {
           const groupData = groupSnap.data();
           const members = groupData.members || [];
 
-          // Check if user is already a member
-          const isMember = members.some(member => member.uid === this.user.uid);
-          if (isMember) {
+          if (members.some(member => member.uid === this.user.uid)) {
             this.groupStatus = "You are already a member of this group.";
             return;
           }
 
-          // Add the user to the group
           await updateDoc(groupRef, {
             members: [
               ...members,
@@ -164,20 +163,10 @@ export default {
             ]
           });
 
-          // Update user's document with the group key
           const userRef = doc(db, "users", this.user.uid);
           await setDoc(userRef, { groupKey: this.groupKey });
 
-          // Update local state
-          this.groupMembers = [
-            ...members,
-            {
-              uid: this.user.uid,
-              name: this.user.displayName,
-              icon: this.user.photoURL || 'path_to_default_icon_or_gravatar'
-            }
-          ];
-          this.adminUid = groupData.adminUid;
+          this.listenToGroupUpdates(this.groupKey);
           this.groupStatus = `Successfully joined group ${this.groupKey}!`;
         } else {
           this.groupStatus = `Group with key ${this.groupKey} not found.`;
@@ -188,7 +177,7 @@ export default {
       }
     },
 
-    // Check if the user is part of a group
+    // Check user's current group
     async checkUserGroup() {
       const db = getFirestore();
       const userRef = doc(db, "users", this.user.uid);
@@ -200,15 +189,7 @@ export default {
           this.groupKey = userData.groupKey || '';
 
           if (this.groupKey) {
-            // Fetch group members
-            const groupRef = doc(db, "groups", this.groupKey);
-            const groupSnap = await getDoc(groupRef);
-
-            if (groupSnap.exists()) {
-              const groupData = groupSnap.data();
-              this.groupMembers = groupData.members || [];
-              this.adminUid = groupData.adminUid || '';
-            }
+            this.listenToGroupUpdates(this.groupKey);
           }
         }
       } catch (error) {
@@ -216,18 +197,29 @@ export default {
       }
     },
 
-    // Leave the current group
+    // Listen for real-time updates to group data
+    listenToGroupUpdates(groupKey) {
+      const db = getFirestore();
+      const groupRef = doc(db, "groups", groupKey);
+
+      onSnapshot(groupRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const groupData = docSnap.data();
+          this.groupMembers = groupData.members || [];
+          this.adminUid = groupData.adminUid || '';
+        }
+      });
+    },
+
+    // Leave group
     async leaveGroup() {
-      if (!this.groupKey || !this.user) {
-        this.groupStatus = "You are not currently in a group.";
-        return;
-      }
+      if (!this.groupKey || !this.user) return;
 
       const db = getFirestore();
       const groupRef = doc(db, "groups", this.groupKey);
+      const userRef = doc(db, "users", this.user.uid);
 
       try {
-        // Remove the user from the group
         await updateDoc(groupRef, {
           members: arrayRemove({
             uid: this.user.uid,
@@ -237,19 +229,49 @@ export default {
           })
         });
 
-        // Clear the user's group data
-        const userRef = doc(db, "users", this.user.uid);
         await setDoc(userRef, { groupKey: '' });
-
         this.groupKey = '';
         this.groupMembers = [];
-        this.adminUid = '';
-        this.groupStatus = "Successfully left the group.";
+        this.groupStatus = "You have left the group.";
       } catch (error) {
         console.error("Error leaving group: ", error);
         this.groupStatus = "An error occurred while leaving the group.";
+      }
+    },
+
+    // Kick a member from the group
+    async kickMember(member) {
+      if (!this.groupKey || !member) return;
+
+      const db = getFirestore();
+      const groupRef = doc(db, "groups", this.groupKey);
+
+      try {
+        await updateDoc(groupRef, {
+          members: arrayRemove(member)
+        });
+        this.groupStatus = `${member.name} has been kicked from the group.`;
+      } catch (error) {
+        console.error("Error kicking member: ", error);
+        this.groupStatus = "An error occurred while removing the member.";
       }
     }
   }
 };
 </script>
+
+<style scoped>
+.kick-button {
+  margin-left: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.kick-button:hover {
+  background-color: darkred;
+}
+</style>
