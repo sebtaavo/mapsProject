@@ -133,7 +133,44 @@ methods: {
     });
   },
 
+  // Create a new group
+  async createGroup() {
+      if (!this.user) {
+        console.log("You need to be logged in to create a group.");
+        return;
+      }
 
+      const db = getFirestore();
+      const newGroupKey = uuidv4();
+      const groupRef = doc(db, "groups", newGroupKey);
+
+      try {
+        await setDoc(groupRef, {
+          adminUid: this.user.uid,
+          members: [
+            {
+              uid: this.user.uid,
+              name: this.user.displayName,
+              email: this.user.email,
+              icon: this.user.photoURL
+            }
+          ],
+          kickedMembers: [] // Initialize kicked members list
+        });
+
+        const userRef = doc(db, "users", this.user.uid);
+        await setDoc(userRef, { groupKey: newGroupKey });
+
+        this.groupKey = newGroupKey;
+        this.adminUid = this.user.uid;
+
+        this.listenToGroupUpdates(newGroupKey);
+        console.log(`Group created successfully! Share your key: ${newGroupKey}`);
+      } catch (error) {
+        console.error("Error creating group: ", error);
+        console.log("An error occurred while creating the group.");
+      }
+    },
 
     // Join a group
     async joinGroup() {
