@@ -133,43 +133,55 @@ body {
  }
  
  .search-bar {
-   position: absolute;
-   top: 1rem;
-   left: 50%;
-   transform: translateX(-50%);
-   width: 30%;
-   z-index: 10;
- }
- 
- .search-input-container {
-   position: relative;
-   width: 100%;
- }
- 
- .search-input {
-   width: 100%;
-   padding: 0.56rem 1rem 0.5rem;
-   padding-right: 2.5rem;
-   border-radius: 9999px;
-   background-color: #1E2021;
-   border: 1px solid #4a5568;
-   color: #ffffff;
-   font-size: 1rem;
-   background-image: url('@/images/Search.svg');
-   background-repeat: no-repeat;
-   background-position: left 8.6rem center;
-   background-size: 32px 20px;
- }
- 
- .search-input:not(:placeholder-shown) {
-   background-image: none;
- }
- 
- .search-input::placeholder {
-   color: #a0aec0;
- }
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  z-index: 10;
+}
 
- .map-and-search {
+.search-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.56rem 1rem 0.5rem;
+  padding-right: 3rem; /* Adjusted padding to make room for the button */
+  border-radius: 9999px;
+  background-color: #1e2021;
+  border: 1px solid #4a5568;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.search-input::placeholder {
+  color: #a0aec0;
+}
+
+.search-button {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-button img {
+  width: 20px;
+  height: 20px;
+  pointer-events: none; /* Ensures only the button is clickable */
+}
+
+.map-and-search {
   position: relative;
   flex: 1;
 }
@@ -179,6 +191,7 @@ body {
   display: flex;
   flex-direction: column;
 }
+
 
   
 /**********************************
@@ -227,7 +240,23 @@ body {
   margin-right: 1rem;
 }
 
-/* Andra grupper*/
+/* Kick knapp */
+
+.kick-button {
+  margin-left: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.kick-button:hover {
+  background-color: darkred;
+}
+
+/* Lämna grupp */
 .group-button {
   border: 1px solid #4a5568;
   font-size: 1.2rem;
@@ -273,7 +302,6 @@ body {
   font-size: 1rem;
   display: block;
   margin: 0 auto;
-  text-align: left;
 }
 
 .join-input:not(:placeholder-shown) {
@@ -282,7 +310,36 @@ body {
 
 .join-input::placeholder {
   color: #a0aec0;
+  float: center;
+}
+
+/* Create your group knapp */
+
+.create-group-container {
+  user-select: none;
+  position: relative;
+  width: 100%;
   text-align: center;
+  margin-top: 0.5rem;
+}
+
+.create-group-button {
+  width: 90%;
+  padding: 0.56rem 1rem 0.5rem;
+  background-color: #1E2021;
+  border: 1px solid #4a5568;
+  color: #a0aec0;
+  font-size: 1rem;
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.create-group-button:hover {
+  background-color: #8c5ce9;
+  color: #ffffff;
 }
 
 /* Förslagsknapparna */
@@ -362,4 +419,3 @@ body {
     overflow-y: auto; 
   }
 }
-

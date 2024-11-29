@@ -30,11 +30,6 @@
       <hr class="divider" />
     </div>
 
-    <div v-if="user && !groupKey" class="create-group-container">
-      <button class="create-group-button" @click="createGroup">
-        Create Your Group
-      </button>
-    </div>
 
     <div class="join-input-container">
       <input
@@ -45,6 +40,12 @@
         id="join-input"
         @keyup.enter="joinGroup"
       />
+    </div>
+
+    <div v-if="user && !groupKey" class="create-group-container">
+      <button class="create-group-button" @click="createGroup">
+        Create Your Own Group
+      </button>
     </div>
 
     <div class="categories">
@@ -61,8 +62,20 @@
 </template>
 
 <script>
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayRemove, onSnapshot } from "firebase/firestore";
+import { 
+  getAuth, 
+  onAuthStateChanged 
+} from "firebase/auth";
+import { 
+  getFirestore, 
+  doc, 
+  getDoc, 
+  setDoc, 
+  updateDoc, 
+  arrayRemove, 
+  arrayUnion, 
+  onSnapshot 
+} from "firebase/firestore";
 import { categories } from '../js/Data.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -75,7 +88,7 @@ export default {
       categories, // Sidebar categories
       user: null, // Current logged-in user
       adminUid: '', // Admin UID for the current group
-      groupStatus: '', // Feedback status for group actions
+      kickedMembers: [] // List of kicked members for the current group
     };
   },
   mounted() {
@@ -95,7 +108,7 @@ export default {
     // Create a new group
     async createGroup() {
       if (!this.user) {
-        this.groupStatus = "You need to be logged in to create a group.";
+        console.log("You need to be logged in to create a group.");
         return;
       }
 
@@ -111,9 +124,10 @@ export default {
               uid: this.user.uid,
               name: this.user.displayName,
               email: this.user.email,
-              icon: this.user.photoURL || 'path_to_default_icon_or_gravatar'
+              icon: this.user.photoURL
             }
-          ]
+          ],
+          kickedMembers: [] // Initialize kicked members list
         });
 
         const userRef = doc(db, "users", this.user.uid);
@@ -123,17 +137,17 @@ export default {
         this.adminUid = this.user.uid;
 
         this.listenToGroupUpdates(newGroupKey);
-        this.groupStatus = `Group created successfully! Share your key: ${newGroupKey}`;
+        console.log(`Group created successfully! Share your key: ${newGroupKey}`);
       } catch (error) {
         console.error("Error creating group: ", error);
-        this.groupStatus = "An error occurred while creating the group.";
+        console.log("An error occurred while creating the group.");
       }
     },
 
     // Join a group
     async joinGroup() {
       if (!this.groupKey || !this.user) {
-        this.groupStatus = "Please enter a group key and make sure you're logged in.";
+        console.log("Please enter a group key and make sure you're logged in.");
         return;
       }
 
@@ -144,10 +158,17 @@ export default {
         const groupSnap = await getDoc(groupRef);
         if (groupSnap.exists()) {
           const groupData = groupSnap.data();
+
+          // Check if user is in the kicked members list
+          if (groupData.kickedMembers?.includes(this.user.uid)) {
+            console.log("You have been kicked from this group and cannot rejoin.");
+            return;
+          }
+
           const members = groupData.members || [];
 
           if (members.some(member => member.uid === this.user.uid)) {
-            this.groupStatus = "You are already a member of this group.";
+            console.log("You are already a member of this group.");
             return;
           }
 
@@ -167,13 +188,13 @@ export default {
           await setDoc(userRef, { groupKey: this.groupKey });
 
           this.listenToGroupUpdates(this.groupKey);
-          this.groupStatus = `Successfully joined group ${this.groupKey}!`;
+          console.log(`Successfully joined group ${this.groupKey}!`);
         } else {
-          this.groupStatus = `Group with key ${this.groupKey} not found.`;
+          console.log(`Group with key ${this.groupKey} not found.`);
         }
       } catch (error) {
         console.error("Error joining group: ", error);
-        this.groupStatus = "An error occurred while joining the group.";
+        console.log("An error occurred while joining the group.");
       }
     },
 
@@ -207,12 +228,12 @@ export default {
           const groupData = docSnap.data();
           this.groupMembers = groupData.members || [];
           this.adminUid = groupData.adminUid || '';
+          this.kickedMembers = groupData.kickedMembers || [];
         }
       });
     },
-
-    // Leave group
-    async leaveGroup() {
+// Leave group
+async leaveGroup() {
       if (!this.groupKey || !this.user) return;
 
       const db = getFirestore();
@@ -239,39 +260,32 @@ export default {
       }
     },
 
+    
     // Kick a member from the group
     async kickMember(member) {
-      if (!this.groupKey || !member) return;
+  if (!this.groupKey || !member) return;
 
-      const db = getFirestore();
-      const groupRef = doc(db, "groups", this.groupKey);
+  const db = getFirestore();
+  const groupRef = doc(db, "groups", this.groupKey);
+  const userRef = doc(db, "users", member.uid);
 
-      try {
-        await updateDoc(groupRef, {
-          members: arrayRemove(member)
-        });
-        this.groupStatus = `${member.name} has been kicked from the group.`;
-      } catch (error) {
-        console.error("Error kicking member: ", error);
-        this.groupStatus = "An error occurred while removing the member.";
-      }
-    }
+  try {
+    // Remove the member from the group document
+    await updateDoc(groupRef, {
+      members: arrayRemove(member),
+      kickedMembers: arrayUnion(member.uid)
+    });
+
+    // Clear the groupKey in the user's document
+    await setDoc(userRef, { groupKey: '' }, { merge: true });
+
+    console.log(`${member.name} has been kicked from the group.`);
+  } catch (error) {
+    console.error("Error kicking member: ", error);
+    console.log("An error occurred while removing the member.");
+  }
+}
+
   }
 };
 </script>
-
-<style scoped>
-.kick-button {
-  margin-left: 10px;
-  background-color: red;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.kick-button:hover {
-  background-color: darkred;
-}
-</style>
