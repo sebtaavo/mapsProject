@@ -92,57 +92,48 @@ export default {
     };
   },
   mounted() {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.user = user;
-        this.checkUserGroup();
-      } else {
-        this.user = null;
-        this.groupMembers = [];
-        this.groupKey = '';
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      this.user = user;
+      this.checkUserGroup();
+      this.listenToUserGroupKey(user.uid); // Add this to listen for changes to groupKey
+    } else {
+      this.user = null;
+      this.groupMembers = [];
+      this.groupKey = '';
+    }
+  });
+},
+
+methods: {
+  // Add a listener to the user's groupKey
+  listenToUserGroupKey(userId) {
+    const db = getFirestore();
+    const userRef = doc(db, "users", userId);
+
+    onSnapshot(userRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        const newGroupKey = userData.groupKey || '';
+
+        if (newGroupKey !== this.groupKey) {
+          // Update the groupKey and groupMembers in the UI
+          this.groupKey = newGroupKey;
+          if (!newGroupKey) {
+            // User is no longer in a group
+            this.groupMembers = [];
+            this.adminUid = '';
+            console.log("You are no longer part of a group.");
+          } else {
+            this.listenToGroupUpdates(newGroupKey); // Start listening to the new group's updates
+          }
+        }
       }
     });
   },
-  methods: {
-    // Create a new group
-    async createGroup() {
-      if (!this.user) {
-        console.log("You need to be logged in to create a group.");
-        return;
-      }
 
-      const db = getFirestore();
-      const newGroupKey = uuidv4();
-      const groupRef = doc(db, "groups", newGroupKey);
 
-      try {
-        await setDoc(groupRef, {
-          adminUid: this.user.uid,
-          members: [
-            {
-              uid: this.user.uid,
-              name: this.user.displayName,
-              email: this.user.email,
-              icon: this.user.photoURL
-            }
-          ],
-          kickedMembers: [] // Initialize kicked members list
-        });
-
-        const userRef = doc(db, "users", this.user.uid);
-        await setDoc(userRef, { groupKey: newGroupKey });
-
-        this.groupKey = newGroupKey;
-        this.adminUid = this.user.uid;
-
-        this.listenToGroupUpdates(newGroupKey);
-        console.log(`Group created successfully! Share your key: ${newGroupKey}`);
-      } catch (error) {
-        console.error("Error creating group: ", error);
-        console.log("An error occurred while creating the group.");
-      }
-    },
 
     // Join a group
     async joinGroup() {
