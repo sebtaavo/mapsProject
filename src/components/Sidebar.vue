@@ -108,27 +108,14 @@ export default {
 
 methods: {
   // Add a listener to the user's groupKey
-  listenToUserGroupKey(userId) {
+  listenToUserGroupKey(uid) {
     const db = getFirestore();
-    const userRef = doc(db, "users", userId);
-
-    onSnapshot(userRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        const newGroupKey = userData.groupKey || '';
-
-        if (newGroupKey !== this.groupKey) {
-          // Update the groupKey and groupMembers in the UI
-          this.groupKey = newGroupKey;
-          if (!newGroupKey) {
-            // User is no longer in a group
-            this.groupMembers = [];
-            this.adminUid = '';
-            console.log("You are no longer part of a group.");
-          } else {
-            this.listenToGroupUpdates(newGroupKey); // Start listening to the new group's updates
-          }
-        }
+    const userRef = doc(db, "users", uid);
+    onSnapshot(userRef, (snapshot) => {
+      const data = snapshot.data();
+      if (data && data.groupKey) {
+        this.groupKey = data.groupKey;
+        this.joinGroup();
       }
     });
   },
@@ -247,19 +234,31 @@ methods: {
     },
 
     // Listen for real-time updates to group data
-    listenToGroupUpdates(groupKey) {
-      const db = getFirestore();
-      const groupRef = doc(db, "groups", groupKey);
+    // Listen for real-time updates to group data
+listenToGroupUpdates(groupKey) {
+  const db = getFirestore();
+  const groupRef = doc(db, "groups", groupKey);
 
-      onSnapshot(groupRef, (docSnap) => {
-        if (docSnap.exists()) {
-          const groupData = docSnap.data();
-          this.groupMembers = groupData.members || [];
-          this.adminUid = groupData.adminUid || '';
-          this.kickedMembers = groupData.kickedMembers || [];
-        }
-      });
-    },
+  onSnapshot(groupRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const groupData = docSnap.data();
+
+      // Check if the current user has been kicked
+      if (groupData.kickedMembers?.includes(this.user.uid)) {
+        this.groupKey = '';
+        this.groupMembers = [];
+        this.adminUid = '';
+        console.log("You have been removed from the group.");
+        return; // Stop processing further updates for this group
+      }
+
+      this.groupMembers = groupData.members || [];
+      this.adminUid = groupData.adminUid || '';
+      this.kickedMembers = groupData.kickedMembers || [];
+    }
+  });
+}
+,
 // Leave group
 async leaveGroup() {
       if (!this.groupKey || !this.user) return;
@@ -290,7 +289,8 @@ async leaveGroup() {
 
     
     // Kick a member from the group
-    async kickMember(member) {
+    // Kick a member from the group
+async kickMember(member) {
   if (!this.groupKey || !member) return;
 
   const db = getFirestore();
@@ -298,21 +298,26 @@ async leaveGroup() {
   const userRef = doc(db, "users", member.uid);
 
   try {
-    // Remove the member from the group document
+    // Remove the member from the group's members array and add to kickedMembers
     await updateDoc(groupRef, {
-      members: arrayRemove(member),
+      members: arrayRemove({
+        uid: member.uid,
+        name: member.name,
+        email: member.email,
+        icon: member.icon
+      }),
       kickedMembers: arrayUnion(member.uid)
     });
 
-    // Clear the groupKey in the user's document
-    await setDoc(userRef, { groupKey: '' }, { merge: true });
+    // Clear the groupKey in the user's Firestore document
+    await updateDoc(userRef, { groupKey: '' }); // Ensure `updateDoc` is used instead of `setDoc` for merging
 
     console.log(`${member.name} has been kicked from the group.`);
   } catch (error) {
     console.error("Error kicking member: ", error);
-    console.log("An error occurred while removing the member.");
   }
 }
+
 
   }
 };
