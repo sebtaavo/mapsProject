@@ -20,20 +20,13 @@
     <div class="map-section">
       <div class="map-container">
         <GoogleMap
+          ref="googleMapRef"
           v-if="lat !== null && lng !== null"
           :api-key="apiKey"
           style="width: 100%; height: 100%"
           :center="{ lat: lat, lng: lng }"
           :zoom="15"
         >
-        <Marker
-                v-if="lat !== null && lng !== null"
-                :options="{ position: { lat: lat, lng: lng }, label: { text: 'S', color: 'blue' }, title: 'Your Location' }"
-              />
-              <Marker
-                v-if="lat !== null && lng !== null"
-                :options="{ position: { lat: lat + 0.001, lng: lng } }"
-              />
         </GoogleMap>
       </div>
     </div>
@@ -70,6 +63,9 @@
 <script>
 import { GoogleMap, Marker } from 'vue3-google-map';
 import { APIkey } from '../js/apiKEY.js';
+import { ref, computed, watch, onMounted } from 'vue';
+
+const googleMapRef = ref(null);
 
 export default {
   components: {
@@ -92,6 +88,14 @@ export default {
       .catch((error) => {
         console.error(error);
       });
+      this.$emit('ready', googleMapRef);  // Emit the map instance to the parent
+  },
+  methods: {
+    onMapReady(mapInstance) {
+      // This will be called when the map is ready
+      console.log("Map is ready:", mapInstance);
+      this.$emit('ready', mapInstance);  // Emit the map instance to the parent
+    },
   },
 };
 </script>

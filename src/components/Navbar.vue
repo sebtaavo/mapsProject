@@ -13,47 +13,23 @@
 </template>
 
 <script>
-import { initializeApp } from "firebase/app";
-import config from "@/js/firebaseConfig.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "firebase/auth";
-
 export default {
   name: 'Navbar',
-  data() {
-    return {
-      authButtonText: 'Log in',  // Start with 'Log in'
-      user: null,  // Store the user object
-      auth: null,  // Store the auth instance
-      provider: null  // Store the auth provider
-    };
-  },
-  created() {
-    // Initialize Firebase authentication in the created hook
-    const app = initializeApp(config);
-    this.auth = getAuth(app);
-    this.provider = new GoogleAuthProvider();
-
-    // Listen to authentication state changes
-    onAuthStateChanged(this.auth, (user) => {
-      // Ensure we're using this.user to update the component's state
-      this.user = user;
-      this.authButtonText = user ? 'Log out' : 'Log in';
-    });
-  },
-  methods: {
-    async handleAuthClick() {
-      try {
-        if (this.user) {
-          // Sign out if the user is already logged in
-          await signOut(this.auth);
-        } else {
-          // Sign in with Google
-          await signInWithPopup(this.auth, this.provider);
-        }
-      } catch (error) {
-        console.error('Authentication error:', error);
-      }
+  props: {
+    isAuthenticated: {
+      type: Boolean,
+      required: true,
     },
   },
-}
+  computed: {
+    authButtonText() {
+      return this.isAuthenticated ? 'Log out' : 'Log in';
+    },
+  },
+  methods: {
+    handleAuthClick() {
+      this.$emit(this.isAuthenticated ? 'logout' : 'login');
+    },
+  },
+};
 </script>
