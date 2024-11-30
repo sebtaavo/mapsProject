@@ -70,5 +70,5 @@ export {
   provider, 
   signInWithPopup, 
   signOut, 
-  authState 
+  authState
 };

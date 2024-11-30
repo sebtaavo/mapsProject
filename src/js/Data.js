@@ -25,3 +25,4 @@ export const categories = [
     { name: 'Cafes', icon: CoffeeSvg, alt: 'Cafes Icon' },
     { name: 'Libraries', icon: LibrarySvg, alt: 'Libraries Icon' },
 ];
+

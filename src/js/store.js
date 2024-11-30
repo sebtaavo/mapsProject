@@ -1,6 +1,6 @@
 import { createStore } from 'vuex';
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged} from "firebase/auth";
 import config from "@/js/firebaseConfig.js";
 
 const firebaseApp = initializeApp(config);
@@ -16,6 +16,11 @@ export default createStore({
     latestPlaceSearch: [],
     userMapMarkers: [],//in the shape of {long, lat, userTagFromGoogle}
     locationMapMarkers: [], //in the shape of {long, lat, {locationObject}}
+    //for sidebar groups
+    groupKey: '', // Group key input by the user
+    groupMembers: [], // List of members in the group
+    adminUid: '', // Admin UID for the current group
+    kickedMembers: [] // List of kicked members for the current group
   },
   getters: {
     isAuthenticated: (state) => !!state.user,
@@ -63,17 +68,24 @@ export default createStore({
       });
       state.locationMapMarkers = []; // Clear the array of markers
     },
+    SET_GROUP_KEY(state, key) {
+        state.groupKey = key;
+    },
   },
   actions: {
     async initializeAuth({ commit }) {
         // Set up Firebase auth state listener
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
           commit('SET_USER', user);
           commit('SET_AUTH_INITIALIZED', true); // Mark auth as initialized
+           // If the user is authenticated, load user-specific data from Firestore
+            if (user) {
+                //pass
+            }
         });
       },
 
-      async login({ commit }) {
+    async login({ commit }) {
         try {
           const result = await signInWithPopup(auth, provider);
           commit('SET_USER', result.user);
@@ -82,7 +94,7 @@ export default createStore({
         }
       },
       
-      async logout({ commit }) {
+    async logout({ commit }) {
         try {
           await signOut(auth);
           commit('SET_USER', null);
@@ -90,6 +102,7 @@ export default createStore({
           console.error("Logout error:", error);
         }
     },
+
     updateLatestPlaceSearch({ commit }, results) {
       commit('SET_LATEST_PLACE_SEARCH', results);
     },
