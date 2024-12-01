@@ -73,6 +73,7 @@ body {
   padding: 0.35rem 1.5rem;
   position: fixed;
   top: 0;
+  float:left;
   width: 100%;
   z-index: 20;
 }

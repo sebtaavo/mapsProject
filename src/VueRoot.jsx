@@ -11,7 +11,7 @@ export function VueRoot(props) {
             <NavbarPresenter class = "navbar"/>
             <div class="main-container">
                 <div class="left-section">
-                    <MapPresenter id="map"/>
+                    <MapPresenter/>
                 </div>
                 <Sidebar />
             </div>
