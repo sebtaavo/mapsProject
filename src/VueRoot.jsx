@@ -1,4 +1,5 @@
 import { h } from 'vue';
+import { useStore } from 'vuex';
 import Navbar from './components/Navbar.vue';
 import Sidebar from './components/Sidebar.vue';
 import MapPresenter from './presenters/MapPresenter.vue';
@@ -10,7 +11,7 @@ export function VueRoot(props) {
             <NavbarPresenter class = "navbar"/>
             <div class="main-container">
                 <div class="left-section">
-                    <MapPresenter id="map"/>
+                    <MapPresenter/>
                 </div>
                 <Sidebar />
             </div>

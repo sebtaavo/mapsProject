@@ -73,6 +73,7 @@ body {
   padding: 0.35rem 1.5rem;
   position: fixed;
   top: 0;
+  float:left;
   width: 100%;
   z-index: 20;
 }
@@ -125,25 +126,16 @@ body {
  * Karta och sök
  **********************************/
 
- .map-section,
- .map-container,
- #map {
+#map { 
    width: 100%;
-   height: 100.3%;
+   height: 80%;
+   z-index: 10;
  }
- 
- .search-bar {
-  position: absolute;
-  top: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 30%;
-  z-index: 10;
-}
 
-.search-input-container {
-  position: relative;
-  width: 100%;
+
+.search-container {
+  float:top;
+  z-index: 20;
 }
 
 .search-input {
@@ -184,6 +176,7 @@ body {
 .map-and-search {
   position: relative;
   flex: 1;
+
 }
 
 .left-section {
