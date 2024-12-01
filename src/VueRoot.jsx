@@ -1,4 +1,5 @@
 import { h } from 'vue';
+import { useStore } from 'vuex';
 import Navbar from './components/Navbar.vue';
 import Sidebar from './components/Sidebar.vue';
 import MapPresenter from './presenters/MapPresenter.vue';

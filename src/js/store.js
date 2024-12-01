@@ -9,6 +9,7 @@ const provider = new GoogleAuthProvider();
 
 export default createStore({
   state: {
+    map: null, //--map object passed from googlemap obejct in Map.vue
     user: null, // ---------------Firebase authenticated user
     authInitialized: false, //----------------Ensure auth is initialized before using
     center: { lat: 40.689247, lng: -74.044502 }, // Default center (Statue of Liberty)
@@ -30,6 +31,7 @@ export default createStore({
     latestPlaceSearch: (state) => state.latestPlaceSearch,
     locationMapMarkers: (state) => state.locationMapMarkers,
     userMapMarkers: (state) => state.userMapMarkers,
+    map: (state) => state.map,
   },
   mutations: {
     SET_USER(state, user) {
@@ -71,6 +73,9 @@ export default createStore({
     SET_GROUP_KEY(state, key) {
         state.groupKey = key;
     },
+    SET_MAP(state, map) {
+      state.map = map;
+  },
   },
   actions: {
     async initializeAuth({ commit }) {
@@ -105,6 +110,9 @@ export default createStore({
 
     updateLatestPlaceSearch({ commit }, results) {
       commit('SET_LATEST_PLACE_SEARCH', results);
+    },
+    initMap({ commit }, map) {
+      commit('SET_MAP', map);
     },
     updateCenter({ commit }, newCenter) {
       commit('SET_CENTER', newCenter);

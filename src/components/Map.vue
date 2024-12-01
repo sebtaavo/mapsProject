@@ -1,159 +1,61 @@
 <template>
-  <div class="map-and-search">
-    <div class="search-bar">
-      <div class="search-input-container">
-        <input
-          type="text"
-          placeholder="Search Location"
-          class="search-input"
-          id="search-input"
-          v-model="searchQuery"
-          @keyup.enter="searchLocation"
-        />
-        <button class="search-button" @click="searchLocation">
-          <img src="@/images/Search.svg" alt="Search" />
-        </button>
-      </div>
-    </div>
-
-
-    <div class="map-section">
-      <div class="map-container">
-        <GoogleMap
-          ref="googleMapRef"
-          v-if="lat !== null && lng !== null"
-          :api-key="apiKey"
-          style="width: 100%; height: 100%"
-          :center="{ lat: lat, lng: lng }"
-          :zoom="15"
-        >
-        </GoogleMap>
-      </div>
-    </div>
-  </div>
+  <div id="map" class="map"></div> <!-- Container for the map -->
 </template>
-
-
-    <!-- 
-    <div class="map-section">
-      <div class="map-container">
-        <GoogleMap
-          v-if="lat !== null && lng !== null"
-          :api-key="apiKey"
-          style="width: 100%; height: 100%"
-          :center="{ lat: mapViewLat, lng: mapViewLng }"
-          :zoom="15"
-        >
-          <Marker
-            v-if="lat !== null && lng !== null"
-            :options="{ position: { lat: lat, lng: lng }, label: { text: 'S', color: 'blue' }, title: 'Your Location' }"
-          />
-          <Marker
-            v-if="lat !== null && lng !== null"
-            :options="{ position: { lat: lat + 0.001, lng: lng } }"
-          />
-        </GoogleMap>
-      </div>
-    </div>
-  </div>
-</template>
--->
-
 
 <script>
-import { GoogleMap, Marker } from 'vue3-google-map';
-import { APIkey } from '../js/apiKEY.js';
-import { ref, computed, watch, onMounted } from 'vue';
-
-const googleMapRef = ref(null);
-
 export default {
-  components: {
-    GoogleMap,
-    Marker,
-  },
   data() {
     return {
-      apiKey: APIkey,
-      lat: null,
-      lng: null,
+      map: null,
     };
   },
-  created() {
-    this.$getLocation()
-      .then((coordinates) => {
-        this.lat = coordinates.lat;
-        this.lng = coordinates.lng;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-      this.$emit('ready', googleMapRef);  // Emit the map instance to the parent
+  async mounted() {
+    // Ensure the Google Maps API is fully loaded before initializing the map
+    await this.loadGoogleMapsAPI();
+
+    // Now that Google Maps is loaded, initialize the map
+    await this.initMap();
+
+    // Emit the map instance once it's ready
+    this.$emit("ready", this.map); // Emit the map to parent
   },
   methods: {
-    onMapReady(mapInstance) {
-      // This will be called when the map is ready
-      console.log("Map is ready:", mapInstance);
-      this.$emit('ready', mapInstance);  // Emit the map instance to the parent
-    },
-  },
-};
-</script>
-
-
-
-<!--
-import { GoogleMap, Marker } from 'vue3-google-map';
-import { APIkey } from '../js/apiKEY.js';
-
-export default {
-  components: {
-    GoogleMap,
-    Marker,
-  },
-  data() {
-    return {
-      apiKey: APIkey,
-      lat: null, // Marker latitude
-      lng: null, // Marker longitude
-      mapViewLat: null, // Center latitude for the map
-      mapViewLng: null, // Center longitude for the map
-      searchQuery: '',
-    };
-  },
-  methods: {
-    async searchLocation() {
-      try {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-            this.searchQuery
-          )}&key=${this.apiKey}`
-        );
-        const data = await response.json();
-        if (data.status === 'OK' && data.results.length > 0) {li
-          const location = data.results[0].geometry.location;
-          this.mapViewLat = location.lat;
-          this.mapViewLng = location.lng;
+    // Method to check if Google Maps API is ready
+    loadGoogleMapsAPI() {
+      return new Promise((resolve, reject) => {
+        if (typeof google !== "undefined" && google.maps) {
+          // The Google Maps API is already loaded
+          resolve();
         } else {
-          console.error('No results found for the given location.');
+          // Wait for the script to load
+          window.addEventListener("load", () => {
+            if (typeof google !== "undefined" && google.maps) {
+              resolve();
+            } else {
+              reject("Google Maps API failed to load");
+            }
+          });
         }
-      } catch (error) {
-        console.error('Error fetching location:', error);
+      });
+    },
+
+    // Initialize the map
+    async initMap() {
+      const { Map } = await google.maps.importLibrary("maps");
+      const coords = await this.$getLocation();
+    
+      this.map = new Map(document.getElementById("map"), {//here we bind the map to the div
+        center: { lat: coords.lat, lng: coords.lng }, 
+        zoom: 12,
+      });
+    },
+
+    // Example method to update the map later
+    updateMapCenter(lat, lng) {
+      if (this.map) {
+        this.map.setCenter({ lat, lng });
       }
     },
   },
-  created() {
-    this.$getLocation()
-      .then((coordinates) => {
-        this.lat = coordinates.lat;
-        this.lng = coordinates.lng;
-        this.mapViewLat = coordinates.lat; // Initialize map view at the user's location
-        this.mapViewLng = coordinates.lng;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  },
 };
 </script>
--->
