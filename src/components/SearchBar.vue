@@ -1,13 +1,15 @@
 <template>
-    <div class="search-component" style="height: 500px; width: 500px">
+    <div class="search-component">
       <input class= "search-input"
         type="text"
         v-model="query"
-        placeholder="Search for places (e.g., Tacos in Mountain View)"
+        placeholder="Search for places"
         @keyup.enter="searchPlaces"
       />
-      <button @click="searchPlaces">Search</button>
-  
+      <button class ="searchButton" @click="searchPlaces">
+        <img src="@/images/Search.svg" alt="Search" />  
+      </button>
+      <!-- 
       <div v-if="latestPlaceSearch.length > 0" class="results">
         <h3>Search Results:</h3>
         <ul>
@@ -20,6 +22,7 @@
       <div v-if="latestPlaceSearch.length === 0" class="no-results">
         <p>No results found for your search.</p>
       </div>
+      -->
     </div>
   </template>
   

@@ -127,36 +127,61 @@ body {
 /**********************************
  * Karta och sök
  **********************************/
-
+ 
 #map { 
-   width: 100%;
-   height: 80%;
-   z-index: 10;
- }
+  width: 100%;
+  height: 100.66%;
+  z-index: 10;
+}
 
+.map-and-search {
+  
+  position: relative; /* Establish a containing block for absolute positioning */
+  width: 100%;
+  height: 100vh; /* Full viewport height for map container */
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+  
+  position: absolute; /* Allow the map to fill the parent container */
+  top: 0;
+  left: 0;
+  z-index: 1; /* Ensure the map is behind the search container */
+}
 
 .search-container {
-  float:top;
-  z-index: 20;
-  background-color: #181A1B;
+  
+  position: absolute; /* Overlay the search container on the map */
+  top: 10px; /* Adjust for desired vertical offset */
+  left: 50%; /* Horizontal center */
+  transform: translateX(-50%); /* Keep it centered */
+  z-index: 20; /* Keep it on top of the map */
+  margin-top: -0.5rem;
+  padding: 1rem;
+  border-radius: 10px;
+  width: 40%; /* Set a fixed width for the container */
+  user-select: none;
 }
 
 .search-input {
   width: 100%;
   padding: 0.56rem 1rem 0.5rem;
-  padding-right: 3rem; /* Adjusted padding to make room for the button */
+  padding-right: 3rem;
   border-radius: 9999px;
   background-color: #1e2021;
-  border: 1px solid #4a5568;
   color: #ffffff;
   font-size: 1rem;
+  user-select: none;
+  border-color: #1e2021;
 }
 
 .search-input::placeholder {
   color: #a0aec0;
 }
 
-.search-button {
+.searchButton {
   position: absolute;
   top: 50%;
   right: 0.75rem;
@@ -168,18 +193,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  user-select: none;
 }
 
-.search-button img {
-  width: 20px;
-  height: 20px;
-  pointer-events: none; /* Ensures only the button is clickable */
-}
-
-.map-and-search {
-  position: relative;
-  flex: 1;
-
+.searchButton img {
+  width: 40px;
+  height: 25px;
+  pointer-events: none;
+  user-select: none;
 }
 
 .left-section {
@@ -201,6 +222,7 @@ body {
   flex-direction: column;
   position: relative;
   z-index: 10;
+  height: 100.66%;
 }
 
 /* Gruppmedlemmar*/
