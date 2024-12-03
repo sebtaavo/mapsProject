@@ -122,96 +122,127 @@ methods: {
 
   // Create a new group
   async createGroup() {
-      if (!this.user) {
-        console.log("You need to be logged in to create a group.");
-        return;
+  if (!this.user) {
+    console.log("You need to be logged in to create a group.");
+    return;
+  }
+
+  const db = getFirestore();
+  const newGroupKey = uuidv4();
+  const groupRef = doc(db, "groups", newGroupKey);
+
+  try {
+    // Get user coordinates
+    const location = await this.getUserLocation();
+
+    await setDoc(groupRef, {
+      adminUid: this.user.uid,
+      members: [
+        {
+          uid: this.user.uid,
+          name: this.user.displayName,
+          email: this.user.email,
+          icon: this.user.photoURL,
+          coords: location
+        }
+      ],
+      kickedMembers: [] // Initialize kicked members list
+    });
+
+    const userRef = doc(db, "users", this.user.uid);
+    await setDoc(userRef, { groupKey: newGroupKey });
+
+    this.groupKey = newGroupKey;
+    this.adminUid = this.user.uid;
+
+    this.listenToGroupUpdates(newGroupKey);
+    console.log(`Group created successfully! Share your key: ${newGroupKey}`);
+  } catch (error) {
+    console.error("Error creating group: ", error);
+    console.log("An error occurred while creating the group.");
+  }
+}
+,
+
+    // Join a group
+    async getUserLocation() {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        console.log("Geolocation is not supported by your browser.");
+        reject(new Error("Geolocation not supported"));
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            resolve({ latitude, longitude });
+          },
+          (error) => {
+            console.error("Error fetching location:", error.message);
+            reject(error);
+          }
+        );
       }
+    });
+  },
 
-      const db = getFirestore();
-      const newGroupKey = uuidv4();
-      const groupRef = doc(db, "groups", newGroupKey);
+  // Join a group
+  async joinGroup() {
+    if (!this.groupKey || !this.user) {
+      console.log("Please enter a group key and make sure you're logged in.");
+      return;
+    }
 
-      try {
-        await setDoc(groupRef, {
-          adminUid: this.user.uid,
+    const db = getFirestore();
+    const groupRef = doc(db, "groups", this.groupKey);
+
+    try {
+      const groupSnap = await getDoc(groupRef);
+      if (groupSnap.exists()) {
+        const groupData = groupSnap.data();
+
+        // Check if user is in the kicked members list
+        if (groupData.kickedMembers?.includes(this.user.uid)) {
+          console.log("You have been kicked from this group and cannot rejoin.");
+          return;
+        }
+
+        const members = groupData.members || [];
+
+        if (members.some(member => member.uid === this.user.uid)) {
+          console.log("You are already a member of this group.");
+          return;
+        }
+
+        // Fetch and log user's location
+        const location = await this.getUserLocation();
+        console.log(`User coordinates: Latitude ${location.latitude}, Longitude ${location.longitude}`);
+
+        await updateDoc(groupRef, {
           members: [
+            ...members,
             {
               uid: this.user.uid,
               name: this.user.displayName,
               email: this.user.email,
-              icon: this.user.photoURL
+              icon: this.user.photoURL || 'path_to_default_icon_or_gravatar',
+              coords: location
             }
-          ],
-          kickedMembers: [] // Initialize kicked members list
+          ]
         });
 
         const userRef = doc(db, "users", this.user.uid);
-        await setDoc(userRef, { groupKey: newGroupKey });
+        await setDoc(userRef, { groupKey: this.groupKey });
 
-        this.groupKey = newGroupKey;
-        this.adminUid = this.user.uid;
-
-        this.listenToGroupUpdates(newGroupKey);
-        console.log(`Group created successfully! Share your key: ${newGroupKey}`);
-      } catch (error) {
-        console.error("Error creating group: ", error);
-        console.log("An error occurred while creating the group.");
+        this.listenToGroupUpdates(this.groupKey);
+        console.log(`Successfully joined group ${this.groupKey}!`);
+      } else {
+        console.log(`Group with key ${this.groupKey} not found.`);
       }
-    },
-
-    // Join a group
-    async joinGroup() {
-      if (!this.groupKey || !this.user) {
-        console.log("Please enter a group key and make sure you're logged in.");
-        return;
-      }
-
-      const db = getFirestore();
-      const groupRef = doc(db, "groups", this.groupKey);
-
-      try {
-        const groupSnap = await getDoc(groupRef);
-        if (groupSnap.exists()) {
-          const groupData = groupSnap.data();
-
-          // Check if user is in the kicked members list
-          if (groupData.kickedMembers?.includes(this.user.uid)) {
-            console.log("You have been kicked from this group and cannot rejoin.");
-            return;
-          }
-
-          const members = groupData.members || [];
-
-          if (members.some(member => member.uid === this.user.uid)) {
-            console.log("You are already a member of this group.");
-            return;
-          }
-
-          await updateDoc(groupRef, {
-            members: [
-              ...members,
-              {
-                uid: this.user.uid,
-                name: this.user.displayName,
-                email: this.user.email,
-                icon: this.user.photoURL || 'path_to_default_icon_or_gravatar'
-              }
-            ]
-          });
-
-          const userRef = doc(db, "users", this.user.uid);
-          await setDoc(userRef, { groupKey: this.groupKey });
-
-          this.listenToGroupUpdates(this.groupKey);
-          console.log(`Successfully joined group ${this.groupKey}!`);
-        } else {
-          console.log(`Group with key ${this.groupKey} not found.`);
-        }
-      } catch (error) {
-        console.error("Error joining group: ", error);
-        console.log("An error occurred while joining the group.");
-      }
-    },
+    } catch (error) {
+      console.error("Error joining group: ", error);
+      console.log("An error occurred while joining the group.");
+    }
+  },
 
     // Check user's current group
     async checkUserGroup() {
@@ -261,36 +292,39 @@ listenToGroupUpdates(groupKey) {
 ,
 // Leave group
 async leaveGroup() {
-      if (!this.groupKey || !this.user) return;
+  if (!this.groupKey || !this.user) return;
 
-      const db = getFirestore();
-      const groupRef = doc(db, "groups", this.groupKey);
-      const userRef = doc(db, "users", this.user.uid);
+  const db = getFirestore();
+  const groupRef = doc(db, "groups", this.groupKey);
+  const userRef = doc(db, "users", this.user.uid);
 
-      try {
-        await updateDoc(groupRef, {
-          members: arrayRemove({
-            uid: this.user.uid,
-            name: this.user.displayName,
-            email: this.user.email,
-            icon: this.user.photoURL || 'path_to_default_icon_or_gravatar'
-          })
-        });
+  try {
+    // Remove user details, including coords, from group
+    await updateDoc(groupRef, {
+      members: arrayRemove({
+        uid: this.user.uid,
+        name: this.user.displayName,
+        email: this.user.email,
+        icon: this.user.photoURL || 'path_to_default_icon_or_gravatar',
+        coords: this.coords || null // Ensure coordinates are removed
+      })
+    });
 
-        await setDoc(userRef, { groupKey: '' });
-        this.groupKey = '';
-        this.groupMembers = [];
-        this.groupStatus = "You have left the group.";
-      } catch (error) {
-        console.error("Error leaving group: ", error);
-        this.groupStatus = "An error occurred while leaving the group.";
-      }
-    },
+    await setDoc(userRef, { groupKey: '' });
+    this.groupKey = '';
+    this.groupMembers = [];
+    this.groupStatus = "You have left the group.";
+  } catch (error) {
+    console.error("Error leaving group: ", error);
+    this.groupStatus = "An error occurred while leaving the group.";
+  }
+}
+,
 
     
     // Kick a member from the group
     // Kick a member from the group
-async kickMember(member) {
+    async kickMember(member) {
   if (!this.groupKey || !member) return;
 
   const db = getFirestore();
@@ -304,7 +338,8 @@ async kickMember(member) {
         uid: member.uid,
         name: member.name,
         email: member.email,
-        icon: member.icon
+        icon: member.icon,
+        coords: member.coords || null // Ensure all details, including coords, are removed
       }),
       kickedMembers: arrayUnion(member.uid)
     });
@@ -317,6 +352,7 @@ async kickMember(member) {
     console.error("Error kicking member: ", error);
   }
 }
+
 
 
   }
