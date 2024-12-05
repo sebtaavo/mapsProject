@@ -1,4 +1,5 @@
 <template>
+  <div>
     <SidebarTest
       :user="user"
       :groupMembers="groupMembers"
@@ -12,6 +13,7 @@
       @clicked-member="handleClickedMember"
       @keyupdate="handleUpdateGroupKey"  
     />
+  </div>
   </template>
   
   <script>
@@ -23,7 +25,10 @@
   
   export default {
     name: "SidebarPresenter",
-    components: SidebarTest,
+    components: {
+      SidebarTest,
+    },
+
     mounted() {
         console.log("SidebarPresenter mounted");
     },
