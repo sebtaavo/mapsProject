@@ -84,6 +84,13 @@
                     position: place.geometry.location,
                     title: place.name,
                   });
+                  //this is what registers a click on this specific marker on the map.
+                  mapMarker.addListener("click", () => {
+                    console.log(`Marker clicked: ${place.name}`);
+                    console.log(`Coordinates: ${place.geometry.location.lat()}, ${place.geometry.location.lng()}`);
+                    this.$store.dispatch('userInterestedInLocation', place);
+                  });
+
                   bounds.extend(place.geometry.location);
                   this.$store.dispatch('addLocationMarker', mapMarker);
                 });

@@ -4,6 +4,7 @@ import Navbar from './components/Navbar.vue';
 import Sidebar from './components/Sidebar.vue';
 import MapPresenter from './presenters/MapPresenter.vue';
 import NavbarPresenter from './presenters/NavbarPresenter.vue';
+import DetailsPresenter from './presenters/DetailsPresenter.vue';
 
 export function VueRoot(props) {
     return (
@@ -13,6 +14,7 @@ export function VueRoot(props) {
                 <div class="left-section">
                     <MapPresenter/>
                 </div>
+                <DetailsPresenter/>
                 <Sidebar />
             </div>
         </div>

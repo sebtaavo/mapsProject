@@ -21,7 +21,9 @@ export default createStore({
     groupKey: '', // Group key input by the user
     groupMembers: [], // List of members in the group
     adminUid: '', // Admin UID for the current group
-    kickedMembers: [] // List of kicked members for the current group
+    kickedMembers: [], // List of kicked members for the current group
+    clickedMarkerPlace: null,
+    highlightedPlace: null
   },
   getters: {
     isAuthenticated: (state) => !!state.user,
@@ -32,6 +34,8 @@ export default createStore({
     locationMapMarkers: (state) => state.locationMapMarkers,
     userMapMarkers: (state) => state.userMapMarkers,
     map: (state) => state.map,
+    clickedMarkerPlace: (state) => state.clickedMarkerPlace,
+    highlightedPlace: (state) => state.highlightedPlace,
   },
   mutations: {
     SET_USER(state, user) {
@@ -75,6 +79,12 @@ export default createStore({
     },
     SET_MAP(state, map) {
       state.map = map;
+  },
+  UPDATE_HIGHLIGHTED_PLACE(state, place) {
+    state.clickedMarkerPlace = place;
+  },
+  USER_LIKED_HIGHLIGHTED_PLACE(state, place) {
+    state.clickedMarkerPlace = place;
   },
   },
   actions: {
@@ -129,6 +139,13 @@ export default createStore({
     addLocationMarker({ commit }, marker) {
       commit('ADD_LOCATION_MARKER', marker);
     },
+    userInterestedInLocation({ commit }, place) {
+      commit('UPDATE_HIGHLIGHTED_PLACE', place);
+    },
+    userLikedHighlightedLocation({ commit }, place) {
+      commit('USER_LIKED_HIGHLIGHTED_PLACE', place);
+    },
+
     clearMarkers({ commit }) {
       commit('CLEAR_MARKERS');
     },
