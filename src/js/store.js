@@ -17,6 +17,7 @@ export default createStore({
     latestPlaceSearch: [],
     userMapMarkers: [],//in the shape of {long, lat, userTagFromGoogle}
     locationMapMarkers: [], //in the shape of {long, lat, {locationObject}}
+    highlightMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     //for sidebar groups
     groupKey: '', // Group key input by the user
     groupMembers: [], // List of members in the group
@@ -66,7 +67,7 @@ export default createStore({
     ADD_LOCATION_MARKER(state, marker) {
       state.locationMapMarkers.push(marker);
     },
-    CLEAR_MARKERS(state) {
+    CLEAR_MARKERS(state) {//bad name but this is only for locationMapMarkers yielded by a search in SearchBar.
       state.locationMapMarkers.forEach((marker) => {
         marker.setVisible(false);
         marker.setMap(null); // Remove the marker from the map
@@ -85,6 +86,24 @@ export default createStore({
   },
   USER_LIKED_HIGHLIGHTED_PLACE(state, place) {
     state.clickedMarkerPlace = place;
+    const mapMarker = new google.maps.Marker({
+      map: state.map,
+      position: place.geometry.location,
+      title: place.name,
+      icon: {
+        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png", // Google predefined blue pin
+        scaledSize: new google.maps.Size(32, 32), // Resize if necessary
+        anchor: new google.maps.Point(16, 32),  // Adjust anchor point
+      }
+    });
+    //this is what registers a click on this specific marker on the map.
+    mapMarker.addListener("click", () => {
+      console.log(`Clicked highlight marker: ${place.name}`);
+      console.log(`Coordinates: ${place.geometry.location.lat()}, ${place.geometry.location.lng()}`);
+      state.clickedMarkerPlace = place;
+    });
+
+    state.highlightMapMarkers.push(mapMarker);
   },
   },
   actions: {

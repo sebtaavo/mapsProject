@@ -5,7 +5,7 @@
   
       <!-- Image -->
       <img 
-        v-if="place.photos[0].getUrl()" 
+        v-if="place.photos" 
         :src="place.photos[0].getUrl()" 
         alt="Photo of the place"
         class="place-image"
