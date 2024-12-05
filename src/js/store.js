@@ -11,6 +11,7 @@ export default createStore({
   state: {
     map: null, //--map object passed from googlemap obejct in Map.vue
     user: null, // ---------------Firebase authenticated user
+    userCoords: {},
     authInitialized: false, //----------------Ensure auth is initialized before using
     center: { lat: 40.689247, lng: -74.044502 }, // Default center (Statue of Liberty)
     zoom: 15, // Default zoom level
@@ -24,7 +25,8 @@ export default createStore({
     adminUid: '', // Admin UID for the current group
     kickedMembers: [], // List of kicked members for the current group
     clickedMarkerPlace: null,
-    highlightedPlace: null
+    highlightedPlace: null,
+    groupUnsubscribe: null, //needed to save the unsubscribe function for the group listener!!
   },
   getters: {
     isAuthenticated: (state) => !!state.user,
@@ -41,7 +43,6 @@ export default createStore({
     groupMembers: (state) => state.groupMembers,
     groupAdminUid: (state) => state.adminUid,
     kickedMembers: (state) => state.kickedMembers,
-
   },
   mutations: {
     SET_USER(state, user) {
@@ -82,15 +83,45 @@ export default createStore({
     },
     SET_GROUP_KEY(state, key) {
         state.groupKey = key;
+        console.log("MUTATIONupdates group key to: ", key);
+    },
+
+    SET_GROUP_MEMBERS(state, members){
+      state.groupMembers = members;
+    },
+    SET_KICKED_MEMBERS(state, members){
+      state.kickedMembers = members;
+    },
+    SET_ADMIN_UID(state, id){
+      state.adminUid = id;
     },
     SET_MAP(state, map) {
       state.map = map;
+  },
+  LEAVE_GROUP(state){
+    state.groupKey = null;
+    state.groupMembers = [];
+    state.kickedMembers = [];
+    state.adminUid = null;
+  },
+    UPDATE_USER_COORDS(state, coords){
+      state.userCoords = coords;
+    },
+
+  SET_GROUP_UNSUBSCRIBE(state, unsubscribe) {
+    state.groupUnsubscribe = unsubscribe;
+  },
+  CLEAR_GROUP_UNSUBSCRIBE(state) {
+    if (state.groupUnsubscribe) {
+      state.groupUnsubscribe(); //calling the subscription cancels it out!!!
+      state.groupUnsubscribe = null; //clears the stored function
+    }
   },
 
   GROUP_MEMBER_WAS_CLICKED(state, member){
     state.map.setCenter({ lat: member.coords.lat, lng: member.coords.lng });
   },
-  
+
   UPDATE_HIGHLIGHTED_PLACE(state, place) {
     state.clickedMarkerPlace = place;
   },
@@ -115,7 +146,7 @@ export default createStore({
 
     state.highlightMapMarkers.push(mapMarker);
   },
-  },
+  },//------------------------------------------------------------------- ACTIONS BEGIN HERE ----------------------------------------
   actions: {
     async initializeAuth({ commit }) {
         // Set up Firebase auth state listener
@@ -148,8 +179,85 @@ export default createStore({
         }
     },
 
+    async subscribeToGroup({ commit} ) {//previously , state
+      //ensure groupKey is set
+      if (!state.groupKey) {
+        console.error("Group key not set!");
+        return;
+      }
+
+       // Unsubscribe from the current group if already subscribed
+       if (state.groupUnsubscribe) {
+          commit('CLEAR_GROUP_UNSUBSCRIBE');
+      }
+
+      //reference to the group document in Firestore
+      const groupDocRef = doc(db, "groups", state.groupKey);
+      //set up Firestore listener
+      const subscription = onSnapshot(groupDocRef, (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const groupData = docSnapshot.data();
+          commit('SET_GROUP_MEMBERS', groupData.groupMembers || []);
+          commit('SET_KICKED_MEMBERS', groupData.kickedMembers || []);
+          commit('SET_ADMIN_UID', groupData.adminUid || '');//if we want to subscribe to more info from the group we add it here!!!!!!!!!!!!!!
+          console.log("Fetched data from persisted model! in subscribeToGroup.")
+        } else {
+          console.error("Group document does not exist!");
+        }
+      }, (error) => {
+        console.error("Error subscribing to group:", error);
+      });
+
+      commit('SET_GROUP_UNSUBSCRIBE', subscription);
+    },
+
+    async unsubscribeFromGroup({ commit }) {
+      commit('CLEAR_GROUP_UNSUBSCRIBE');
+    },
+
+    async createGroup({ commit }) {
+      if (!state.user || state.groupKey) {
+        console.log("You need to be logged in to create a group. Or you cannot create a group while you have one active.");
+        return;
+      }
+      const db = getFirestore();
+      const newGroupKey = uuidv4();
+      const groupRef = doc(db, "groups", newGroupKey);
+    
+      try {
+        // Get user coordinates
+        await setDoc(groupRef, {
+          adminUid: state.user.uid,
+          members: [
+            {
+              uid: state.user.uid,
+              name: state.user.displayName,
+              email: state.user.email,
+              icon: state.user.photoURL,
+              coords: state.userCoords
+            }
+          ],
+          kickedMembers: [] // Initialize kicked members list
+        });//IF YOU WANT TO ADD MORE INFO TO THE GROUP YOU DO IT HERE.
+    
+        const userRef = doc(db, "users", state.user.uid);
+        await setDoc(userRef, { groupKey: newGroupKey });
+        commit('SET_GROUP_KEY', newGroupKey);
+        this.adminUid = this.user.uid;
+        dispatch("subscribeToGroup");
+        console.log(`Group created successfully! Share your key: ${newGroupKey}`);
+      } catch (error) {
+        console.error("Error creating group: ", error);
+        console.log("An error occurred while creating the group.");
+      }
+    },
+
     updateLatestPlaceSearch({ commit }, results) {
       commit('SET_LATEST_PLACE_SEARCH', results);
+    },
+    updateGroupKey({commit}, key){
+      console.log("ACTIONupdates group key to: ", key);
+      commit('SET_GROUP_KEY', key);
     },
     initMap({ commit }, map) {
       commit('SET_MAP', map);
@@ -180,6 +288,9 @@ export default createStore({
     },
     clearMarkers({ commit }) {
       commit('CLEAR_MARKERS');
+    },
+    updateUserCoords({commit}, coords){
+      commit('UPDATE_USER_COORDS', coords);
     },
   },
   modules: {

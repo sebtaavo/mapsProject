@@ -1,7 +1,7 @@
 import { h } from 'vue';
 import { useStore } from 'vuex';
 import Navbar from './components/Navbar.vue';
-import Sidebar from './components/Sidebar.vue';
+import SidebarPresenter from '@/presenters/SidebarPresenter.vue';
 import MapPresenter from './presenters/MapPresenter.vue';
 import NavbarPresenter from './presenters/NavbarPresenter.vue';
 import DetailsPresenter from './presenters/DetailsPresenter.vue';
@@ -15,7 +15,7 @@ export function VueRoot(props) {
                     <MapPresenter/>
                 </div>
                 <DetailsPresenter/>
-                <Sidebar />
+                <SidebarPresenter/>
             </div>
         </div>
     );

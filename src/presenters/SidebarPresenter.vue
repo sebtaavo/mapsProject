@@ -1,15 +1,16 @@
 <template>
-    <Sidebar
+    <SidebarTest
       :user="user"
       :groupMembers="groupMembers"
-      :adminUid="groupAdminUid"
+      :adminUid="adminUid"
       :groupKey = "groupKey"
       :kickedMembers = "kickedMembers"
       @join-group="handleJoinGroup"
       @leave-group="handleLeaveGroup"
       @kick-member="handleKickMember"
       @create-group="handleCreateGroup"
-      @clicked-member="handleMemberWasClicked"
+      @clicked-member="handleClickedMember"
+      @keyupdate="handleUpdateGroupKey"  
     />
   </template>
   
@@ -17,42 +18,58 @@
   //in the code above, the :user = "user" means that the sidebar will have its "user" property set to the "user" from the model, as seen in "computed" in the export default below.
   //same for @join-group = "handleJoinGroup", which means that if the Sidebar "emits" the action join-group, then we call the method list below in methods:
   
-  import { mapState, mapActions } from 'vuex';
-  import Sidebar from '@/components/Sidebar.vue';
+
+  import SidebarTest from '@/components/SidebarTest.vue';
   
   export default {
     name: "SidebarPresenter",
-    components: Sidebar,
-    computed: {//THINGS WE NEED FROM THE MODEL GO HERE.
-      ...mapState(['user', 'groupMembers', 'groupKey', 'groupAdminUid', 'kickedMembers']),
+    components: SidebarTest,
+    mounted() {
+        console.log("SidebarPresenter mounted");
+    },
+    computed:{
+        user() {
+          return this.$store.getters.user || null;
+        },
+        groupMembers() {
+          return this.$store.getters.groupMembers || [];
+        },
+        adminUid() {
+          return this.$store.getters.adminUid || '';
+        },
+        groupKey() {
+          return this.$store.getters.groupKey || '';
+        },
+        kickedMembers() {
+          return this.$store.getters.kickedMembers || [];
+        },
     },
     methods: {
-      ...mapActions(['joinGroup', 'leaveGroup', 'kickMember', 'fetchGroupData', 'createGroup', 'groupMemberWasClicked']),//DEFINED ACTIONS FROM THE MODEL. CALLED WITH "THIS."
-      handleJoinGroup(groupKey) {
-        this.joinGroup({ user: this.user, groupKey }).catch((error) => {
-          console.error("Join group error:", error.message);
-        });
+      handleJoinGroup() {
+        console.log('Received order to join group in presenter.');
+       // this.$store.dispatch("joinGroup"); //implement this in store first
       },
       handleLeaveGroup() {
-        this.leaveGroup(this.user).catch((error) => {
-          console.error("Leave group error:", error.message);
-        });
+        console.log('Received order to leave group in presenter.');
+       // this.$store.dispatch("leaveGroup"); //implement this in store first
       },
       handleKickMember(member) {
-        this.kickMember(member).catch((error) => {
-          console.error("Kick member error:", error.message);
-        });
+        console.log('Received order to kick member in presenter.');
+        this.$store.dispatch("kickMember", member); //implement this in store first
       },
       handleCreateGroup() {
-        this.createGroup(this.user).catch((error) => {
-          console.error("Group creation error: ", error.message);
-        });
+        console.log('Received order to create group in presenter.');
+        this.$store.dispatch("createGroup"); 
       },
-      handleMemberWasClicked(member) {
-        this.groupMemberWasClicked(member).catch((error) => {
-          console.error("Error when handling click on group member: ", error.message);
-        });
+      handleClickedMember(member) {
+        console.log('Received order to kick member in presenter.');
+        this.$store.dispatch("groupMemberWasClicked", member); 
       },
+      handleUpdateGroupKey(key) {
+        console.log('Received order in presenter to update group key to ', key);
+        this.$store.dispatch("updateGroupKey", key); 
+      },
+      
     },
   };
   </script>
