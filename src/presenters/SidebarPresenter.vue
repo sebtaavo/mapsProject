@@ -37,6 +37,7 @@
           return this.$store.getters.user || null;
         },
         groupMembers() {
+          console.log(this.$store.getters.groupMembers);
           return this.$store.getters.groupMembers || [];
         },
         adminUid() {

@@ -1,28 +1,37 @@
-import UserSvg from '@/images/User.svg';
-import PopcornSvg from '@/images/Popcorn.svg';
-import MartiniSvg from '@/images/Martini.svg';
-import WavesSvg from '@/images/Waves.svg';
-import PawSvg from '@/images/Paw.svg';
-import BasketballSvg from '@/images/Basketball.svg';
-import FootballSvg from '@/images/Football.svg';
-import CoffeeSvg from '@/images/Coffee.svg';
-import LibrarySvg from '@/images/Library.svg';
+import { 
+  doc, 
+  onSnapshot 
+} from "firebase/firestore";
+import { getFirestore } from 'firebase/firestore';
 
-export const groupMembers = [
-    { name: 'Sebastian Taavo Ek', icon: UserSvg },
-    { name: 'Simon Lieb Fredriksson', icon: UserSvg },
-    { name: 'Ben Dover', icon: UserSvg },
-    { name: 'John Doe', icon: UserSvg },
-];
+export function groupSubscription(state){
+      //LIKE COMMENT SUBSCRIBE
+      const db = getFirestore();
+      // Unsubscribe from the current group if already subscribed
+      if (state.groupUnsubscribe) {
+        state.groupUnsubscribe(); //calling the subscription cancels it out!!!
+        state.groupUnsubscribe = null; //clears the stored function
+      }
+      //reference to the group document in Firestore
+      if (!state.groupKey) {
+        console.error("Cannot subscribe to group: groupKey is missing or invalid.");
+        return;
+    }
+      const groupDocRef = doc(db, "groups", state.groupKey);
+      //set up Firestore listener
+      const subscription = onSnapshot(groupDocRef, (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const groupData = docSnapshot.data();
+          state.groupMembers = groupData.members || [];
+          state.kickedMembers = groupData.kickedMembers || [];
+          state.adminUid = groupData.adminUid || '';
+          console.log("Fetched data from persisted model! in subscribeToGroup.")
+        } else {
+          console.error("Group document does not exist!");
+        }
+      }, (error) => {
+        console.error("Error subscribing to group:", error);
+      });
 
-export const categories = [
-    { name: 'Cinemas', icon: PopcornSvg, alt: 'Cinemas Icon' },
-    { name: 'Bars', icon: MartiniSvg, alt: 'Bars Icon' },
-    { name: 'Beaches', icon: WavesSvg, alt: 'Beaches Icon' },
-    { name: 'Zoos', icon: PawSvg, alt: 'Zoos Icon' },
-    { name: 'Basketball Courts', icon: BasketballSvg, alt: 'Basketball Courts Icon' },
-    { name: 'Football Fields', icon: FootballSvg, alt: 'Football Fields Icon' },
-    { name: 'Cafes', icon: CoffeeSvg, alt: 'Cafes Icon' },
-    { name: 'Libraries', icon: LibrarySvg, alt: 'Libraries Icon' },
-];
-
+      state.groupUnsubscribe = subscription;
+};

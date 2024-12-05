@@ -1,7 +1,7 @@
 <template>
   <div class = "map-and-search">
     <div class = "map-container">
-      <Map @ready="handleMapReady" />
+      <Map @ready="handleMapReady" @coords="handleUserCoords"/>
     </div>
     <div class = "search-container">
       <SearchBar :map = map></SearchBar>
@@ -22,6 +22,10 @@
       handleMapReady(mapInstance) {
         console.log('Received map instance in parent:', mapInstance);
         this.$store.dispatch("initMap", mapInstance); //send map to model.
+      },
+      handleUserCoords(coords) {
+        console.log('Received user coords in parent:', coords);
+        this.$store.dispatch("updateUserCoords", coords); //send map to model.
       },
     },
     computed:{

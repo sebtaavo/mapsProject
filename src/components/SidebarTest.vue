@@ -13,6 +13,7 @@
             v-for="(member, index) in groupMembers"
             :key="member.uid"
             class="member-item"
+            @click="handleMemberWasClicked(member)"
           >
             <img :src="member.icon || 'path_to_default_icon_or_gravatar'" class="member-icon" alt="User Icon" />
             {{ member.name }}
@@ -54,6 +55,9 @@
 <script>
 export default {
   name:'SidebarTest',
+  mounted() {
+        this.$emit('reload', member); // Emit the event to parent with the member ID
+    },
     props: {
         user: {
         type: Object,

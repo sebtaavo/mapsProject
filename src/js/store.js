@@ -13,6 +13,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
+import {groupSubscription} from '@/js/Data.js';
 
 const firebaseApp = initializeApp(config);
 const auth = getAuth(firebaseApp);
@@ -117,6 +118,7 @@ export default createStore({
   },
     UPDATE_USER_COORDS(state, coords){
       state.userCoords = coords;
+      console.log("updated user coords to: ", state.userCoords);
     },
 
   SET_GROUP_UNSUBSCRIBE(state, unsubscribe) {
@@ -130,6 +132,7 @@ export default createStore({
   },
 
   GROUP_MEMBER_WAS_CLICKED(state, member){
+    console.log(member);
     state.map.setCenter({ lat: member.coords.lat, lng: member.coords.lng });
   },
 
@@ -184,38 +187,37 @@ export default createStore({
   
       const userRef = doc(db, "users", state.user.uid);
       await setDoc(userRef, { groupKey: newGroupKey });
+
       state.groupKey = newGroupKey;
       state.adminUid = state.user.uid;
       
-      //LIKE COMMENT SUBSCRIBE
-      // Unsubscribe from the current group if already subscribed
-      if (state.groupUnsubscribe) {
-        state.groupUnsubscribe(); //calling the subscription cancels it out!!!
-        state.groupUnsubscribe = null; //clears the stored function
-      }
-      //reference to the group document in Firestore
-      const groupDocRef = doc(db, "groups", state.groupKey);
-      //set up Firestore listener
-      const subscription = onSnapshot(groupDocRef, (docSnapshot) => {
-        if (docSnapshot.exists()) {
-          const groupData = docSnapshot.data();
-          state.groupMembers = groupData.groupMembers || [];
-          state.kickedMembers = groupData.kickedMembers || [];
-          state.adminUid = groupData.adminUid || '';
-          console.log("Fetched data from persisted model! in subscribeToGroup.")
-        } else {
-          console.error("Group document does not exist!");
-        }
-      }, (error) => {
-        console.error("Error subscribing to group:", error);
-      });
+      //like comment subscribe
+      groupSubscription(state);
 
-      state.groupUnsubscribe = subscription;
+
       console.log(`Group created successfully! Share your key: ${newGroupKey}`);
     } catch (error) {
       console.error("Error creating group: ", error);
       console.log("An error occurred while creating the group.");
     }
+  },
+  async LOAD_GROUP(state){
+    const db = getFirestore();
+    const userRef = doc(db, "users", state.user.uid);
+    try {
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        state.groupKey = userData.groupKey || '';
+
+        if (state.groupKey) {
+          groupSubscription(state);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user group: ", error);
+    }
+    
   },
   },//------------------------------------------------------------------- ACTIONS BEGIN HERE ----------------------------------------
   actions: {
@@ -226,7 +228,7 @@ export default createStore({
           commit('SET_AUTH_INITIALIZED', true); // Mark auth as initialized
            // If the user is authenticated, load user-specific data from Firestore
             if (user) {
-                //pass
+                commit('LOAD_GROUP');
             }
         });
       },

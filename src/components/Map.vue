@@ -43,7 +43,7 @@ export default {
     async initMap() {
       const { Map } = await google.maps.importLibrary("maps");
       const coords = await this.$getLocation();
-      this.$emit("user-coords", {lat: coords.lat, lng: coords.lng});
+      this.$emit("coords", {lat: coords.lat, lng: coords.lng});
       this.map = new Map(document.getElementById("map"), {//here we bind the map to the div
         center: { lat: coords.lat, lng: coords.lng }, 
         zoom: 12,
