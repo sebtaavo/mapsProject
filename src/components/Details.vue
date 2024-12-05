@@ -27,7 +27,7 @@
         Price Level: {{ place.price_level !== undefined ? place.price_level : "N/A" }}/3
       </p>
        <!-- This emits to parent component that we want to store this suggestion to persistence.-->
-      <button class="interest-button" @click="emitUserInterested">I'm Interested</button>
+      <button class="interest-button" @click="emitUserInterested">Pin me!</button>
     </div>
   </template>
   
