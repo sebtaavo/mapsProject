@@ -208,6 +208,7 @@ methods: {
 
         const members = groupData.members || [];
 
+        // Check if the user is already a member
         if (members.some(member => member.uid === this.user.uid)) {
           console.log("You are already a member of this group.");
           return;
@@ -235,6 +236,11 @@ methods: {
 
         this.listenToGroupUpdates(this.groupKey);
         console.log(`Successfully joined group ${this.groupKey}!`);
+
+        // Log all members' coordinates
+        members.forEach(member => {
+          console.log(`Member: ${member.name}, Coordinates: ${member.coords.latitude}, ${member.coords.longitude}`);
+        });
       } else {
         console.log(`Group with key ${this.groupKey} not found.`);
       }
@@ -292,33 +298,32 @@ listenToGroupUpdates(groupKey) {
 ,
 // Leave group
 async leaveGroup() {
-  if (!this.groupKey || !this.user) return;
+    if (!this.groupKey || !this.user) return;
 
-  const db = getFirestore();
-  const groupRef = doc(db, "groups", this.groupKey);
-  const userRef = doc(db, "users", this.user.uid);
+    const db = getFirestore();
+    const groupRef = doc(db, "groups", this.groupKey);
+    const userRef = doc(db, "users", this.user.uid);
 
-  try {
-    // Remove user details, including coords, from group
-    await updateDoc(groupRef, {
-      members: arrayRemove({
-        uid: this.user.uid,
-        name: this.user.displayName,
-        email: this.user.email,
-        icon: this.user.photoURL || 'path_to_default_icon_or_gravatar',
-        coords: this.coords || null // Ensure coordinates are removed
-      })
-    });
+    try {
+      // Remove user details, including coords, from group
+      const groupSnap = await getDoc(groupRef);
+      if (groupSnap.exists()) {
+        const groupData = groupSnap.data();
+        const updatedMembers = groupData.members.filter((member) => member.uid !== this.user.uid);
+        await updateDoc(groupRef, { members: updatedMembers });
+      }
 
-    await setDoc(userRef, { groupKey: '' });
-    this.groupKey = '';
-    this.groupMembers = [];
-    this.groupStatus = "You have left the group.";
-  } catch (error) {
-    console.error("Error leaving group: ", error);
-    this.groupStatus = "An error occurred while leaving the group.";
+      await setDoc(userRef, { groupKey: '' });
+      this.groupKey = '';
+      this.groupMembers = [];
+      this.adminUid = '';
+      console.log("You have left the group.");
+    } catch (error) {
+      console.error("Error leaving group: ", error);
+      this.groupStatus = "An error occurred while leaving the group.";
+    }
   }
-}
+
 ,
 
     
