@@ -2,12 +2,14 @@
     <Sidebar
       :user="user"
       :groupMembers="groupMembers"
-      :adminUid="adminUid"
-      :categories="categories"
+      :adminUid="groupAdminUid"
+      :groupKey = "groupKey"
+      :kickedMembers = "kickedMembers"
       @join-group="handleJoinGroup"
       @leave-group="handleLeaveGroup"
       @kick-member="handleKickMember"
       @create-group="handleCreateGroup"
+      @clicked-member="handleMemberWasClicked"
     />
   </template>
   
@@ -22,10 +24,10 @@
     name: "SidebarPresenter",
     components: Sidebar,
     computed: {//THINGS WE NEED FROM THE MODEL GO HERE.
-      ...mapState(['user', 'groupMembers', 'adminUid']),
+      ...mapState(['user', 'groupMembers', 'groupKey', 'groupAdminUid', 'kickedMembers']),
     },
-    methods: {//THINGS WE NEED TO BE ABLE TO TELL THE MODEL TO DO GO HERE.
-      ...mapActions(['joinGroup', 'leaveGroup', 'kickMember', 'fetchGroupData', 'createGroup']),//DEFINED ACTIONS FROM THE MODEL. CALLED WITH "THIS."
+    methods: {
+      ...mapActions(['joinGroup', 'leaveGroup', 'kickMember', 'fetchGroupData', 'createGroup', 'groupMemberWasClicked']),//DEFINED ACTIONS FROM THE MODEL. CALLED WITH "THIS."
       handleJoinGroup(groupKey) {
         this.joinGroup({ user: this.user, groupKey }).catch((error) => {
           console.error("Join group error:", error.message);
@@ -41,9 +43,14 @@
           console.error("Kick member error:", error.message);
         });
       },
-      handleCreateGroup(member) {
-        this.createGroup().catch((error) => {
+      handleCreateGroup() {
+        this.createGroup(this.user).catch((error) => {
           console.error("Group creation error: ", error.message);
+        });
+      },
+      handleMemberWasClicked(member) {
+        this.groupMemberWasClicked(member).catch((error) => {
+          console.error("Error when handling click on group member: ", error.message);
         });
       },
     },

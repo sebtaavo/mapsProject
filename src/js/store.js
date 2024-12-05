@@ -37,6 +37,11 @@ export default createStore({
     map: (state) => state.map,
     clickedMarkerPlace: (state) => state.clickedMarkerPlace,
     highlightedPlace: (state) => state.highlightedPlace,
+    groupKey: (state) => state.groupKey,
+    groupMembers: (state) => state.groupMembers,
+    groupAdminUid: (state) => state.adminUid,
+    kickedMembers: (state) => state.kickedMembers,
+
   },
   mutations: {
     SET_USER(state, user) {
@@ -81,6 +86,11 @@ export default createStore({
     SET_MAP(state, map) {
       state.map = map;
   },
+
+  GROUP_MEMBER_WAS_CLICKED(state, member){
+    state.map.setCenter({ lat: member.coords.lat, lng: member.coords.lng });
+  },
+  
   UPDATE_HIGHLIGHTED_PLACE(state, place) {
     state.clickedMarkerPlace = place;
   },
@@ -123,6 +133,7 @@ export default createStore({
         try {
           const result = await signInWithPopup(auth, provider);
           commit('SET_USER', result.user);
+          console.log("New user login for user : ", result.user)
         } catch (error) {
           console.error("Login error:", error);
         }
@@ -164,7 +175,9 @@ export default createStore({
     userLikedHighlightedLocation({ commit }, place) {
       commit('USER_LIKED_HIGHLIGHTED_PLACE', place);
     },
-
+    groupMemberWasClicked({commit}, member){
+      commit('GROUP_MEMBER_WAS_CLICKED', member)
+    },
     clearMarkers({ commit }) {
       commit('CLEAR_MARKERS');
     },
