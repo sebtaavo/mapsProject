@@ -36,15 +36,17 @@
       <div class="join-input-container">
         <input
           type="text"
+          :value="groupMembers.length ? groupKey : ''"
           placeholder="Join Through Key"
           class="join-input"
           id="join-input"
           @keyup.enter="handleJoinGroup"
           @input="handleUpdateGroupKey"
+          :disabled="groupMembers.length !==0"
         />
       </div>
   
-      <div v-if="user && !groupKey" class="create-group-container">
+      <div v-if="user && groupKey==''" class="create-group-container">
         <button class="create-group-button" @click="handleCreateGroup">
           Create Your Own Group
         </button>
