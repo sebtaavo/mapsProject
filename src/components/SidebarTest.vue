@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar">
+    <div class="sidebar" v-if="!place">
       <div class="group-members" v-if="groupMembers">
         <h2 class="heading">Group Members</h2>
         <ul class="member-list" >
@@ -63,6 +63,9 @@ export default {
     },
     props: {
         user: {
+        type: Object,
+        },
+        place: {
         type: Object,
         },
         groupMembers: {

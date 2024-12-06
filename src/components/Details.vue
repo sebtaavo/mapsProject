@@ -1,6 +1,7 @@
 <template>
     <div v-if="place" id="details" class="sidebar">
       <!-- Title -->
+      <button @click = "emitUserCloses" style="float:right">X</button>
       <h2>{{ place.name }}</h2>
   
       <!-- Image -->
@@ -39,6 +40,9 @@
     methods: {
     emitUserInterested() {
       this.$emit('userinterested', this.place); // Emit event with the place object as payload
+    },
+    emitUserCloses() {
+      this.$emit('close'); // Emit event with the place object as payload
     },
   },
   };

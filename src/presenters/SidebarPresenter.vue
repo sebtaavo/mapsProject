@@ -7,6 +7,7 @@
       :groupKey = "groupKey"
       :writtenGroupKey = "writtenGroupKey"
       :kickedMembers = "kickedMembers"
+      :place = "detailsPlace"
       @join-group="handleJoinGroup"
       @leave-group="handleLeaveGroup"
       @kick-member="handleKickMember"
@@ -52,6 +53,9 @@
         },
         kickedMembers() {
           return this.$store.getters.kickedMembers || [];
+        },
+        detailsPlace(){
+          return this.$store.getters.clickedMarkerPlace || null;
         },
     },
     methods: {

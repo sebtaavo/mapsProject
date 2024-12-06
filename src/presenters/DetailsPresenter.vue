@@ -1,6 +1,6 @@
 <template>
     <div class = "details-presenter">
-        <Details :place=clickedMarkerPlace @userinterested="handleUserInterested" />
+        <Details :place=clickedMarkerPlace @userinterested="handleUserInterested" @close="handleUserClosingDetails"/>
     </div>
   </template>
     
@@ -11,9 +11,13 @@
           Details
       },
       methods: {
-        handleUserInterested(place) {
+      handleUserInterested(place) {
             console.log('User interested in:', place);
-            this.$store.dispatch("userLikedHighlightedLocation", place); //send map to model.
+            this.$store.dispatch("userLikedHighlightedLocation", place); 
+      },
+      handleUserClosingDetails() {
+            console.log('User closes details view ');
+            this.$store.dispatch("userInterestedInLocation", null); //reset current highlighted place so that the details view closes
       },
     },
       computed:{

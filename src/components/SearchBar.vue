@@ -9,20 +9,6 @@
       <button class ="searchButton" @click="searchPlaces">
         <img src="@/images/Search.svg" alt="Search" />  
       </button>
-      <!-- 
-      <div v-if="latestPlaceSearch.length > 0" class="results">
-        <h3>Search Results:</h3>
-        <ul>
-          <li v-for="place in latestPlaceSearch" :key="place.placeId">
-            <strong>{{ place.name }}</strong>
-            <p>{{ place.formatted_address }}</p>
-          </li>
-        </ul>
-      </div>
-      <div v-if="latestPlaceSearch.length === 0" class="no-results">
-        <p>No results found for your search.</p>
-      </div>
-      -->
     </div>
   </template>
   
@@ -44,6 +30,9 @@
       },
       locationMapMarkers() {
         return this.$store.getters.locationMapMarkers || [];
+      },
+      groupCenter() {
+        return this.$store.getters.groupMidpoint;
       }
     },
     methods: {
@@ -55,9 +44,11 @@
   
         try {
           const { PlacesService } = await google.maps.importLibrary("places");
-  
+          
           const request = {
             query: this.query,
+            location: new google.maps.LatLng(this.groupCenter.lat, this.groupCenter.lng),
+            radius: 1000, //in meters
             fields: ["name", "geometry", "business_status"],
           };
   

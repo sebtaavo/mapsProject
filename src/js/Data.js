@@ -25,6 +25,8 @@ export function groupSubscription(state){
           state.groupMembers = groupData.members || [];
           state.kickedMembers = groupData.kickedMembers || [];
           state.adminUid = groupData.adminUid || '';
+          state.groupMidpoint = calculateGeographicalMidpoint(state.groupMembers);
+          console.log("group mid point is: ", state.groupMidpoint);
           CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
           RENDER_GROUP_MEMBER_MARKERS_ON_MAP(state);
 
@@ -91,6 +93,7 @@ export function userSubscription(state){
         state.kickedMembers = [];
         state.adminUid = null;
         state.writtenGroupKey = '';
+        state.groupMidpoint = state.userCoords;
         CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
       }
       console.log("Fetched USER data from persisted model!")
@@ -102,4 +105,36 @@ export function userSubscription(state){
   });
 
   state.userUnsubscribe = subscription;
+};
+
+function calculateGeographicalMidpoint(members) {
+  if (!members.length) {
+    throw new Error("Members array is empty");
+  }
+
+  let x = 0, y = 0, z = 0;
+
+  // Convert each member's lat/lng to radians and calculate Cartesian coordinates
+  members.forEach(({ coords: { lat, lng } }) => {
+    const latRad = (lat * Math.PI) / 180; // Convert latitude to radians
+    const lngRad = (lng * Math.PI) / 180; // Convert longitude to radians
+
+    x += Math.cos(latRad) * Math.cos(lngRad);
+    y += Math.cos(latRad) * Math.sin(lngRad);
+    z += Math.sin(latRad);
+  });
+
+  const total = members.length;
+
+  // Average out x, y, and z
+  x /= total;
+  y /= total;
+  z /= total;
+
+  // Convert back to lat/lng
+  const hyp = Math.sqrt(x * x + y * y); // Calculate the hypotenuse
+
+  const midpointLat = Math.atan2(z, hyp) * (180 / Math.PI); // Latitude in degrees
+  const midpointLng = Math.atan2(y, x) * (180 / Math.PI); // Longitude in degrees
+  return { lat: midpointLat, lng: midpointLng };
 };

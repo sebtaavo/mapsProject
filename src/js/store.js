@@ -41,6 +41,7 @@ export default createStore({
     highlightedPlace: null,
     groupUnsubscribe: null, //needed to save the unsubscribe function for the group listener!!
     userUnsubscribe: null,
+    groupMidpoint: null,
   },
   getters: {
     isAuthenticated: (state) => !!state.user,
@@ -58,6 +59,7 @@ export default createStore({
     adminUid: (state) => state.adminUid,
     kickedMembers: (state) => state.kickedMembers,
     groupMemberMapMarkers: (state) => state.groupMemberMapMarkers,
+    groupMidpoint: (state) => state.groupMidpoint,
   },
   mutations: {
     SET_USER(state, user) {
@@ -113,10 +115,14 @@ export default createStore({
     state.groupMembers = [];
     state.kickedMembers = [];
     state.adminUid = null;
+    state.groupMidpoint = state.userCoords;
     CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
   },
     UPDATE_USER_COORDS(state, coords){
       state.userCoords = coords;
+      if(state.groupMidpoint === null){
+        state.groupMidpoint = coords;
+      }
       console.log("updated user coords to: ", state.userCoords);
     },
 
@@ -411,6 +417,7 @@ export default createStore({
       commit('ADD_LOCATION_MARKER', marker);
     },
     userInterestedInLocation({ commit }, place) {
+      console.log("Reached place highlight location");
       commit('UPDATE_HIGHLIGHTED_PLACE', place);
     },
     userLikedHighlightedLocation({ commit }, place) {
