@@ -310,7 +310,7 @@ export default createStore({
           //gets the current members and filters out the user
           const groupData = groupSnap.data();
           const updatedMembers = groupData.members.filter(memberInP => memberInP.uid !== member.uid);
-          const updatedKickedMembers = [...groupData.members + member.uid];
+          const updatedKickedMembers = [...groupData.kickedMembers, member.uid];
           //updatea the group members array
           await updateDoc(groupRef, {
             members: updatedMembers,
