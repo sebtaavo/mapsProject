@@ -219,6 +219,16 @@ export default createStore({
     }
     
   },
+  async CLEAR_PERSISTENCE_USER_GROUP(state){
+    const db = getFirestore();
+    const userRef = doc(db, "users", state.user.uid);
+    try{
+      await setDoc(userRef, { groupKey: '' });
+    } catch (error) {
+      console.error("Error while resetting user group in firebase after leaving group in app. In store.js ", error);
+    }
+    
+  }
   },//------------------------------------------------------------------- ACTIONS BEGIN HERE ----------------------------------------
   actions: {
     async initializeAuth({ commit }) {
@@ -258,6 +268,16 @@ export default createStore({
 
     async createGroup({ commit }) {
       commit('CREATE_NEW_GROUP');
+    },
+
+    leaveGroup({commit}){
+      console.log("Entered leave group in model");
+      commit('CLEAR_GROUP_UNSUBSCRIBE');
+      commit('SET_GROUP_KEY', '');
+      commit('SET_GROUP_MEMBERS', []);
+      commit('SET_KICKED_MEMBERS', []);
+      commit('SET_ADMIN_UID', '');
+      commit('CLEAR_PERSISTENCE_USER_GROUP');
     },
 
     updateLatestPlaceSearch({ commit }, results) {

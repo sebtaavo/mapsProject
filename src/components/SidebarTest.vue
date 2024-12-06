@@ -10,6 +10,7 @@
             Join a group to see group members.
           </li>
           <li
+            v-if="user"
             v-for="(member, index) in groupMembers"
             :key="member.uid"
             class="member-item"
@@ -56,7 +57,7 @@
 export default {
   name:'SidebarTest',
   mounted() {
-        this.$emit('reload', member); // Emit the event to parent with the member ID
+
     },
     props: {
         user: {

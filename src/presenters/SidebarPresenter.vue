@@ -57,7 +57,7 @@
       },
       handleLeaveGroup() {
         console.log('Received order to leave group in presenter.');
-       // this.$store.dispatch("leaveGroup"); //implement this in store first
+        this.$store.dispatch("leaveGroup"); 
       },
       handleKickMember(member) {
         console.log('Received order to kick member in presenter.');
