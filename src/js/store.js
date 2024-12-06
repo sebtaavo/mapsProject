@@ -33,6 +33,7 @@ export default createStore({
     highlightMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     //for sidebar groups
     groupKey: '', // Group key input by the user
+    writtenGroupKey: '', //group key in sidebar - used for input field and translated to groupKey once we enter.
     groupMembers: [], // List of members in the group
     adminUid: null, // Admin UID for the current group
     kickedMembers: [], // List of kicked members for the current group
@@ -53,6 +54,7 @@ export default createStore({
     clickedMarkerPlace: (state) => state.clickedMarkerPlace,
     highlightedPlace: (state) => state.highlightedPlace,
     groupKey: (state) => state.groupKey,
+    writtenGroupKey: (state) => state.writtenGroupKey,
     groupMembers: (state) => state.groupMembers,
     adminUid: (state) => state.adminUid,
     kickedMembers: (state) => state.kickedMembers,
@@ -96,7 +98,7 @@ export default createStore({
       state.locationMapMarkers = []; // Clear the array of markers
     },
     SET_GROUP_KEY(state, key) {
-        state.groupKey = key;
+        state.writtenGroupKey = key;
         console.log("MUTATIONupdates group key to: ", key);
     },
 
@@ -249,6 +251,7 @@ export default createStore({
     
   },
   async ATTEMPT_JOIN_GROUP(state){
+    state.groupKey = state.writtenGroupKey;
     if (!state.user || !state.groupKey) {
       console.log("You need to be logged in and have a valid group key to join a group");
       return;

@@ -5,6 +5,7 @@
       :groupMembers="groupMembers"
       :adminUid="adminUid"
       :groupKey = "groupKey"
+      :writtenGroupKey = "writtenGroupKey"
       :kickedMembers = "kickedMembers"
       @join-group="handleJoinGroup"
       @leave-group="handleLeaveGroup"
@@ -45,6 +46,9 @@
         },
         groupKey() {
           return this.$store.getters.groupKey || '';
+        },
+        writtenGroupKey() {
+          return this.$store.getters.writtenGroupKey || '';
         },
         kickedMembers() {
           return this.$store.getters.kickedMembers || [];

@@ -36,7 +36,7 @@
       <div class="join-input-container">
         <input
           type="text"
-          :value="groupMembers.length ? groupKey : ''"
+          :value="groupMembers.length ? groupKey : writtenGroupKey"
           placeholder="Join Through Key"
           class="join-input"
           id="join-input"
@@ -72,6 +72,9 @@ export default {
         type: String,
         },
         groupKey: {
+        type: String,
+        },
+        writtenGroupKey: {
         type: String,
         },
         kickedMembers: {
