@@ -34,7 +34,7 @@ export default createStore({
     //for sidebar groups
     groupKey: '', // Group key input by the user
     groupMembers: [], // List of members in the group
-    adminUid: '', // Admin UID for the current group
+    adminUid: null, // Admin UID for the current group
     kickedMembers: [], // List of kicked members for the current group
     clickedMarkerPlace: null,
     highlightedPlace: null,
@@ -327,7 +327,7 @@ export default createStore({
       commit('CLEAR_GROUP_UNSUBSCRIBE');
       commit('SET_GROUP_MEMBERS', []);
       commit('SET_KICKED_MEMBERS', []);
-      commit('SET_ADMIN_UID', '');
+      commit('SET_ADMIN_UID', null);
       commit('CLEAR_PERSISTENCE_USER_GROUP');
     },
 
