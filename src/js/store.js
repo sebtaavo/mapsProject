@@ -13,7 +13,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription, userSubscription} from '@/js/Data.js';
+import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS} from '@/js/Data.js';
 
 const firebaseApp = initializeApp(config);
 const auth = getAuth(firebaseApp);
@@ -96,6 +96,7 @@ export default createStore({
     },
 
     SET_GROUP_MEMBERS(state, members){
+      CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
       state.groupMembers = members;
     },
     SET_KICKED_MEMBERS(state, members){
@@ -112,6 +113,7 @@ export default createStore({
     state.groupMembers = [];
     state.kickedMembers = [];
     state.adminUid = null;
+    CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
   },
     UPDATE_USER_COORDS(state, coords){
       state.userCoords = coords;
@@ -216,33 +218,34 @@ export default createStore({
     }
     
   },
-  async CLEAR_PERSISTENCE_USER_GROUP(state){
+  async CLEAR_PERSISTENCE_USER_GROUP(state) {
     const db = getFirestore();
-    const userRef = doc(db, "users", state.user.uid);
-    try{
-      await setDoc(userRef, { groupKey: '' });
-    } catch (error) {
-      console.error("Error while resetting user group in firebase after leaving group in app. In store.js ", error);
+    if (!state.groupKey) {
+        console.error("Cannot clear group: Group key is not set.");
+        return;
     }
+    const userRef = doc(db, "users", state.user.uid);
+    const groupRef = doc(db, "groups", state.groupKey);
+    try {
+        await setDoc(userRef, { groupKey: '' }); // Reset group key in the user's record
+        const groupSnap = await getDoc(groupRef);
+        if (!groupSnap.exists()) {
+            console.error("The group does not exist.");
+            return;
+        }
 
-     const groupRef = doc(db, "groups", state.groupKey);
-     const groupSnap = await getDoc(groupRef);
-     if (!groupSnap.exists()) {
-       console.error("The group does not exist.");
-       return;
-     }
- 
-     //gets the current members and filters out the user
-     const groupData = groupSnap.data();
-     const updatedMembers = groupData.members.filter(member => member.uid !== state.user.uid);
- 
-     //updateag the group members array
-     await updateDoc(groupRef, {
-       members: updatedMembers,
-     });
-     console.log("Successfully removed user from group members.");
-    
-  },
+        // Update group members to exclude the current user
+        const groupData = groupSnap.data();
+        const updatedMembers = groupData.members.filter(member => member.uid !== state.user.uid);
+
+        await updateDoc(groupRef, {
+            members: updatedMembers,
+        });
+        console.log("Successfully removed user from group members.");
+    } catch (error) {
+        console.error("Error clearing user group:", error);
+    }
+},
   async ATTEMPT_JOIN_GROUP(state){
     state.groupKey = state.writtenGroupKey;
     if (!state.user || !state.groupKey) {
@@ -258,6 +261,10 @@ export default createStore({
       const groupSnap = await getDoc(groupRef);
       if (!groupSnap.exists()) {
         console.log("The group does not exist.");
+        return;
+      }
+      if(groupSnap.data().kickedMembers.includes(state.user.uid)){
+        console.log("Could not join group. You've been kicked from this group before.");
         return;
       }
 
@@ -344,6 +351,7 @@ export default createStore({
         try {
           await signOut(auth);
           commit('SET_USER', null);
+          commit('LEAVE_GROUP');
         } catch (error) {
           console.error("Logout error:", error);
         }

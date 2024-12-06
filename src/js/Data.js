@@ -46,6 +46,11 @@ export function RENDER_GROUP_MEMBER_MARKERS_ON_MAP(state){
       map: state.map,
       position: member.coords,
       title: member.name,
+      icon: {
+        url: member.icon,
+        scaledSize: new google.maps.Size(32, 32),
+        anchor: new google.maps.Point(16, 32),
+      }
     });
     state.groupMemberMapMarkers.push(mapMarker);
   });
@@ -71,8 +76,8 @@ export function userSubscription(state){
     state.userUnsubscribe = null; //clears the stored function
   }
   //reference to the group document in Firestore
-  if (!state.user.uid) {
-    console.error("Cannot subscribe to user: user uid is missing or invalid.");
+  if (!state.user) {
+    console.error("Could not subscribe to user on launch: user uid is missing or invalid. Probably not logged in.");
     return;
   }
   const userDocRef = doc(db, "users", state.user.uid);
@@ -81,10 +86,11 @@ export function userSubscription(state){
     if (docSnapshot.exists()) {
       const userData = docSnapshot.data();
       state.groupKey = userData.groupKey || '';
-      if(state.groupKey === ''){
+      if(state.groupKey === ''){//happens if we were kicked sadge
         state.groupMembers = [];
         state.kickedMembers = [];
         state.adminUid = null;
+        CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
       }
       console.log("Fetched USER data from persisted model!")
     } else {
