@@ -55,6 +55,11 @@ export function userSubscription(state){
     if (docSnapshot.exists()) {
       const userData = docSnapshot.data();
       state.groupKey = userData.groupKey || '';
+      if(state.groupKey === ''){
+        state.groupMembers = [];
+        state.kickedMembers = [];
+        state.adminUid = null;
+      }
       console.log("Fetched USER data from persisted model!")
     } else {
       console.error("User document does not exist!");
