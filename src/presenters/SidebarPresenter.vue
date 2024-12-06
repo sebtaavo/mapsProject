@@ -53,7 +53,7 @@
     methods: {
       handleJoinGroup() {
         console.log('Received order to join group in presenter.');
-       // this.$store.dispatch("joinGroup"); //implement this in store first
+        this.$store.dispatch("joinGroup");
       },
       handleLeaveGroup() {
         console.log('Received order to leave group in presenter.');
@@ -68,7 +68,7 @@
         this.$store.dispatch("createGroup"); 
       },
       handleClickedMember(member) {
-        console.log('Received order to kick member in presenter.');
+        console.log('Received order to zoom in on member in presenter.');
         this.$store.dispatch("groupMemberWasClicked", member); 
       },
       handleUpdateGroupKey(key) {

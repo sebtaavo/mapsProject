@@ -227,8 +227,60 @@ export default createStore({
     } catch (error) {
       console.error("Error while resetting user group in firebase after leaving group in app. In store.js ", error);
     }
+
+     const groupRef = doc(db, "groups", state.groupKey);
+     const groupSnap = await getDoc(groupRef);
+     if (!groupSnap.exists()) {
+       console.error("The group does not exist.");
+       return;
+     }
+ 
+     //gets the current members and filters out the user
+     const groupData = groupSnap.data();
+     const updatedMembers = groupData.members.filter(member => member.uid !== state.user.uid);
+ 
+     //updateag the group members array
+     await updateDoc(groupRef, {
+       members: updatedMembers,
+     });
+     console.log("Successfully removed user from group members.");
     
-  }
+  },
+  async ATTEMPT_JOIN_GROUP(state){
+    if (!state.user || !state.groupKey) {
+      console.log("You need to be logged in and have a valid group key to join a group");
+      return;
+    }
+
+    const db = getFirestore();
+    const groupRef = doc(db, "groups", state.groupKey);
+
+    try{
+      const groupSnap = await getDoc(groupRef);
+      if (!groupSnap.exists()) {
+        console.log("The group does not exist.");
+        return;
+      }
+
+      console.log("Group found. Attempting to join...");
+      const newMember = {
+        uid: state.user.uid,
+        name: state.user.displayName,
+        email: state.user.email,
+        icon: state.user.photoURL,
+        coords: state.userCoords,
+      };
+
+      await updateDoc(groupRef, {
+        members: arrayUnion(newMember),
+      });
+      groupSubscription(state);
+      console.log("Successfully joined the group!");
+
+    }catch(error){
+      console.log("Error joining group: ", error);
+    }
+  },
   },//------------------------------------------------------------------- ACTIONS BEGIN HERE ----------------------------------------
   actions: {
     async initializeAuth({ commit }) {
@@ -273,11 +325,15 @@ export default createStore({
     leaveGroup({commit}){
       console.log("Entered leave group in model");
       commit('CLEAR_GROUP_UNSUBSCRIBE');
-      commit('SET_GROUP_KEY', '');
       commit('SET_GROUP_MEMBERS', []);
       commit('SET_KICKED_MEMBERS', []);
       commit('SET_ADMIN_UID', '');
       commit('CLEAR_PERSISTENCE_USER_GROUP');
+    },
+
+    joinGroup({commit}){
+      console.log("Entered join group in model");
+      commit('ATTEMPT_JOIN_GROUP');
     },
 
     updateLatestPlaceSearch({ commit }, results) {
