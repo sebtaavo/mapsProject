@@ -28,9 +28,9 @@ export default createStore({
     center: { lat: 40.689247, lng: -74.044502 }, // Default center (Statue of Liberty)
     zoom: 15, // Default zoom level
     latestPlaceSearch: [],
-    userMapMarkers: [],//in the shape of {long, lat, userTagFromGoogle}
     locationMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     highlightMapMarkers: [], //in the shape of {long, lat, {locationObject}}
+    groupMemberMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     //for sidebar groups
     groupKey: '', // Group key input by the user
     writtenGroupKey: '', //group key in sidebar - used for input field and translated to groupKey once we enter.
@@ -49,7 +49,6 @@ export default createStore({
     zoom: (state) => state.zoom,
     latestPlaceSearch: (state) => state.latestPlaceSearch,
     locationMapMarkers: (state) => state.locationMapMarkers,
-    userMapMarkers: (state) => state.userMapMarkers,
     map: (state) => state.map,
     clickedMarkerPlace: (state) => state.clickedMarkerPlace,
     highlightedPlace: (state) => state.highlightedPlace,
@@ -58,6 +57,7 @@ export default createStore({
     groupMembers: (state) => state.groupMembers,
     adminUid: (state) => state.adminUid,
     kickedMembers: (state) => state.kickedMembers,
+    groupMemberMapMarkers: (state) => state.groupMemberMapMarkers,
   },
   mutations: {
     SET_USER(state, user) {
@@ -77,18 +77,10 @@ export default createStore({
       state.latestPlaceSearch = results;
       console.log('Updated model to : ', state.latestPlaceSearch);
     },
-    ADD_USER_MARKER(state, marker) {
-      state.userMapMarkers.push(marker);
-    },
-    REMOVE_USER_MARKER(state, marker) {
-      const index = state.userMapMarkers.indexOf(marker);
-      if (index !== -1) {
-        state.userMapMarkers.splice(index, 1);
-      }
-    },
     ADD_LOCATION_MARKER(state, marker) {
       state.locationMapMarkers.push(marker);
     },
+    
     CLEAR_MARKERS(state) {//bad name but this is only for locationMapMarkers yielded by a search in SearchBar.
       state.locationMapMarkers.forEach((marker) => {
         marker.setVisible(false);
@@ -97,6 +89,7 @@ export default createStore({
       });
       state.locationMapMarkers = []; // Clear the array of markers
     },
+
     SET_GROUP_KEY(state, key) {
         state.writtenGroupKey = key;
         console.log("MUTATIONupdates group key to: ", key);

@@ -25,6 +25,9 @@ export function groupSubscription(state){
           state.groupMembers = groupData.members || [];
           state.kickedMembers = groupData.kickedMembers || [];
           state.adminUid = groupData.adminUid || '';
+          CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
+          RENDER_GROUP_MEMBER_MARKERS_ON_MAP(state);
+
           console.log("Fetched data from persisted model! in subscribeToGroup.")
         } else {
           console.error("Group document does not exist!");
@@ -35,6 +38,29 @@ export function groupSubscription(state){
 
       state.groupUnsubscribe = subscription;
 };
+
+//test section
+export function RENDER_GROUP_MEMBER_MARKERS_ON_MAP(state){
+  state.groupMembers.forEach((member) => {
+    const mapMarker = new google.maps.Marker({
+      map: state.map,
+      position: member.coords,
+      title: member.name,
+    });
+    state.groupMemberMapMarkers.push(mapMarker);
+  });
+    
+};
+export function CLEAR_GROUP_MEMBER_MAP_MARKERS(state) {//bad name but this is only for locationMapMarkers yielded by a search in SearchBar.
+  state.groupMemberMapMarkers.forEach((marker) => {
+    marker.setVisible(false);
+    marker.setMap(null); // Remove the marker from the map
+    marker = null;
+  });
+  state.groupMemberMapMarkers = []; // Clear the array of markers
+};
+
+//test section
 
 export function userSubscription(state){
   //LIKE COMMENT SUBSCRIBE
