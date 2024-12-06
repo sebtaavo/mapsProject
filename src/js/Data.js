@@ -35,3 +35,33 @@ export function groupSubscription(state){
 
       state.groupUnsubscribe = subscription;
 };
+
+export function userSubscription(state){
+  //LIKE COMMENT SUBSCRIBE
+  const db = getFirestore();
+  // Unsubscribe from the current group if already subscribed
+  if (state.userUnsubscribe) {
+    state.userUnsubscribe(); //calling the subscription cancels it out!!!
+    state.userUnsubscribe = null; //clears the stored function
+  }
+  //reference to the group document in Firestore
+  if (!state.user.uid) {
+    console.error("Cannot subscribe to user: user uid is missing or invalid.");
+    return;
+  }
+  const userDocRef = doc(db, "users", state.user.uid);
+  //set up Firestore listener
+  const subscription = onSnapshot(userDocRef, (docSnapshot) => {
+    if (docSnapshot.exists()) {
+      const userData = docSnapshot.data();
+      state.groupKey = userData.groupKey || '';
+      console.log("Fetched USER data from persisted model!")
+    } else {
+      console.error("User document does not exist!");
+    }
+  }, (error) => {
+    console.error("Error subscribing to group:", error);
+  });
+
+  state.userUnsubscribe = subscription;
+};

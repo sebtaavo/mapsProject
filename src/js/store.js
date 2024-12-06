@@ -13,7 +13,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription} from '@/js/Data.js';
+import {groupSubscription, userSubscription} from '@/js/Data.js';
 
 const firebaseApp = initializeApp(config);
 const auth = getAuth(firebaseApp);
@@ -39,6 +39,7 @@ export default createStore({
     clickedMarkerPlace: null,
     highlightedPlace: null,
     groupUnsubscribe: null, //needed to save the unsubscribe function for the group listener!!
+    userUnsubscribe: null,
   },
   getters: {
     isAuthenticated: (state) => !!state.user,
@@ -53,12 +54,13 @@ export default createStore({
     highlightedPlace: (state) => state.highlightedPlace,
     groupKey: (state) => state.groupKey,
     groupMembers: (state) => state.groupMembers,
-    groupAdminUid: (state) => state.adminUid,
+    adminUid: (state) => state.adminUid,
     kickedMembers: (state) => state.kickedMembers,
   },
   mutations: {
     SET_USER(state, user) {
         state.user = user;
+        userSubscription(state);
     },
     SET_AUTH_INITIALIZED(state, initialized) {
         state.authInitialized = initialized;
@@ -281,6 +283,36 @@ export default createStore({
       console.log("Error joining group: ", error);
     }
   },
+    async KICK_MEMBER(state, member){
+      state.kickedMembers.push(member);
+      if (!state.user || !state.groupKey) {
+        console.log("You need to be logged in and have a valid group key to join a group");
+        return;
+      }
+      try{
+          const db = getFirestore();
+          const groupRef = doc(db, "groups", state.groupKey);
+          const userRef = doc(db, "users", member.uid);
+          //REMOVE USER FROM GROUP IN PERSISTENCE
+          const groupSnap = await getDoc(groupRef);
+          if (!groupSnap.exists()) {
+            console.error("The group does not exist.");
+            return;
+          }
+          //gets the current members and filters out the user
+          const groupData = groupSnap.data();
+          const updatedMembers = groupData.members.filter(memberInP => memberInP.uid !== member.uid);
+          //updatea the group members array
+          await updateDoc(groupRef, {
+            members: updatedMembers,
+          });
+          console.log("Successfully removed user from group members.");
+          //lastly update the users own persistence groupKey
+          await setDoc(userRef, { groupKey: '' });
+      }catch(error){
+        console.log("Error joining group: ", error);
+      }
+  },
   },//------------------------------------------------------------------- ACTIONS BEGIN HERE ----------------------------------------
   actions: {
     async initializeAuth({ commit }) {
@@ -334,6 +366,11 @@ export default createStore({
     joinGroup({commit}){
       console.log("Entered join group in model");
       commit('ATTEMPT_JOIN_GROUP');
+    },
+
+    kickMember({commit}, member){
+      console.log("Went to kick member in store.");
+      commit('KICK_MEMBER', member);
     },
 
     updateLatestPlaceSearch({ commit }, results) {
