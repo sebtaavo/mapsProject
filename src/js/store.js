@@ -256,6 +256,7 @@ export default createStore({
 
     const db = getFirestore();
     const groupRef = doc(db, "groups", state.groupKey);
+    const userRef = doc(db, "users", state.user.uid);
 
     try{
       const groupSnap = await getDoc(groupRef);
@@ -278,6 +279,10 @@ export default createStore({
       });
       groupSubscription(state);
       console.log("Successfully joined the group!");
+      //update the key field in the users collection for this user
+      await updateDoc(userRef, {
+        groupKey: state.groupKey,
+      });
 
     }catch(error){
       console.log("Error joining group: ", error);
@@ -302,9 +307,11 @@ export default createStore({
           //gets the current members and filters out the user
           const groupData = groupSnap.data();
           const updatedMembers = groupData.members.filter(memberInP => memberInP.uid !== member.uid);
+          const updatedKickedMembers = [...groupData.members + member.uid];
           //updatea the group members array
           await updateDoc(groupRef, {
             members: updatedMembers,
+            kickedMembers: updatedKickedMembers,
           });
           console.log("Successfully removed user from group members.");
           //lastly update the users own persistence groupKey
