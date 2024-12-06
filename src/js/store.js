@@ -265,6 +265,7 @@ export default createStore({
       }
       if(groupSnap.data().kickedMembers.includes(state.user.uid)){
         console.log("Could not join group. You've been kicked from this group before.");
+        state.groupKey = '';
         return;
       }
 

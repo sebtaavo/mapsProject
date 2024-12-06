@@ -90,6 +90,7 @@ export function userSubscription(state){
         state.groupMembers = [];
         state.kickedMembers = [];
         state.adminUid = null;
+        state.writtenGroupKey = '';
         CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
       }
       console.log("Fetched USER data from persisted model!")
