@@ -25,7 +25,7 @@
       <p class="opening-hours">
         {{ place.openingHours || 'N/A'}}
       </p>
-  
+
       <!-- Rating -->
       <p class="rating">Rating: {{ place.rating || "N/A" }}/5</p>
   

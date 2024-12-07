@@ -144,6 +144,11 @@ export default createStore({
   },
 
   UPDATE_HIGHLIGHTED_PLACE(state, place) {
+    if(place !== null){
+      place.openingHours = place.openingHours && typeof place.openingHours.isOpen === 'function' && place.openingHours.isOpen() 
+      ? "Open now" 
+      : "Closed now";
+    }
     state.clickedMarkerPlace = place;
   },
 
@@ -213,7 +218,7 @@ export default createStore({
       const newPlace = {
         name: place.name,
         formatted_address: place.formatted_address,
-        openingHours: place.openingHours && place.openingHours.isOpen() ? "Open now" : "Closed now",
+        openingHours: place.openingHours,
         rating: place.rating,
         price_level: place.price_level !== undefined ? place.price_level : "N/A", // Default value for missing price_level,
         coords: {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()},
