@@ -8,12 +8,15 @@
       :writtenGroupKey = "writtenGroupKey"
       :kickedMembers = "kickedMembers"
       :place = "detailsPlace"
+      :groupHighlightedPlaces="groupHighlightedPlaces"
       @join-group="handleJoinGroup"
       @leave-group="handleLeaveGroup"
       @kick-member="handleKickMember"
       @create-group="handleCreateGroup"
       @clicked-member="handleClickedMember"
-      @keyupdate="handleUpdateGroupKey"  
+      @keyupdate="handleUpdateGroupKey"
+      @clicked-highlight="handleClickedHighlight"
+      @remove-highlight="handleRemoveHighlight"
     />
   </div>
   </template>
@@ -57,6 +60,9 @@
         detailsPlace(){
           return this.$store.getters.clickedMarkerPlace || null;
         },
+        groupHighlightedPlaces(){
+          return this.$store.getters.groupHighlightedPlaces || [];
+        }
     },
     methods: {
       handleJoinGroup() {
@@ -83,7 +89,14 @@
         console.log('Received order in presenter to update group key to ', key);
         this.$store.dispatch("updateGroupKey", key); 
       },
-      
+      handleClickedHighlight(place){
+        console.log("Received order to open details from highlight pin text in sidebar for place: ", place);
+        this.$store.dispatch('userInterestedInLocation', place);
+      },
+      handleRemoveHighlight(place){
+        console.log("Received order to remove highlight pin for all group members in persistence! For place: ", place);
+        this.$store.dispatch('removeMapHighlightFromGroup', place);
+      }, 
     },
   };
   </script>

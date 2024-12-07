@@ -31,6 +31,7 @@ export default createStore({
     locationMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     highlightMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     groupMemberMapMarkers: [], //in the shape of {long, lat, {locationObject}}
+    groupHighlightedPlaces: [],
     //for sidebar groups
     groupKey: '', // Group key input by the user
     writtenGroupKey: '', //group key in sidebar - used for input field and translated to groupKey once we enter.
@@ -60,6 +61,7 @@ export default createStore({
     kickedMembers: (state) => state.kickedMembers,
     groupMemberMapMarkers: (state) => state.groupMemberMapMarkers,
     groupMidpoint: (state) => state.groupMidpoint,
+    groupHighlightedPlaces: (state) => state.groupHighlightedPlaces,
   },
   mutations: {
     SET_USER(state, user) {
@@ -144,27 +146,7 @@ export default createStore({
   UPDATE_HIGHLIGHTED_PLACE(state, place) {
     state.clickedMarkerPlace = place;
   },
-  USER_LIKED_HIGHLIGHTED_PLACE(state, place) {
-    state.clickedMarkerPlace = place;
-    const mapMarker = new google.maps.Marker({
-      map: state.map,
-      position: place.geometry.location,
-      title: place.name,
-      icon: {
-        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png", // Google predefined blue pin
-        scaledSize: new google.maps.Size(32, 32), // Resize if necessary
-        anchor: new google.maps.Point(16, 32),  // Adjust anchor point
-      }
-    });
-    //this is what registers a click on this specific marker on the map.
-    mapMarker.addListener("click", () => {
-      console.log(`Clicked highlight marker: ${place.name}`);
-      console.log(`Coordinates: ${place.geometry.location.lat()}, ${place.geometry.location.lng()}`);
-      state.clickedMarkerPlace = place;
-    });
 
-    state.highlightMapMarkers.push(mapMarker);
-  },
   async CREATE_NEW_GROUP(state){
     if (!state.user || state.groupKey) {
       console.log("You need to be logged in to create a group. Or you cannot create a group while you have one active.");
@@ -204,6 +186,81 @@ export default createStore({
     } catch (error) {
       console.error("Error creating group: ", error);
       console.log("An error occurred while creating the group.");
+    }
+  },
+  async HIGHLIGHT_PLACE_TO_GROUP(state, place){
+    const db = getFirestore();
+    const groupRef = doc(db, "groups", state.groupKey);
+    try{
+      const groupSnap = await getDoc(groupRef);
+      if (!groupSnap.exists()) {
+        console.log("The group does not exist.");
+        return;
+      }
+
+      //here we first have to check that the place isnt already in the group.
+      const groupData = groupSnap.data();
+      const existingPlaces = groupData.places || [];
+      //check if the place is already in the group based on formatted_address here
+      const isPlaceAlreadyAdded = existingPlaces.some(
+        (existingPlace) => existingPlace.formatted_address === place.formatted_address
+      );
+      if (isPlaceAlreadyAdded) {
+        console.log("Place is already added to the group.");
+        return; //exit since the place is already present
+      }
+
+      const newPlace = {
+        name: place.name,
+        formatted_address: place.formatted_address,
+        openingHours: place.openingHours && place.openingHours.isOpen() ? "Open now" : "Closed now",
+        rating: place.rating,
+        price_level: place.price_level !== undefined ? place.price_level : "N/A", // Default value for missing price_level,
+        coords: {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()},
+        photo: place.photos && place.photos.length > 0 ? place.photos[0].getUrl() : "https://via.placeholder.com/150", //fallback image URL,
+        icon: place.icon,
+      };
+
+      await updateDoc(groupRef, {
+        places: arrayUnion(newPlace),
+      });
+
+    }catch(error){
+      console.log("Error pushing new place to persistence in group: ", error);
+    }
+  },
+
+  async REMOVE_HIGHLIGHT_FROM_GROUP(state, place){
+    const db = getFirestore();
+    const groupRef = doc(db, "groups", state.groupKey);
+    try {
+      const groupSnap = await getDoc(groupRef);
+      if (!groupSnap.exists()) {
+        console.log("The group does not exist.");
+        return;
+      }
+  
+      const groupData = groupSnap.data();
+      const existingPlaces = groupData.places || [];
+      
+      // Check if the place exists in the group by comparing formatted_address
+      const placeToRemove = existingPlaces.find(
+        (existingPlace) => existingPlace.formatted_address === place.formatted_address
+      );
+      
+      if (!placeToRemove) {
+        console.log("Place not found in the group.");
+        return; // exit if the place is not found. could have been removed by another member before.
+      }
+  
+      // Now, we remove the place from the places array
+      await updateDoc(groupRef, {
+        places: arrayRemove(placeToRemove),
+      });
+  
+      console.log("Place removed successfully from the group.");
+    } catch (error) {
+      console.log("Error removing place from the group: ", error);
     }
   },
   async LOAD_GROUP(state){
@@ -420,8 +477,11 @@ export default createStore({
       console.log("Reached place highlight location");
       commit('UPDATE_HIGHLIGHTED_PLACE', place);
     },
+    removeMapHighlightFromGroup({ commit }, place) {
+      commit('REMOVE_HIGHLIGHT_FROM_GROUP', place);
+    },
     userLikedHighlightedLocation({ commit }, place) {
-      commit('USER_LIKED_HIGHLIGHTED_PLACE', place);
+      commit('HIGHLIGHT_PLACE_TO_GROUP', place);
     },
     groupMemberWasClicked({commit}, member){
       commit('GROUP_MEMBER_WAS_CLICKED', member)

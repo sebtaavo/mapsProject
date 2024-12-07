@@ -11,13 +11,19 @@
         alt="Photo of the place"
         class="place-image"
       />
+      <img
+        v-if="place.photo" 
+        :src="place.photo" 
+        alt="Photo of the place"
+        class="place-image"
+      />
   
       <!-- Address -->
       <p class="address">{{ place.formatted_address }}</p>
   
       <!-- Opening Hours -->
       <p class="opening-hours">
-        {{ place.openingHours && place.openingHours.isOpen() ? "Open now" : "Closed now" }}
+        {{ place.openingHours || 'N/A'}}
       </p>
   
       <!-- Rating -->

@@ -26,10 +26,14 @@ export function groupSubscription(state){
           state.kickedMembers = groupData.kickedMembers || [];
           state.adminUid = groupData.adminUid || '';
           state.groupMidpoint = calculateGeographicalMidpoint(state.groupMembers);
+          state.groupHighlightedPlaces = groupData.places || [];
           console.log("group mid point is: ", state.groupMidpoint);
+          //render the group members on the map
           CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
           RENDER_GROUP_MEMBER_MARKERS_ON_MAP(state);
-
+          //render the highlight pins set by group members and self on the map
+          CLEAR_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state);
+          RENDER_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state);
           console.log("Fetched data from persisted model! in subscribeToGroup.")
         } else {
           console.error("Group document does not exist!");
@@ -58,6 +62,7 @@ export function RENDER_GROUP_MEMBER_MARKERS_ON_MAP(state){
   });
     
 };
+
 export function CLEAR_GROUP_MEMBER_MAP_MARKERS(state) {//bad name but this is only for locationMapMarkers yielded by a search in SearchBar.
   state.groupMemberMapMarkers.forEach((marker) => {
     marker.setVisible(false);
@@ -66,6 +71,36 @@ export function CLEAR_GROUP_MEMBER_MAP_MARKERS(state) {//bad name but this is on
   });
   state.groupMemberMapMarkers = []; // Clear the array of markers
 };
+//HERE FOR HIGHLIGHT PINS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+export function RENDER_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state){
+  state.groupHighlightedPlaces.forEach((place) => {
+    const mapMarker = new google.maps.Marker({
+      map: state.map,
+      position: place.coords,
+      title: place.name,
+      icon: {
+        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png", // Google predefined blue pin
+        scaledSize: new google.maps.Size(32, 32), // Resize if necessary
+        anchor: new google.maps.Point(16, 32),  // Adjust anchor point
+      }
+    });
+    mapMarker.addListener("click", () => {
+      console.log(`Clicked highlight marker: ${place.name}`);
+      console.log(`Coordinates: ${place.coords.lat}, ${place.coords.lng}`);
+      state.clickedMarkerPlace = place;
+    });
+    state.highlightMapMarkers.push(mapMarker);
+  });
+};
+export function CLEAR_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state) {//bad name but this is only for locationMapMarkers yielded by a search in SearchBar.
+  state.highlightMapMarkers.forEach((marker) => {
+    marker.setVisible(false);
+    marker.setMap(null); // Remove the marker from the map
+    marker = null;
+  });
+  state.highlightMapMarkers = []; // Clear the array of markers
+};
+
 
 //test section
 
@@ -94,6 +129,8 @@ export function userSubscription(state){
         state.adminUid = null;
         state.writtenGroupKey = '';
         state.groupMidpoint = state.userCoords;
+        state.groupHighlightedPlaces = [];
+        CLEAR_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state);
         CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
       }
       console.log("Fetched USER data from persisted model!")

@@ -49,7 +49,7 @@
             query: this.query,
             location: new google.maps.LatLng(this.groupCenter.lat, this.groupCenter.lng),
             radius: 1000, //in meters
-            fields: ["name", "geometry", "business_status"],
+            fields: ["name", "geometry", "business_status", "website"],
           };
   
           const service = new PlacesService(this.map); // Use the map passed as a prop
