@@ -60,7 +60,7 @@
 
       <img :src="place.icon" alt="Place Icon" class="place-icon" @click="highlightWasClicked(groupHighlightedPlaces[index])"/>
       
-      <span class="place-name" @click="highlightWasClicked(groupHighlightedPlaces[index])">{{ place.name }}</span>
+      <span class="place-name" style="color: white" @click="highlightWasClicked(groupHighlightedPlaces[index])">{{ place.name }}</span>
 
       <button class="remove-button" @click="removeHighlightForAll(groupHighlightedPlaces[index])">
         ✖
