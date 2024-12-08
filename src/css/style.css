@@ -106,6 +106,7 @@ body {
 /* Profil (Högst upp till höger)*/
 
 .icon-container {
+  box-sizing: border-box;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -160,6 +161,7 @@ body {
   z-index: 20; /* Keep it on top of the map */
   margin-top: -0.5rem;
   padding: 1rem;
+  box-sizing: border-box;
   border-radius: 10px;
   width: 40%; /* Set a fixed width for the container */
   user-select: none;
@@ -167,6 +169,7 @@ body {
 
 .search-input {
   width: 100%;
+  box-sizing: border-box;
   padding: 0.56rem 1rem 0.5rem;
   padding-right: 3rem;
   border-radius: 9999px;
@@ -266,6 +269,7 @@ body {
   color: white;
   border: none;
   border-radius: 5px;
+  box-sizing: border-box;
   padding: 5px 10px;
   cursor: pointer;
 }
@@ -283,6 +287,7 @@ body {
   background-color: #1E2021;
   color: #ffffff;
   border-radius: 9999px;
+  box-sizing: border-box;
   cursor: pointer;
 }
 
@@ -307,11 +312,12 @@ body {
   position: relative;
   width: 100%;
   text-align: center;
-  margin-top: 0rem;
+  margin-top: -0.5rem;
 }
 
 .join-input {
   width: 90%;
+  box-sizing: border-box;
   padding: 0.56rem 1rem 0.5rem;
   background-color: #1E2021;
   border: 1px solid #4a5568;
@@ -384,6 +390,7 @@ body {
   height: 75px;
   width: 75px;
   border-radius: 15px;
+  box-sizing: border-box;
   transition: color 0.2s ease, background-color 0.2s ease;
   margin-bottom: -0.2rem;
 }
@@ -435,4 +442,18 @@ body {
   body {
     overflow-y: auto; 
   }
+}
+
+.place-row {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 10px auto;
+  width: 90%;
+  color: white;
+}
+.place-name {
+  color: white;
 }
