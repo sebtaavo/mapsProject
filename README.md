@@ -2,10 +2,10 @@
 
 Our app is meant to serve as a tool for groups of friends trying to decide where to meet up in person.
 Each user can choose whether to join a group or create their own. If they create their own, they are shown an invite code
-which they can send to their friends. Their friends, who are joining another persons group, simply paste this code in to the join
+which they can send to their friends. Their friends, who are joining another person's group, then simply paste this code into the join
 input field and press enter.
 
-Once users are in a group with each other, they will see one another on embedded google map. Now, if they search
+Once users are in a group together, they will see one another on the embedded google map. Now, if they search
 for places on google maps such as "Bars" or "Ramen restaurants" they will be shown markers on the map. They can click on
 those markers to see more detailed information about them. If they "pin" those markers, they appear for the entire group and everyone
 can partake in the suggested meeting place.
@@ -31,7 +31,7 @@ There are some known bugs that we have yet to sort out. Chief among them is the 
 the logged in user's group information on the map. This works on localhost but not on deployment, which we are looking into.
 
 Additionally, logging out while being in a group sometimes can cause pretty serious errors. Logging out while being in a group and then attempting to add a pin to the group's
-collection (which they shuold not be able to do, since they are logged out and  thus not part of any group) will throw a firebase error which, although it is checked, sometimes
+collection (which they should not be able to do, since they are logged out and  thus not part of any group) will throw a firebase error which, although it is checked, sometimes
 makes it so that the user can't then log back in again. Sometimes the logged out user can still see the group information of the group they left as well, which should not be the
 case.
 
@@ -41,8 +41,8 @@ case.
 - ...Details.vue           <-- View responsible for showing information about a retrieved "place" from the Google.maps.Place api. Updated by clicking on a map marker.
 - ...Map.vue               <-- View responsible for containing the embedded google maps "map" object.
 - ...Navbar.vue            <-- View responsible for containing the navbar/banner on top of the page with the login/logout button.
-- ...SearchBar.vue         <-- View responsible for searching up places on google maps using an input container. NOT COMPLETE! Currently, this view communicates directly with the model which is not allowed.
-- ...SidebarTest.vue       <-- View responsible for containing information regarding the current group and pinned places on the map. Also for create/joinining groups.
+- ...SearchBar.vue         <-- View responsible for searching up places on google maps using an input. Currently, this view communicates directly with the model which is not allowed.
+- ...SidebarTest.vue       <-- View responsible for containing information regarding the current group and pinned places on the map. Also for creating/joining groups.
 - ../css  
 - .../fonts                <-- Contains fonts used in the app.
 - ...style.css             <-- Style document responsible for the css of the whole app. Some bits of css are scattered across views as well but will be refactored into this file.
@@ -61,7 +61,7 @@ case.
 - ..index.jsx              <-- Bootstrapping file. Creates the app and binds the vuex store as well as the external library Vue3Geolocation to it. The latter is used to fetch user's coordinates.
 - ..VueRoot.jsx            <-- Root div used when bootstrapping. Initializes all presenters.
 - .index.html              <-- Root document for browser access. Defines mounting point for the vue app. Also configures and loads the Google Maps Javascript API.
-.package-lock.json
-.package.json
-.vite.config.js          <-- npm/vite related files for building the app.
+- .package-lock.json
+- .package.json
+- .vite.config.js          <-- npm/vite related files for building the app.
 
