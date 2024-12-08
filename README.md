@@ -22,10 +22,8 @@ We also have not yet made the UI look the way we want it to, and most things are
 at the mid-way point of the project.
 
 Some code has yet to be refactored in some files as well, and we have views such as "SearchBar.vue" which is currently performing tasks that should be emitted
-to the presenter and then asked to be handled in the model. There is also a "SidebarTest.vue" which is now our new sidebar, with the previous "Sidebar.vue"
-being deprecated. It was our first attempt at communicating with the firebase API and as such needed to be rebuilt. "Sidebar.vue" will be removed soon
-and "SidebarTest.vue" will be renamed to "Sidebar.vue" instead. Another example is the "store.js" file which is our vuex store and model. It has a lot of duplicate
-code in it as well as mutations and actions that are no longer used and need to be removed.
+to the presenter and then asked to be handled in the model. Additionally, "store.js" has a lot of duplicate
+code in it as well as mutations and actions that are no longer used and need to be removed. This is also a priority of ours.
 
 Known bugs____
 
@@ -44,7 +42,6 @@ Project File Structure_____
 ...Map.vue               <-- View responsible for containing the embedded google maps "map" object.
 ...Navbar.vue            <-- View responsible for containing the navbar/banner on top of the page with the login/logout button.
 ...SearchBar.vue         <-- View responsible for searching up places on google maps using an input container. NOT COMPLETE! Currently, this view communicates directly with the model which is not allowed.
-...Sidebar.vue           <-- Deprecated version of the view responsible for containing information about the group and create/join group buttons.
 ...SidebarTest.vue       <-- View responsible for containing information regarding the current group and pinned places on the map. Also for create/joinining groups.
 ../css  
 .../fonts                <-- Contains fonts used in the app.
