@@ -80,7 +80,6 @@ body {
   margin-left: -1rem;
 }
 
-
  /* Logga (Högst upp till vänster)*/
 
  .user-icon,
@@ -137,33 +136,33 @@ body {
 
 .map-and-search {
   
-  position: relative; /* Establish a containing block for absolute positioning */
+  position: relative;
   width: 100%;
-  height: 100vh; /* Full viewport height for map container */
+  height: 100vh; 
 }
 
 .map-container {
   width: 100%;
   height: 100%;
   
-  position: absolute; /* Allow the map to fill the parent container */
+  position: absolute;
   top: 0;
   left: 0;
-  z-index: 1; /* Ensure the map is behind the search container */
+  z-index: 1;
 }
 
 .search-container {
   
-  position: absolute; /* Overlay the search container on the map */
-  top: 10px; /* Adjust for desired vertical offset */
-  left: 50%; /* Horizontal center */
-  transform: translateX(-50%); /* Keep it centered */
-  z-index: 20; /* Keep it on top of the map */
+  position: absolute; 
+  top: 10px;
+  left: 50%; 
+  transform: translateX(-50%); 
+  z-index: 20; 
   margin-top: -0.5rem;
   padding: 1rem;
   box-sizing: border-box;
   border-radius: 10px;
-  width: 40%; /* Set a fixed width for the container */
+  width: 40%; 
   user-select: none;
 }
 
@@ -211,8 +210,6 @@ body {
   display: flex;
   flex-direction: column;
 }
-
-
   
 /**********************************
  * Sidofält
@@ -365,53 +362,20 @@ body {
   color: #ffffff;
 }
 
-/* Förslagsknapparna */
+/* Pinnade ställen */
 
-.categories {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 1rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
-  gap: 1rem;
-}
-
-.category-button {
-  user-select: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #664DFF;
-  background-color: #181728;
-  border: none;
-  cursor: pointer;
-  height: 75px;
-  width: 75px;
-  border-radius: 15px;
+.place-row {
   box-sizing: border-box;
-  transition: color 0.2s ease, background-color 0.2s ease;
-  margin-bottom: -0.2rem;
-}
-
-.category-icon {
-  margin-top: 12px;
-  width: 24px;
-  height: 24px;
-}
-
-.category-button span {
-  font-size: 1rem;
   display: flex;
-  align-items: center;
+  flex-direction: row;
   justify-content: center;
-  height: 100%;
-}
-
-.category-button:hover {
+  align-items: center;
+  margin: 10px auto;
+  width: 90%;
   color: white;
-  background-color: #9f7aea;
+}
+.place-name {
+  color: white;
 }
 
 /**********************************
@@ -442,18 +406,4 @@ body {
   body {
     overflow-y: auto; 
   }
-}
-
-.place-row {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  margin: 10px auto;
-  width: 90%;
-  color: white;
-}
-.place-name {
-  color: white;
 }

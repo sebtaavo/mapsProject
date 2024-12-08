@@ -8,20 +8,17 @@ import {
   signOut 
 } from "firebase/auth";
 
-// Initialize Firebase app
 const app = initializeApp(config);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// State management object
 const authState = {
   user: null,
   authButtonText: 'Log in',
   userName: null,
   userEmail: null,
   userPhoto: null,
-  
-  // Method to update state
+
   updateUserState(user) {
     this.user = user;
     this.authButtonText = user ? 'Log out' : 'Log in';
@@ -44,12 +41,10 @@ const authState = {
   }
 };
 
-// Handle authentication state change
 onAuthStateChanged(auth, (user) => {
   authState.updateUserState(user);
 });
 
-// Authentication click handler
 function handleAuthClick() {
   if (auth.currentUser) {
     signOut(auth);
@@ -58,13 +53,11 @@ function handleAuthClick() {
   }
 }
 
-// Optional: Add event listener if using a standalone button
 const authButton = document.getElementById("authButton");
 if (authButton) {
   authButton.addEventListener("click", handleAuthClick);
 }
 
-// Export for use in other parts of your application
 export { 
   auth, 
   provider, 

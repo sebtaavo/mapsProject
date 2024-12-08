@@ -20,13 +20,9 @@
       ...mapActions(["login", "logout"]),
     },
     created() {
-      // Ensure auth is initialized when the presenter is created
       this.$store.dispatch("initializeAuth");
     },
   };
   </script>
-  
-  <style scoped>
-  /* Your CSS styles */
-  </style>
+
   

@@ -52,21 +52,16 @@
         </button>
       </div>
 
-
-    <!-- NEW SECTION FOR HIGHLIGHTED PLACES TAKEN FROM THE GROUP IN PERSISTENCE DYNAMICALLY-->
-    <div class="highlighted-places" v-if="groupHighlightedPlaces !== []">
+      <div class="highlighted-places" v-if="groupHighlightedPlaces.length > 0">
     <div 
       v-for="(place, index) in groupHighlightedPlaces" 
       :key="index" 
-      class="place-row"
-    >
-      <!-- Place Icon -->
+      class="place-row">
+
       <img :src="place.icon" alt="Place Icon" class="place-icon" @click="highlightWasClicked(groupHighlightedPlaces[index])"/>
       
-      <!-- Place Name -->
       <span class="place-name" @click="highlightWasClicked(groupHighlightedPlaces[index])">{{ place.name }}</span>
-      
-      <!-- Remove Button -->
+
       <button class="remove-button" @click="removeHighlightForAll(groupHighlightedPlaces[index])">
         ✖
       </button>
@@ -91,7 +86,7 @@ export default {
     'keyupdate',
     'clicked-highlight',
     'remove-highlight',
-  ], // Declare custom events
+  ], 
     props: {
         user: {
         type: Object,
@@ -120,19 +115,19 @@ export default {
     },
     methods: {
         handleJoinGroup() {
-            this.$emit('join-group'); // Emit the event to parent component
+            this.$emit('join-group');
         },
         handleLeaveGroup() {
-            this.$emit('leave-group'); // Emit the event to parent component
+            this.$emit('leave-group');
         },
         handleKickMember(member) {
-            this.$emit('kick-member', member); // Emit the event to parent with the member ID
+            this.$emit('kick-member', member);
         },
         handleCreateGroup() {
-            this.$emit('create-group'); // Emit the event to parent component
+            this.$emit('create-group'); 
         },
         handleMemberWasClicked(member) {
-            this.$emit('clicked-member', member); // Emit the event to parent component
+            this.$emit('clicked-member', member); 
         },
         handleUpdateGroupKey(ev){
             console.log("Input event: ", ev);
@@ -140,48 +135,45 @@ export default {
             this.$emit('keyupdate', ev.target.value);
         },
         highlightWasClicked(place){
-          this.$emit('clicked-highlight', place); // Emit the event to parent component
+          this.$emit('clicked-highlight', place);
         },
         removeHighlightForAll(place){
-          this.$emit('remove-highlight', place); // Emit the event to parent component
+          this.$emit('remove-highlight', place); 
         },
   },
 };
 </script>
 
-<!--THIS WILL HAVE TO BE MOVED TO STYLE.CSS IN THE END-->
+
 <style scoped>
-/*container for the list */
+
 .highlighted-places {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Add spacing between rows */
+  gap: 8px; 
   margin-top:35;
   margin-left:20;
 }
 
-/* sstyling for each row */
+
 .place-row {
   display: flex;
   align-items: center;
-  gap: 8px; /* Add spacing between items in the row */
+  gap: 8px; 
 }
 
-/*styling for image*/
 .place-icon {
   width: 32px;
   height: 32px;
-  object-fit: contain; /* Ensure the icon fits within the bounds */
+  object-fit: contain; 
 }
 
-/*text style*/
 .place-name {
-  flex-grow: 1; /* Ensure the name takes up remaining space */
+  flex-grow: 1; 
   font-size: 16px;
   color: #333;
 }
 
-/*removal button*/
 .remove-button {
   background: transparent;
   border: none;
@@ -190,8 +182,8 @@ export default {
   cursor: pointer;
   padding: 4px;
 }
-/*For hover on removal btn*/
+
 .remove-button:hover {
-  color: red; /* Change color on hover for better UX */
+  color: red;
 }
 </style>

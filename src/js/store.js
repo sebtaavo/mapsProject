@@ -21,23 +21,23 @@ const provider = new GoogleAuthProvider();
 
 export default createStore({
   state: {
-    map: null, //--map object passed from googlemap obejct in Map.vue
-    user: null, // ---------------Firebase authenticated user
+    map: null, 
+    user: null, 
     userCoords: {},
-    authInitialized: false, //----------------Ensure auth is initialized before using
-    center: { lat: 40.689247, lng: -74.044502 }, // Default center (Statue of Liberty)
-    zoom: 15, // Default zoom level
+    authInitialized: false, 
+    center: { lat: 40.689247, lng: -74.044502 },
+    zoom: 15,
     latestPlaceSearch: [],
     locationMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     highlightMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     groupMemberMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     groupHighlightedPlaces: [],
     //for sidebar groups
-    groupKey: '', // Group key input by the user
+    groupKey: '',
     writtenGroupKey: '', //group key in sidebar - used for input field and translated to groupKey once we enter.
-    groupMembers: [], // List of members in the group
-    adminUid: null, // Admin UID for the current group
-    kickedMembers: [], // List of kicked members for the current group
+    groupMembers: [], 
+    adminUid: null, 
+    kickedMembers: [], 
     clickedMarkerPlace: null,
     highlightedPlace: null,
     groupUnsubscribe: null, //needed to save the unsubscribe function for the group listener!!
@@ -88,10 +88,10 @@ export default createStore({
     CLEAR_MARKERS(state) {//bad name but this is only for locationMapMarkers yielded by a search in SearchBar.
       state.locationMapMarkers.forEach((marker) => {
         marker.setVisible(false);
-        marker.setMap(null); // Remove the marker from the map
+        marker.setMap(null);
         marker = null;
       });
-      state.locationMapMarkers = []; // Clear the array of markers
+      state.locationMapMarkers = [];
     },
 
     SET_GROUP_KEY(state, key) {
@@ -162,7 +162,7 @@ export default createStore({
     const groupRef = doc(db, "groups", newGroupKey);
   
     try {
-      // Get user coordinates
+      //gets user coordinates
       await setDoc(groupRef, {
         adminUid: state.user.uid,
         members: [
@@ -174,8 +174,8 @@ export default createStore({
             coords: state.userCoords
           }
         ],
-        kickedMembers: [] // Initialize kicked members list
-      });//IF YOU WANT TO ADD MORE INFO TO THE GROUP YOU DO IT HERE.
+        kickedMembers: [] 
+      });
   
       const userRef = doc(db, "users", state.user.uid);
       await setDoc(userRef, { groupKey: newGroupKey });
@@ -220,9 +220,9 @@ export default createStore({
         formatted_address: place.formatted_address,
         openingHours: place.openingHours,
         rating: place.rating,
-        price_level: place.price_level !== undefined ? place.price_level : "N/A", // Default value for missing price_level,
+        price_level: place.price_level !== undefined ? place.price_level : "N/A",
         coords: {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()},
-        photo: place.photos && place.photos.length > 0 ? place.photos[0].getUrl() : "https://via.placeholder.com/150", //fallback image URL,
+        photo: place.photos && place.photos.length > 0 ? place.photos[0].getUrl() : "https://via.placeholder.com/150",
         icon: place.icon,
       };
 
@@ -248,17 +248,15 @@ export default createStore({
       const groupData = groupSnap.data();
       const existingPlaces = groupData.places || [];
       
-      // Check if the place exists in the group by comparing formatted_address
       const placeToRemove = existingPlaces.find(
         (existingPlace) => existingPlace.formatted_address === place.formatted_address
       );
       
       if (!placeToRemove) {
         console.log("Place not found in the group.");
-        return; // exit if the place is not found. could have been removed by another member before.
+        return; //exit if the place is not found. could have been removed by another member before.
       }
-  
-      // Now, we remove the place from the places array
+
       await updateDoc(groupRef, {
         places: arrayRemove(placeToRemove),
       });
@@ -295,14 +293,13 @@ export default createStore({
     const userRef = doc(db, "users", state.user.uid);
     const groupRef = doc(db, "groups", state.groupKey);
     try {
-        await setDoc(userRef, { groupKey: '' }); // Reset group key in the user's record
+        await setDoc(userRef, { groupKey: '' });
         const groupSnap = await getDoc(groupRef);
         if (!groupSnap.exists()) {
             console.error("The group does not exist.");
             return;
         }
 
-        // Update group members to exclude the current user
         const groupData = groupSnap.data();
         const updatedMembers = groupData.members.filter(member => member.uid !== state.user.uid);
 
@@ -370,7 +367,6 @@ export default createStore({
           const db = getFirestore();
           const groupRef = doc(db, "groups", state.groupKey);
           const userRef = doc(db, "users", member.uid);
-          //REMOVE USER FROM GROUP IN PERSISTENCE
           const groupSnap = await getDoc(groupRef);
           if (!groupSnap.exists()) {
             console.error("The group does not exist.");
@@ -380,7 +376,7 @@ export default createStore({
           const groupData = groupSnap.data();
           const updatedMembers = groupData.members.filter(memberInP => memberInP.uid !== member.uid);
           const updatedKickedMembers = [...groupData.kickedMembers, member.uid];
-          //updatea the group members array
+          //update the group members array
           await updateDoc(groupRef, {
             members: updatedMembers,
             kickedMembers: updatedKickedMembers,
@@ -392,14 +388,12 @@ export default createStore({
         console.log("Error joining group: ", error);
       }
   },
-  },//------------------------------------------------------------------- ACTIONS BEGIN HERE ----------------------------------------
+  },//---------------------------------------- ACTIONS BEGIN HERE ----------------------------------------
   actions: {
     async initializeAuth({ commit }) {
-        // Set up Firebase auth state listener
         onAuthStateChanged(auth, async (user) => {
           commit('SET_USER', user);
-          commit('SET_AUTH_INITIALIZED', true); // Mark auth as initialized
-           // If the user is authenticated, load user-specific data from Firestore
+          commit('SET_AUTH_INITIALIZED', true);
             if (user) {
                 commit('LOAD_GROUP');
             }
@@ -499,6 +493,5 @@ export default createStore({
     },
   },
   modules: {
-    // You can define modules here for modular store management
   },
 });

@@ -1,6 +1,3 @@
-import { h } from 'vue';
-import { useStore } from 'vuex';
-import Navbar from './components/Navbar.vue';
 import SidebarPresenter from '@/presenters/SidebarPresenter.vue';
 import MapPresenter from './presenters/MapPresenter.vue';
 import NavbarPresenter from './presenters/NavbarPresenter.vue';
@@ -19,8 +16,4 @@ export function VueRoot(props) {
             </div>
         </div>
     );
-
-    function handleMapReady(mapInstance) {
-        console.log('Received map instance in parent:', mapInstance);
-    }
 }

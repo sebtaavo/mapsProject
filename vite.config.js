@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import vueJsxPlugin from '@vitejs/plugin-vue-jsx';
 import vuePlugin from '@vitejs/plugin-vue';
-import path from 'path'; // Import path module
+import path from 'path';
 
 export default defineConfig({
     plugins: [
@@ -17,7 +17,7 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, './src'), // Define '@' as an alias for 'src'
+            '@': path.resolve(__dirname, './src'),
         },
     },
 });

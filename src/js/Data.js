@@ -5,9 +5,7 @@ import {
 import { getFirestore } from 'firebase/firestore';
 
 export function groupSubscription(state){
-      //LIKE COMMENT SUBSCRIBE
       const db = getFirestore();
-      // Unsubscribe from the current group if already subscribed
       if (state.groupUnsubscribe) {
         state.groupUnsubscribe(); //calling the subscription cancels it out!!!
         state.groupUnsubscribe = null; //clears the stored function
@@ -66,12 +64,12 @@ export function RENDER_GROUP_MEMBER_MARKERS_ON_MAP(state){
 export function CLEAR_GROUP_MEMBER_MAP_MARKERS(state) {//bad name but this is only for locationMapMarkers yielded by a search in SearchBar.
   state.groupMemberMapMarkers.forEach((marker) => {
     marker.setVisible(false);
-    marker.setMap(null); // Remove the marker from the map
+    marker.setMap(null);
     marker = null;
   });
-  state.groupMemberMapMarkers = []; // Clear the array of markers
+  state.groupMemberMapMarkers = []; 
 };
-//HERE FOR HIGHLIGHT PINS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//here for highlight pins
 export function RENDER_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state){
   state.groupHighlightedPlaces.forEach((place) => {
     const mapMarker = new google.maps.Marker({
@@ -79,9 +77,9 @@ export function RENDER_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state){
       position: place.coords,
       title: place.name,
       icon: {
-        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png", // Google predefined blue pin
-        scaledSize: new google.maps.Size(32, 32), // Resize if necessary
-        anchor: new google.maps.Point(16, 32),  // Adjust anchor point
+        url: "https://www.iconpacks.net/icons/2/free-location-pin-icon-2965-thumb.png",
+        scaledSize: new google.maps.Size(32, 32),
+        anchor: new google.maps.Point(16, 32), 
       }
     });
     mapMarker.addListener("click", () => {
@@ -92,22 +90,17 @@ export function RENDER_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state){
     state.highlightMapMarkers.push(mapMarker);
   });
 };
-export function CLEAR_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state) {//bad name but this is only for locationMapMarkers yielded by a search in SearchBar.
+export function CLEAR_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state) {
   state.highlightMapMarkers.forEach((marker) => {
     marker.setVisible(false);
-    marker.setMap(null); // Remove the marker from the map
+    marker.setMap(null); 
     marker = null;
   });
-  state.highlightMapMarkers = []; // Clear the array of markers
+  state.highlightMapMarkers = [];
 };
 
-
-//test section
-
 export function userSubscription(state){
-  //LIKE COMMENT SUBSCRIBE
   const db = getFirestore();
-  // Unsubscribe from the current group if already subscribed
   if (state.userUnsubscribe) {
     state.userUnsubscribe(); //calling the subscription cancels it out!!!
     state.userUnsubscribe = null; //clears the stored function
@@ -123,7 +116,7 @@ export function userSubscription(state){
     if (docSnapshot.exists()) {
       const userData = docSnapshot.data();
       state.groupKey = userData.groupKey || '';
-      if(state.groupKey === ''){//happens if we were kicked sadge
+      if(state.groupKey === ''){//happens if we were kicked
         state.groupMembers = [];
         state.kickedMembers = [];
         state.adminUid = null;
@@ -151,10 +144,9 @@ function calculateGeographicalMidpoint(members) {
 
   let x = 0, y = 0, z = 0;
 
-  // Convert each member's lat/lng to radians and calculate Cartesian coordinates
   members.forEach(({ coords: { lat, lng } }) => {
-    const latRad = (lat * Math.PI) / 180; // Convert latitude to radians
-    const lngRad = (lng * Math.PI) / 180; // Convert longitude to radians
+    const latRad = (lat * Math.PI) / 180;
+    const lngRad = (lng * Math.PI) / 180;
 
     x += Math.cos(latRad) * Math.cos(lngRad);
     y += Math.cos(latRad) * Math.sin(lngRad);
@@ -163,15 +155,13 @@ function calculateGeographicalMidpoint(members) {
 
   const total = members.length;
 
-  // Average out x, y, and z
   x /= total;
   y /= total;
   z /= total;
 
-  // Convert back to lat/lng
-  const hyp = Math.sqrt(x * x + y * y); // Calculate the hypotenuse
+  const hyp = Math.sqrt(x * x + y * y);
 
-  const midpointLat = Math.atan2(z, hyp) * (180 / Math.PI); // Latitude in degrees
-  const midpointLng = Math.atan2(y, x) * (180 / Math.PI); // Longitude in degrees
+  const midpointLat = Math.atan2(z, hyp) * (180 / Math.PI);
+  const midpointLng = Math.atan2(y, x) * (180 / Math.PI); 
   return { lat: midpointLat, lng: midpointLng };
 };

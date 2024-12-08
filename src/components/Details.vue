@@ -1,10 +1,8 @@
 <template>
     <div v-if="place" id="details" class="sidebar">
-      <!-- Title -->
       <button @click = "emitUserCloses" style="float:right">X</button>
       <h2>{{ place.name }}</h2>
   
-      <!-- Image -->
       <img 
         v-if="place.photos" 
         :src="place.photos[0].getUrl()" 
@@ -18,26 +16,22 @@
         class="place-image"
       />
   
-      <!-- Address -->
       <p class="address">{{ place.formatted_address }}</p>
   
-      <!-- Opening Hours -->
       <p class="opening-hours">
         {{ place.openingHours || 'N/A'}}
       </p>
 
-      <!-- Rating -->
       <p class="rating">Rating: {{ place.rating || "N/A" }}/5</p>
   
-      <!-- Price Level -->
       <p class="price-level">
         Price Level: {{ place.price_level !== undefined ? place.price_level : "N/A" }}/3
       </p>
-       <!-- This emits to parent component that we want to store this suggestion to persistence.-->
+      
       <button class="interest-button" @click="emitUserInterested">Pin me!</button>
     </div>
   </template>
-  
+
   <script>
   export default {
     props: {
@@ -45,15 +39,15 @@
     },
     methods: {
     emitUserInterested() {
-      this.$emit('userinterested', this.place); // Emit event with the place object as payload
+      this.$emit('userinterested', this.place); 
     },
     emitUserCloses() {
-      this.$emit('close'); // Emit event with the place object as payload
+      this.$emit('close'); 
     },
   },
   };
   </script>
-  
+
   <style scoped>
   .details {
     padding: 16px;
@@ -81,8 +75,9 @@
   }
 
   .opening-hours {
-  margin: 8px 0;
-  margin-left: 20px;
-  font-style: italic; /* Makes the text italicized */
+    margin: 8px 0;
+    margin-left: 20px;
+    font-style: italic;
 }
+  
   </style>
