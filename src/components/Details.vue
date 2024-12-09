@@ -1,7 +1,7 @@
 <template>
     <div v-if="place" id="details" class="sidebar">
-      <button @click = "emitUserCloses" style="float:right">X</button>
-      <h2>{{ place.name }}</h2>
+      <button @click = "emitUserCloses" class="closeSidebarButton">X</button>
+      <h2 class="place-name">{{ place.name }}</h2>
   
       <img 
         v-if="place.photos" 
@@ -35,7 +35,7 @@
   <script>
   export default {
     props: {
-      place: Object, // Takes in the relevant place object
+      place: Object,
     },
     methods: {
     emitUserInterested() {
@@ -61,10 +61,18 @@
   }
   
   .place-image {
-    width: 100%;
+    width: 95%;
     height: auto;
-    margin: 16px 0;
-    margin-left: 20px;
+    margin: 16px auto;
+    display: block;
+    margin-top: -10px;
+  }
+  .place-name {
+    width: 80%;
+    height: auto;
+    margin: 16px auto;
+    display: block;
+    margin-top: 20px;
   }
   
   .address,
@@ -79,5 +87,5 @@
     margin-left: 20px;
     font-style: italic;
 }
-  
-  </style>
+</style>
+

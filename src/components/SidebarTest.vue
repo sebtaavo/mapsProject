@@ -52,7 +52,7 @@
         </button>
       </div>
 
-      <div class="highlighted-places" v-if="groupHighlightedPlaces.length > 0">
+      <div class="highlighted-places" style="cursor: pointer; user-select: none;" v-if="groupHighlightedPlaces.length > 0">
     <div 
       v-for="(place, index) in groupHighlightedPlaces" 
       :key="index" 
