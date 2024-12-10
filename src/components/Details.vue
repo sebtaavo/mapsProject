@@ -28,7 +28,7 @@
         Price Level: {{ place.price_level !== undefined ? place.price_level : "N/A" }}/3
       </p>
       
-      <button class="interest-button" @click="emitUserInterested">Pin me!</button>
+      <button v-if="groupMembers.length !== 0" class="interest-button" @click="emitUserInterested">Pin me!</button>
     </div>
   </template>
 
@@ -36,6 +36,7 @@
   export default {
     props: {
       place: Object,
+      groupMembers: Array,
     },
     methods: {
     emitUserInterested() {

@@ -1,14 +1,20 @@
 <template>
-    <div class = "details-presenter">
-        <Details :place=clickedMarkerPlace @userinterested="handleUserInterested" @close="handleUserClosingDetails"/>
-    </div>
-  </template>
+  <div class="details-presenter">
+    <Details 
+      :place=clickedMarkerPlace
+      :groupMembers=groupMembers
+      @userinterested="handleUserInterested" 
+      @close="handleUserClosingDetails"
+    />
+  </div>
+</template>
+
     
     <script>
     import Details from '@/components/Details.vue';
     export default {
       components: {
-          Details
+          Details,
       },
       methods: {
       handleUserInterested(place) {
@@ -24,6 +30,10 @@
             clickedMarkerPlace() {
             return this.$store.getters.clickedMarkerPlace || null;
           },
+          groupMembers() {
+            return this.$store.getters.groupMembers || [];
+          },
+
       }
     };
     </script>
