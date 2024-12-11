@@ -5,12 +5,8 @@
       </video>
       <div class="content-overlay">
         <!-- Add your other components here -->
-        <h1>Welcome</h1>
-        <span>This app uses device location tracking to function. Once logged in, allow the browser</span>
-        <span>to track your location in order to start searching for activities with your friends.</span>
-        <span>Create a group and send the invite code to a friend, or join theirs directly by entering</span>
-        <span>their invite code into the "Join Group" field and pressing Enter. Search for activities, </span>
-        <span>such as "taco restaurants", and pin them for all the group to see!</span>
+        <h1>Where shall we meet?</h1>
+        <span>This app uses device location tracking to function. Please allow device tracking.</span>
         <span>____________</span>
         <span>Log in to start using the app.</span>
         <button id="authButton" class="icon-container-start-page" @click="handleAuthClick">
