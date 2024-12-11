@@ -13,7 +13,8 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, findPathForPlace, fetchDetailsForPlace} from '@/js/Data.js';
+import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace} from '@/js/Data.js';
+import{polyline_store} from './polylinestore.js';
 
 
 const firebaseApp = initializeApp(config);
@@ -45,8 +46,7 @@ export default createStore({
     userUnsubscribe: null,
     groupMidpoint: null,
     clickedMarkerDetails: null,
-    userPolylines: [],
-    groupMemberPolylines: [],
+    latestDirectionSearch: null,
   },
   getters: {
     clickedMarkerDetails: (state) => state.clickedMarkerDetails, 
@@ -55,6 +55,7 @@ export default createStore({
     center: (state) => state.center,
     zoom: (state) => state.zoom,
     latestPlaceSearch: (state) => state.latestPlaceSearch,
+    latestDirectionSearch: (state) => state.latestDirectionSearch,
     locationMapMarkers: (state) => state.locationMapMarkers,
     map: (state) => state.map,
     clickedMarkerPlace: (state) => state.clickedMarkerPlace,
@@ -149,10 +150,61 @@ export default createStore({
   },
 
  async UPDATE_HIGHLIGHTED_PLACE(state, place) {
-    findPathForPlace(state, place);//DRAWS POLYLINE
-    state.clickedMarkerDetails = null;
-    state.clickedMarkerPlace = place;
-    fetchDetailsForPlace(state, place);//FETCHES MORE DETAILED INFORMATION ABOUT A PLACE
+  state.clickedMarkerDetails = null;
+  state.clickedMarkerPlace = place;
+  fetchDetailsForPlace(state, place);//FETCHES MORE DETAILED INFORMATION ABOUT A PLACE
+  //DRAWS POLYLINE
+      try {
+        if (!place || !place.place_id) {
+          console.log("Didnt draw polyline to destination. The place object is null. ", place);
+          return; // Exit the function if we're just resetting to null.
+        }
+        const { DirectionsService } = await google.maps.importLibrary("routes");
+        const directionsService = new DirectionsService();
+
+        let destinationCoordinates;
+        if (place.coords) {
+            destinationCoordinates = { lat: place.coords.lat, lng: place.coords.lng };
+        } else {
+            destinationCoordinates = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
+        }
+
+        const request = {
+            origin: new google.maps.LatLng(state.userCoords.lat, state.userCoords.lng),
+            destination: new google.maps.LatLng(destinationCoordinates.lat, destinationCoordinates.lng),
+            travelMode: google.maps.TravelMode.TRANSIT,
+        };
+
+        directionsService.route(request, (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+                console.log("Directions data:", result);
+                state.latestDirectionSearch = result;
+
+              const overviewPolyline = result.routes[0].overview_polyline;
+              const decodedPath = google.maps.geometry.encoding.decodePath(overviewPolyline);
+              const newPolyline = new google.maps.Polyline({
+                  path: decodedPath,
+                  strokeColor: "#FF0000",
+                  strokeOpacity: 1.0,
+                  strokeWeight: 2,
+                  map: state.map,
+                  
+              });
+              newPolyline.addListener("click", () => {
+                console.log(`Polyline clicked: ${newPolyline}`);
+                console.log(`Coordinates: ${place.geometry.location.lat()}, ${place.geometry.location.lng()}`);
+              });
+
+              polyline_store.clearUserLines();
+              polyline_store.addUserLine(newPolyline);
+            } else {
+                console.error("Error fetching directions:", status);
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching directions:", error);
+    }
+    //-----------------end of polyline code
   },
 
   async CREATE_NEW_GROUP(state){
@@ -446,7 +498,6 @@ export default createStore({
       commit('SET_ADMIN_UID', null);
       commit('CLEAR_PERSISTENCE_USER_GROUP');
     },
-
     joinGroup({commit}){
       console.log("Entered join group in model");
       commit('ATTEMPT_JOIN_GROUP');
@@ -485,8 +536,14 @@ export default createStore({
     async userInterestedInLocation({ commit }, place) {//TEST ASYNC
       console.log("Reached place highlight location");
       commit('UPDATE_HIGHLIGHTED_PLACE', place);
-  
     },
+    addPolyline({commit}, place){
+      commit('ADD_USER_POLYLINE');
+    },
+    removePolyline({commit}, place) {
+      commit('REMOVE_USER_POLYLINE');
+    },
+
     removeMapHighlightFromGroup({ commit }, place) {
       commit('REMOVE_HIGHLIGHT_FROM_GROUP', place);
     },

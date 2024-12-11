@@ -40,6 +40,7 @@ export default {
         center: { lat: coords.lat, lng: coords.lng }, 
         zoom: 12,
       });
+      this.map._debug_id=1337;
     },
     updateMapCenter(lat, lng) {
       if (this.map) {
