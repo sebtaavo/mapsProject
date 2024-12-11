@@ -36,32 +36,33 @@ makes it so that the user can't then log back in again. Sometimes the logged out
 case.
 
 ## Project File Structure
-- ./src
-- ../components            <-- Where we keep our .vue components. These are our views.
-- ...Details.vue           <-- View responsible for showing information about a retrieved "place" from the Google.maps.Place api. Updated by clicking on a map marker.
-- ...Map.vue               <-- View responsible for containing the embedded google maps "map" object.
-- ...Navbar.vue            <-- View responsible for containing the navbar/banner on top of the page with the login/logout button.
-- ...SearchBar.vue         <-- View responsible for searching up places on google maps using an input. Currently, this view communicates directly with the model which is not allowed.
-- ...SidebarTest.vue       <-- View responsible for containing information regarding the current group and pinned places on the map. Also for creating/joining groups.
-- ../css  
-- .../fonts                <-- Contains fonts used in the app.
-- ...style.css             <-- Style document responsible for the css of the whole app. Some bits of css are scattered across views as well but will be refactored into this file.
-- ../images                <-- Images used in the app.
-- ../js                    <-- Where we keep all helper methods and javascript files. Including the vuex model.
-- ...Data.js               <-- Contains helper methods used by the model.
-- ...firebaseAuth.js       <-- Contains helper methods used for authenticating the user with firebase.
-- ...firebaseConfig.js     <-- Contains important code for configuring and initilizating firebase.
-- ...store.js              <-- Contains our vuex model. Contains a state, getters, mutations and actions. Actions commit mutations. Getters are used by presenters to pass information to views.
-- ../presenters            <-- Contains the presenters that communicate with the model and views.
-- ...DetailsPresenter.vue  <-- Presenter for the Details.vue view. Communicates what place the user has clicked on to the view, and relays user interest in places to the model.
-- ...MapPresenter.vue      <-- Presenter for both the Map.vue and SearchBar.vue views. Retrieves the user's coordinates and the map instance for the model. Not yet well implemented with SearchBar.vue.
-- ...NavbarPresenter.vue   <-- Presenter for the Navbar.vue view. Relays user's wishes to login/logout to the model.
-- ...SidebarPresenter.vue  <-- Presenter for the SidebarTest.vue view. Relays user's wishes to join/create groups to model, and information about the current group from the model to the view.
-- ../views                 <-- Deprecated folder for views. Not used and will be deleted.
-- ..index.jsx              <-- Bootstrapping file. Creates the app and binds the vuex store as well as the external library Vue3Geolocation to it. The latter is used to fetch user's coordinates.
-- ..VueRoot.jsx            <-- Root div used when bootstrapping. Initializes all presenters.
-- .index.html              <-- Root document for browser access. Defines mounting point for the vue app. Also configures and loads the Google Maps Javascript API.
-- .package-lock.json
-- .package.json
-- .vite.config.js          <-- npm/vite related files for building the app.
+/src<br/>
+├── components  <-- Where we keep our .vue components. These are our views.<br/>
+│   ├── Details.vue       <-- View displaying Google.maps.Place info, updated via map marker click.<br/>
+│   ├── Map.vue           <-- View responsible for containing the embedded Google Maps "map" object.<br/>
+│   ├── Navbar.vue        <-- View responsible for containing the navbar/banner on top of the page with the login/logout button.<br/>
+│   ├── SearchBar.vue     <-- View handling Google Maps searches via input, improperly linked directly to the model.<br/>
+│   └── SidebarTest.vue   <-- View managing current group info, pinned places, and group creation/joining.<br/>
+├── css<br/>
+│   ├── fonts             <-- Contains fonts used in the app.<br/>
+│   └── style.css         <-- Style document handling app-wide CSS, with scattered CSS to be refactored here.<br/>
+├── images                <-- Images used in the app.<br/>
+├── js                    <-- Where we keep all helper methods and JavaScript files, including the Vuex model.<br/>
+│   ├── Data.js           <-- Contains helper methods used by the model.<br/>
+│   ├── firebaseAuth.js   <-- Contains helper methods used for authenticating the user with Firebase.<br/>
+│   ├── firebaseConfig.js <-- Contains important code for configuring and initializing Firebase.<br/>
+│   └── store.js          <-- Vuex model with state, getters, mutations, and actions. Actions commit mutations; getters pass info to views.<br/>
+├── presenters            <-- Contains the presenters that communicate with the model and views.<br/>
+│   ├── DetailsPresenter.vue   <-- Presenter for Details.vue, linking clicked places to view and user interest to model.<br/>
+│   ├── MapPresenter.vue       <-- Presenter for Map.vue and SearchBar.vue, retrieving user coordinates and map instance, not fully integrated.<br/>
+│   ├── NavbarPresenter.vue    <-- Presenter for the Navbar.vue view. Relays user's wishes to login/logout to the model.<br/>
+│   └── SidebarPresenter.vue   <-- Presenter for SidebarTest.vue, relaying group actions to the model and passing current group info to the view.<br/>
+├── views                 <-- Deprecated folder for views. Not used and will be deleted.<br/>
+├── index.jsx             <-- Bootstrapping file creating the app, binding the Vuex store and Vue3Geolocation for fetching user coordinates.<br/>
+├── VueRoot.jsx           <-- Root div used when bootstrapping. Initializes all presenters.<br/>
+├── index.html            <-- Root document for browser access, defining the Vue app mounting point and loading the Google Maps JavaScript API.<br/>
+├── package-lock.json<br/>
+├── package.json<br/>
+└── vite.config.js        <-- npm/Vite related files for building the app.<br/>
+
 
