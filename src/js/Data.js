@@ -166,68 +166,56 @@ function calculateGeographicalMidpoint(members) {
   return { lat: midpointLat, lng: midpointLng };
 };
 
-export async function findPathForPlace(state, place){
-      //testing
-      try {
-        // Import the DirectionsService library
-        const { DirectionsService } = await google.maps.importLibrary("routes");
-        
-        // Create a DirectionsService instance
-        const directionsService = new DirectionsService();
-        let destinationCoordinates;
-        if(place.coords){
-          destinationCoordinates = {lat: place.coords.lat, lng: place.coords.lng};
-        }else{
-          destinationCoordinates = {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()};
-        }
-    
-        // Define the request
-        const request = {
-            origin: new google.maps.LatLng(state.userCoords.lat, state.userCoords.lng),
-            destination: new google.maps.LatLng(destinationCoordinates.lat, destinationCoordinates.lng),
-            travelMode: google.maps.TravelMode.TRANSIT // Change to TRANSIT, WALKING, etc., as needed
-        };
-        
-        // Fetch directions
-        directionsService.route(request, (result, status) => {
-            if (status === google.maps.DirectionsStatus.OK) {
-                console.log("Directions data:", result);
-                
-                //USING RESULT FROM FETCH HERE
-                // Extract the polyline from the first route
-                const overviewPolyline = result.routes[0].overview_polyline;
-  
-                // Decode the polyline into a path
-                const decodedPath = google.maps.geometry.encoding.decodePath(overviewPolyline);
-  
-                // Draw the polyline on the map
-                const polyline = new google.maps.Polyline({
-                    path: decodedPath,
-                    strokeColor: "#FF0000", // Customize as needed
-                    strokeOpacity: 1.0,
-                    strokeWeight: 2,
-                });
-                
-                if(state.userPolyline !== null){
-                  state.userPolyline.setVisible(false);
-                  state.userPolyline.setMap(null);
-                  state.userPolyline = null;
-                }
-                // Set the map for the polyline
-                state.userPolyline = polyline;
-                state.userPolyline.setMap(state.map);
-  
-                //USING RESULT FROM FETCH HERE
-  
-  
-            } else {
-                console.error("Error fetching directions:", status);
-            }
-        });
-    } catch (error) {
-        console.error("Error fetching directions:", error);
-    }
+function addNewPolyline(state, decodedPath) {
+
+  const newPolyline = new google.maps.Polyline({
+      path: decodedPath,
+      strokeColor: "#FF0000",
+      strokeOpacity: 1.0,
+      strokeWeight: 2,
+  });
+
+  state.userPolylines[0] = newPolyline;
+
+  newPolyline.setMap(state.map);
 }
+
+export async function findPathForPlace(state, place) {
+  try {
+      const { DirectionsService } = await google.maps.importLibrary("routes");
+      const directionsService = new DirectionsService();
+
+      let destinationCoordinates;
+      if (place.coords) {
+          destinationCoordinates = { lat: place.coords.lat, lng: place.coords.lng };
+      } else {
+          destinationCoordinates = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
+      }
+
+      const request = {
+          origin: new google.maps.LatLng(state.userCoords.lat, state.userCoords.lng),
+          destination: new google.maps.LatLng(destinationCoordinates.lat, destinationCoordinates.lng),
+          travelMode: google.maps.TravelMode.TRANSIT,
+      };
+
+      directionsService.route(request, (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+              console.log("Directions data:", result);
+
+              const overviewPolyline = result.routes[0].overview_polyline;
+              const decodedPath = google.maps.geometry.encoding.decodePath(overviewPolyline);
+
+              addNewPolyline(state, decodedPath);
+
+          } else {
+              console.error("Error fetching directions:", status);
+          }
+      });
+  } catch (error) {
+      console.error("Error fetching directions:", error);
+  }
+}
+
 
 export async function fetchDetailsForPlace(state, place){
   try {

@@ -45,7 +45,7 @@ export default createStore({
     userUnsubscribe: null,
     groupMidpoint: null,
     clickedMarkerDetails: null,
-    userPolyline: null,
+    userPolylines: [],
     groupMemberPolylines: [],
   },
   getters: {
