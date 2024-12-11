@@ -13,7 +13,8 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS} from '@/js/Data.js';
+import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, findPathForPlace, fetchDetailsForPlace} from '@/js/Data.js';
+
 
 const firebaseApp = initializeApp(config);
 const auth = getAuth(firebaseApp);
@@ -43,8 +44,10 @@ export default createStore({
     groupUnsubscribe: null, //needed to save the unsubscribe function for the group listener!!
     userUnsubscribe: null,
     groupMidpoint: null,
+    clickedMarkerDetails: null,
   },
   getters: {
+    clickedMarkerDetails: (state) => state.clickedMarkerDetails, 
     isAuthenticated: (state) => !!state.user,
     user: (state) => state.user,
     center: (state) => state.center,
@@ -143,13 +146,11 @@ export default createStore({
     state.map.setCenter({ lat: member.coords.lat, lng: member.coords.lng });
   },
 
-  UPDATE_HIGHLIGHTED_PLACE(state, place) {
-    if(place !== null){
-      place.openingHours = place.openingHours && typeof place.openingHours.isOpen === 'function' && place.openingHours.isOpen() 
-      ? "Open now" 
-      : "Closed now";
-    }
+ async UPDATE_HIGHLIGHTED_PLACE(state, place) {
+    findPathForPlace(state, place);//DRAWS POLYLINE
+    state.clickedMarkerDetails = null;
     state.clickedMarkerPlace = place;
+    fetchDetailsForPlace(state, place);//FETCHES MORE DETAILED INFORMATION ABOUT A PLACE
   },
 
   async CREATE_NEW_GROUP(state){
@@ -215,15 +216,22 @@ export default createStore({
         return; //exit since the place is already present
       }
 
+      const photoUrls = state.clickedMarkerDetails.photos && state.clickedMarkerDetails.photos.length > 0 //get the photos in a new array
+      ? state.clickedMarkerDetails.photos.map(photo => photo.getUrl())  // Extracting URLs
+      : ["https://via.placeholder.com/150"];  // Default if no photos
+
       const newPlace = {
         name: place.name,
-        formatted_address: place.formatted_address,
-        openingHours: place.openingHours,
-        rating: place.rating,
-        price_level: place.price_level !== undefined ? place.price_level : "N/A",
+        formatted_address: state.clickedMarkerDetails.formatted_address,
+        international_phone_number: state.clickedMarkerDetails.international_phone_number,
+        opening_hours: state.clickedMarkerDetails.opening_hours.weekday_text,
+        rating: state.clickedMarkerDetails.rating,
+        price_level: state.clickedMarkerDetails.price_level !== undefined ? state.clickedMarkerDetails.price_level : "N/A",
         coords: {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()},
-        photo: place.photos && place.photos.length > 0 ? place.photos[0].getUrl() : "https://via.placeholder.com/150",
-        icon: place.icon,
+        photos: photoUrls,
+        icon: state.clickedMarkerDetails.icon,
+        place_id: place.place_id,
+        website: state.clickedMarkerDetails.website
       };
 
       await updateDoc(groupRef, {
@@ -472,9 +480,10 @@ export default createStore({
     addLocationMarker({ commit }, marker) {
       commit('ADD_LOCATION_MARKER', marker);
     },
-    userInterestedInLocation({ commit }, place) {
+    async userInterestedInLocation({ commit }, place) {//TEST ASYNC
       console.log("Reached place highlight location");
       commit('UPDATE_HIGHLIGHTED_PLACE', place);
+  
     },
     removeMapHighlightFromGroup({ commit }, place) {
       commit('REMOVE_HIGHLIGHT_FROM_GROUP', place);

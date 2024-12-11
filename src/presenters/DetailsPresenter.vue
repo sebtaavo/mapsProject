@@ -2,6 +2,7 @@
   <div class="details-presenter">
     <Details 
       :place=clickedMarkerPlace
+      :placeDetails=clickedMarkerDetails
       :groupMembers=groupMembers
       @userinterested="handleUserInterested" 
       @close="handleUserClosingDetails"
@@ -27,12 +28,15 @@
       },
     },
       computed:{
-            clickedMarkerPlace() {
+          clickedMarkerPlace() {
             return this.$store.getters.clickedMarkerPlace || null;
           },
           groupMembers() {
             return this.$store.getters.groupMembers || [];
           },
+          clickedMarkerDetails(){
+            return this.$store.getters.clickedMarkerDetails || null;
+          }
 
       }
     };
