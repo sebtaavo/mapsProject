@@ -207,9 +207,15 @@ export async function findPathForPlace(state, place){
                     strokeOpacity: 1.0,
                     strokeWeight: 2,
                 });
-  
+                
+                if(state.userPolyline !== null){
+                  state.userPolyline.setVisible(false);
+                  state.userPolyline.setMap(null);
+                  state.userPolyline = null;
+                }
                 // Set the map for the polyline
-                polyline.setMap(state.map);
+                state.userPolyline = polyline;
+                state.userPolyline.setMap(state.map);
   
                 //USING RESULT FROM FETCH HERE
   
