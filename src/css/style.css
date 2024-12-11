@@ -120,7 +120,28 @@ body {
   user-select: none;
 }
 
+.icon-container-start-page {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: #9f7aea;
+  border-radius: 9999px;
+  border: none;
+  padding: 0.5rem 5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  margin-right: 0px;
+  margin-top: 10px;
+  user-select: none;
+}
+
 .icon-container:hover {
+  background-color: #8c5ce9;
+  transform: scale(1.05);
+}
+
+.icon-container-start-page:hover {
   background-color: #8c5ce9;
   transform: scale(1.05);
 }

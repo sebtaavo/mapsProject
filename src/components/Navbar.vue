@@ -25,6 +25,9 @@ export default {
     authButtonText() {
       return this.isAuthenticated ? 'Log out' : 'Log in';
     },
+    authenticated() {
+      return this.isAuthenticated;
+    },
   },
   methods: {
     handleAuthClick() {
