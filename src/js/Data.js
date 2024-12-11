@@ -3,6 +3,8 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { getFirestore } from 'firebase/firestore';
+let allPolylines = [];
+
 
 export function groupSubscription(state){
       const db = getFirestore();
@@ -165,9 +167,13 @@ function calculateGeographicalMidpoint(members) {
   const midpointLng = Math.atan2(y, x) * (180 / Math.PI); 
   return { lat: midpointLat, lng: midpointLng };
 };
-
 function addNewPolyline(state, decodedPath) {
+  // Remove the existing polyline from the map if one exists
+  if (allPolylines.length > 0 && allPolylines[0]) {
+      allPolylines[0].setMap(null); // Remove the previous polyline from the map
+  }
 
+  // Create a new polyline
   const newPolyline = new google.maps.Polyline({
       path: decodedPath,
       strokeColor: "#FF0000",
@@ -175,10 +181,13 @@ function addNewPolyline(state, decodedPath) {
       strokeWeight: 2,
   });
 
-  state.userPolylines[0] = newPolyline;
+  // Store the new polyline as the first item in the array
+  allPolylines[0] = newPolyline;
 
+  // Set the map for the new polyline
   newPolyline.setMap(state.map);
 }
+
 
 export async function findPathForPlace(state, place) {
   try {
@@ -202,9 +211,11 @@ export async function findPathForPlace(state, place) {
           if (status === google.maps.DirectionsStatus.OK) {
               console.log("Directions data:", result);
 
+              // Decode the polyline path from the result
               const overviewPolyline = result.routes[0].overview_polyline;
               const decodedPath = google.maps.geometry.encoding.decodePath(overviewPolyline);
 
+              // Add the polyline
               addNewPolyline(state, decodedPath);
 
           } else {
