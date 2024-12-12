@@ -24,7 +24,7 @@
       },
       handleUserClosingDetails() {
             console.log('User closes details view ');
-            this.$store.dispatch("userInterestedInLocation", null); //reset current highlighted place so that the details view closes
+            this.$store.dispatch("userClosesDetails"); //reset current highlighted place so that the details view closes
       },
     },
       computed:{

@@ -91,7 +91,7 @@
       },
       handleClickedHighlight(place){
         console.log("Received order to open details from highlight pin text in sidebar for place: ", place);
-        this.$store.dispatch('userInterestedInLocation', place);
+        this.$store.dispatch('userClickedGroupHighlightFromSidebar', place);
       },
       handleRemoveHighlight(place){
         console.log("Received order to remove highlight pin for all group members in persistence! For place: ", place);

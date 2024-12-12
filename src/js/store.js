@@ -34,12 +34,14 @@ export default createStore({
     highlightMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     groupMemberMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     groupHighlightedPlaces: [],
+    groupDirectionsToHighlight: [],
     //for sidebar groups
     groupKey: '',
     writtenGroupKey: '', //group key in sidebar - used for input field and translated to groupKey once we enter.
     groupMembers: [], 
     adminUid: null, 
     kickedMembers: [], 
+    latestGroupDirectionSearch: [],// stored in the format: {uid: member.uid, directions: result}. result is built the same way the json response is.
     clickedMarkerPlace: null,
     highlightedPlace: null,
     groupUnsubscribe: null, //needed to save the unsubscribe function for the group listener!!
@@ -49,6 +51,7 @@ export default createStore({
     latestDirectionSearch: null,
   },
   getters: {
+    groupDirectionsToHighlight: (state) => state.groupDirectionsToHighlight,
     clickedMarkerDetails: (state) => state.clickedMarkerDetails, 
     isAuthenticated: (state) => !!state.user,
     user: (state) => state.user,
@@ -56,6 +59,7 @@ export default createStore({
     zoom: (state) => state.zoom,
     latestPlaceSearch: (state) => state.latestPlaceSearch,
     latestDirectionSearch: (state) => state.latestDirectionSearch,
+    latestGroupDirectionSearch: (state) => state.latestGroupDirectionSearch,
     locationMapMarkers: (state) => state.locationMapMarkers,
     map: (state) => state.map,
     clickedMarkerPlace: (state) => state.clickedMarkerPlace,
@@ -152,6 +156,68 @@ export default createStore({
   GROUP_MEMBER_WAS_CLICKED(state, member){
     console.log(member);
     state.map.setCenter({ lat: member.coords.lat, lng: member.coords.lng });
+  },
+
+  async FIND_GROUP_DIRECTIONS(state, place) { // uses: clicked marker place clicked marker details
+    console.log("Draw for group");
+    state.clickedMarkerDetails = null;
+    state.clickedMarkerPlace = place;
+    fetchDetailsForPlace(state, place);//FETCHES MORE DETAILED INFORMATION ABOUT A PLACE
+    try {
+        if (!place || !place.place_id) {
+            console.log("Didn't draw group polylines to destination. The place object is null.", place);
+            return; // Exit the function if we're just resetting to null.
+        }
+
+        const { DirectionsService } = await google.maps.importLibrary("routes");
+        const directionsService = new DirectionsService();
+        let destinationCoordinates = { lat: place.coords.lat, lng: place.coords.lng };
+        state.latestGroupDirectionSearch = []; //empty the array
+        polyline_store.clearGroupLines();
+
+        // Loop through each group member
+        state.groupMembers.forEach((member) => {
+          const request = {
+              origin: new google.maps.LatLng(member.coords.lat, member.coords.lng),
+              destination: new google.maps.LatLng(destinationCoordinates.lat, destinationCoordinates.lng),
+              travelMode: google.maps.TravelMode.TRANSIT,
+          };
+
+          directionsService.route(request, (result, status) => {
+              if (status === google.maps.DirectionsStatus.OK) {
+                  console.log("Directions data for :", member, " is: ", result);
+                  state.latestGroupDirectionSearch.push({uid: member.uid, directions: result});
+                  const overviewPolyline = result.routes[0].overview_polyline;
+                  const decodedPath = google.maps.geometry.encoding.decodePath(overviewPolyline);
+                  const newPolyline = new google.maps.Polyline({
+                      path: decodedPath,
+                      strokeColor: "#800080",
+                      strokeOpacity: 1.0,
+                      strokeWeight: 2,
+                      map: state.map,
+                  });
+
+                  newPolyline.addListener("click", () => {
+                      console.log(`Polyline clicked: ${newPolyline}`);
+                      console.log(`Coordinates: ${place.coords.lat}, ${place.coords.lng}`);
+                  });
+
+                  polyline_store.addGroupLine(newPolyline);
+              } else {
+                  console.error("Error fetching directions:", status);
+              }
+          });
+      });
+  } catch (error) {
+      console.error("Error fetching directions:", error);
+  }
+  },
+
+  CLOSE_DETAILS_VIEW(state){
+    state.clickedMarkerDetails = null;
+    state.clickedMarkerPlace = null;
+    polyline_store.clearUserLines();
+    polyline_store.clearGroupLines();
   },
 
  async UPDATE_HIGHLIGHTED_PLACE(state, place) {
@@ -539,8 +605,12 @@ export default createStore({
       commit('ADD_LOCATION_MARKER', marker);
     },
     async userInterestedInLocation({ commit }, place) {//TEST ASYNC
-      console.log("Reached place highlight location");
+      console.log("Clicked pin");
       commit('UPDATE_HIGHLIGHTED_PLACE', place);
+    },
+    userClosesDetails({ commit }) {//TEST ASYNC
+      console.log("Closing details");
+      commit('CLOSE_DETAILS_VIEW');
     },
     addPolyline({commit}, place){
       commit('ADD_USER_POLYLINE');
@@ -548,7 +618,9 @@ export default createStore({
     removePolyline({commit}, place) {
       commit('REMOVE_USER_POLYLINE');
     },
-
+    async userClickedGroupHighlightFromSidebar({commit}, place){
+      commit('FIND_GROUP_DIRECTIONS', place);
+    },
     removeMapHighlightFromGroup({ commit }, place) {
       commit('REMOVE_HIGHLIGHT_FROM_GROUP', place);
     },
