@@ -62,11 +62,10 @@
       </div>
   
       <div v-if="user && groupKey==''" class="create-group-container">
-        <button class="create-group-button" @click="handleCreateGroup">
+        <button class="create-group-button" @click="handleRequestCreateGroup">
           Create Your Own Group
         </button>
       </div>
-
       <div class="highlighted-places" style="cursor: pointer; user-select: none;" v-if="groupHighlightedPlaces.length > 0">
     <div 
       v-for="(place, index) in groupHighlightedPlaces" 
@@ -102,6 +101,8 @@ export default {
     'clicked-highlight',
     'remove-highlight',
     'groupselected',
+    'actually-create-group',
+    'close-prompt',
   ], 
     props: {
         user: {
@@ -118,6 +119,9 @@ export default {
         },
         adminUid: {
         type: String,
+        },
+        prompt: {
+          type: Boolean,
         },
         groupKey: {
         type: String,
@@ -149,8 +153,39 @@ export default {
         handleKickMember(member) {
             this.$emit('kick-member', member);
         },
-        handleCreateGroup() {
+        handleRequestCreateGroup() {
             this.$emit('create-group'); 
+            //CREATE DIALOGUE FROM QUASAR
+            this.$q.dialog({
+                title: 'Choose a group name.',
+                message: 'The invite key is generated separately after this step. Copy and send the key to your friends!',
+                ok: 'OK',
+                cancel: 'Cancel',
+                persistent: true,  // Keeps the dialog open if clicked outside
+                class: 'custom-dialog', // Add custom class to the dialog
+                style: 'background-color: black; color: white;', // Direct styling
+                ok: {
+                  color: 'black', // Make the OK button text white
+                },
+                cancel: {
+                  color: 'black', // Make the Cancel button text white
+                },
+                // Adding a prompt input with white text and black background
+                prompt: {
+                  model: '',  // The input field's model value
+                  type: 'text',  // Input type (e.g., text, number)
+                  style: 'background-color: white; color: black;',  // Input field customization
+                }
+              }).onOk((data) => {
+                console.log('User clicked OK: ', data);
+                let returnData = data;
+                if(data === ''){
+                  returnData = `${this.user.name}`;
+                }
+                this.$emit('actually-create-group', returnData); //emit up the desired name for the new group
+              }).onCancel(() => {
+                console.log('User clicked Cancel');
+          });
         },
         handleMemberWasClicked(member) {
             this.$emit('clicked-member', member); 

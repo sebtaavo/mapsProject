@@ -80,6 +80,14 @@ export default createStore({
   },
   mutations: {
 
+    //FOR PROMPTING A GROUP NAME
+    SET_GROUP_NAME_PROMPT_TRUE(state){
+      state.promptGroupName = true;
+      console.log("Prompt variable is now: ", state.promptGroupName);
+    },
+    GROUP_NAME_PROMPT_DONE(state, name){
+      state.groupName = name;
+    },
     SET_GROUPKEY_FROM_DROPDOWN(state, key){
         console.log("current written group key: ", state.writtenGroupKey);
         state.writtenGroupKey = key;
@@ -292,7 +300,10 @@ export default createStore({
     //-----------------end of polyline code
   },
 
-  async CREATE_NEW_GROUP(state){
+  async CREATE_NEW_GROUP(state, name){
+    console.log("name sent to firebase is: ", name);
+    state.groupName = name;
+
     if (!state.user || state.groupKey) {
       console.log("You need to be logged in to create a group. Or you cannot create a group while you have one active.");
       return;
@@ -315,25 +326,25 @@ export default createStore({
           }
         ],
         kickedMembers: [], 
-        name: 'New group'
+        name: state.groupName,
       });
   
       const userRef = doc(db, "users", state.user.uid);
-      await setDoc(userRef, { groupKey: newGroupKey }); //add to personal list too
-      state.groupName = 'New group';
+      await updateDoc(userRef, { groupKey: newGroupKey }); //add to personal list too
       state.groupKey = newGroupKey;
       state.adminUid = state.user.uid;
       
       //like comment subscribe
       groupSubscription(state);
       console.log(`Group created successfully! Share your key: ${newGroupKey}`);
-      updateUserDocWithSavedGroup(state);
+      updateUserDocWithSavedGroup(state, newGroupKey);
 
     } catch (error) {
       console.error("Error creating group: ", error);
       console.log("An error occurred while creating the group.");
     }
   },
+
   async HIGHLIGHT_PLACE_TO_GROUP(state, place){
     const db = getFirestore();
     const groupRef = doc(db, "groups", state.groupKey);
@@ -441,7 +452,7 @@ export default createStore({
     const userRef = doc(db, "users", state.user.uid);
     const groupRef = doc(db, "groups", state.groupKey);
     try {
-        await setDoc(userRef, { groupKey: '' }, {merge: true});
+        await updateDoc(userRef, { groupKey: '' });
         //have to remove group from savedGroups on this line too.
         const groupSnap = await getDoc(groupRef);
         if (!groupSnap.exists()) {
@@ -574,8 +585,10 @@ export default createStore({
       commit('CLEAR_GROUP_UNSUBSCRIBE');
     },
 
-    async createGroup({ commit }) {
-      commit('CREATE_NEW_GROUP');
+    async createGroup({ commit }, name) {
+      console.log("received name in actions in store: ", name);
+      commit('GROUP_NAME_PROMPT_DONE', name);
+      commit('CREATE_NEW_GROUP', name);
     },
 
     leaveGroup({commit}){
@@ -655,6 +668,13 @@ export default createStore({
     },
     dropdownKeyChange({commit}, key){
       commit('SET_GROUPKEY_FROM_DROPDOWN', key);
+    },
+    //for prompting a group name
+    promptUserForName({commit}){
+      commit('SET_GROUP_NAME_PROMPT_TRUE');
+    },
+    removePromptForName({commit}, name){
+      commit('GROUP_NAME_PROMPT_DONE', name);
     }
   },
   modules: {

@@ -166,20 +166,21 @@ export function CLEAR_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state) {
   state.highlightMapMarkers = [];
 };
 
-export async function updateUserDocWithSavedGroup(state){
+export async function updateUserDocWithSavedGroup(state, newGroupKey){
         const db = getFirestore();
         const userRef = doc(db, "users", state.user.uid);
         const userDoc = await getDoc(userRef);
         if (userDoc.exists()) {
             const userData = userDoc.data();
             if (!Array.isArray(userData.savedGroups)) {
-                 await setDoc(userRef, { savedGroups: [] }, { merge: true }); //
-                 userData.savedGroups = [];
-            }
+              await setDoc(userRef, { savedGroups: [] }, { merge: true }); //
+              userData.savedGroups = [];
+         }
             //add group to saved groups if its not already there
-            if (!userData.savedGroups.some((group) => group.key === state.groupKey)) {
+            
+            if (!userData.savedGroups.some((group) => group.key === newGroupKey)) {
               await updateDoc(userRef, {
-                  savedGroups: arrayUnion({ name: state.groupName, key: state.groupKey }),
+                  savedGroups: arrayUnion({ name: state.groupName, key: newGroupKey }),
               });
           } else {
               console.log("Group key already exists in savedGroups");
@@ -227,6 +228,7 @@ export function userSubscription(state){
   const subscription = onSnapshot(userDocRef, (docSnapshot) => {
     if (docSnapshot.exists()) {
       const userData = docSnapshot.data();
+      console.log("User data as we fetch: ", userData);
       state.groupKey = userData.groupKey || '';
       state.savedGroups = userData.savedGroups || [];
 
@@ -237,6 +239,7 @@ export function userSubscription(state){
         state.writtenGroupKey = '';
         state.groupMidpoint = state.userCoords;
         state.groupHighlightedPlaces = [];
+        console.log("Check for user data: ", userData);
         CLEAR_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state);
         CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
       }

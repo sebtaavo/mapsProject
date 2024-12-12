@@ -13,7 +13,9 @@
       @join-group="handleJoinGroup"
       @leave-group="handleLeaveGroup"
       @kick-member="handleKickMember"
-      @create-group="handleCreateGroup"
+      @create-group="handleRequestGroupPopup"
+      @actually-create-group="handleCreateGroup"
+      @close-prompt="handleClosePrompt"
       @clicked-member="handleClickedMember"
       @keyupdate="handleUpdateGroupKey"
       @clicked-highlight="handleClickedHighlight"
@@ -70,6 +72,13 @@
         }
     },
     methods: {
+      handleClosePrompt(){
+        console.log("Closed the prompt wihout giving a name. No group was created.");
+      },
+      handleRequestGroupPopup(){
+        console.log("Requested to create a group in sidebar. Sending request for a prompt to model.");
+        this.$store.dispatch("promptUserForName");
+      },
       handleDropDownGroupKey(key){
         console.log("Dropdown menu key chosen!");
         this.$store.dispatch("dropdownKeyChange", key);
@@ -86,9 +95,9 @@
         console.log('Received order to kick member in presenter.');
         this.$store.dispatch("kickMember", member); //implement this in store first
       },
-      handleCreateGroup() {
-        console.log('Received order to create group in presenter.');
-        this.$store.dispatch("createGroup"); 
+      handleCreateGroup(name) {
+        console.log('Received order to create group in presenter for name: ', name);
+        this.$store.dispatch("createGroup", name); 
       },
       handleClickedMember(member) {
         console.log('Received order to zoom in on member in presenter.');
@@ -109,4 +118,3 @@
     },
   };
   </script>
-  
