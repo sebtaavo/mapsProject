@@ -191,7 +191,7 @@ export default createStore({
                   const decodedPath = google.maps.geometry.encoding.decodePath(overviewPolyline);
                   const newPolyline = new google.maps.Polyline({
                       path: decodedPath,
-                      strokeColor: "#800080",
+                      strokeColor: polyline_store.getNewColour(),
                       strokeOpacity: 1.0,
                       strokeWeight: 2,
                       map: state.map,
