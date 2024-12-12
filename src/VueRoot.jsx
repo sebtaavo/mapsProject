@@ -1,3 +1,4 @@
+import { createRouter, createWebHashHistory } from 'vue-router';
 import SidebarPresenter from '@/presenters/SidebarPresenter.vue';
 import MapPresenter from './presenters/MapPresenter.vue';
 import NavbarPresenter from './presenters/NavbarPresenter.vue';

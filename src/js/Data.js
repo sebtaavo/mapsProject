@@ -3,6 +3,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { getFirestore } from 'firebase/firestore';
+import{polyline_store} from './polylinestore.js';
 
 export function groupSubscription(state){
       const db = getFirestore();
@@ -70,7 +71,9 @@ export function CLEAR_GROUP_MEMBER_MAP_MARKERS(state) {//bad name but this is on
   state.groupMemberMapMarkers = []; 
 };
 //here for highlight pins
-export function RENDER_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state){
+export async function RENDER_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state){
+  const { DirectionsService } = await google.maps.importLibrary("routes");
+  const directionsService = new DirectionsService();
   state.groupHighlightedPlaces.forEach((place) => {
     const mapMarker = new google.maps.Marker({
       map: state.map,
@@ -86,6 +89,60 @@ export function RENDER_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state){
       console.log(`Clicked highlight marker: ${place.name}`);
       console.log(`Coordinates: ${place.coords.lat}, ${place.coords.lng}`);
       state.clickedMarkerPlace = place;
+
+      //draw polyline
+      //DRAWS POLYLINE
+      try {
+        if (!place || !place.place_id) {
+          console.log("Didnt draw polyline to destination. The place object is null. ", place);
+          return; // Exit the function if we're just resetting to null.
+        }
+        let destinationCoordinates;
+        if (place.coords) {
+            destinationCoordinates = { lat: place.coords.lat, lng: place.coords.lng };
+        } else {
+            destinationCoordinates = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
+        }
+
+        const request = {
+            origin: new google.maps.LatLng(state.userCoords.lat, state.userCoords.lng),
+            destination: new google.maps.LatLng(destinationCoordinates.lat, destinationCoordinates.lng),
+            travelMode: google.maps.TravelMode.TRANSIT,
+        };
+
+        directionsService.route(request, (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+                console.log("Directions data:", result);
+                state.latestDirectionSearch = result;
+
+              const overviewPolyline = result.routes[0].overview_polyline;
+              const decodedPath = google.maps.geometry.encoding.decodePath(overviewPolyline);
+              const newPolyline = new google.maps.Polyline({
+                  path: decodedPath,
+                  strokeColor: "#FF0000",
+                  strokeOpacity: 1.0,
+                  strokeWeight: 2,
+                  map: state.map,
+                  
+              });
+              newPolyline.addListener("click", () => {
+                console.log(`Polyline clicked: ${newPolyline}`);
+                console.log(`Coordinates: ${place.geometry.location.lat()}, ${place.geometry.location.lng()}`);
+              });
+
+              polyline_store.clearUserLines();
+              polyline_store.addUserLine(newPolyline);
+            } else {
+                console.error("Error fetching directions:", status);
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching directions:", error);
+    }
+    //-----------------end of polyline code
+      //
+
+
     });
     state.highlightMapMarkers.push(mapMarker);
   });
