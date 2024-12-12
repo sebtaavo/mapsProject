@@ -1,83 +1,110 @@
 <template>
-    <div class = "scrollablemaybe">
-      <div v-for="member in groupMembers" :key="member.uid" class="group-member">
-        <h3>{{ member.name }}</h3>
-        
-        <!-- Find the matching groupDirections entry by uid -->
-        <div v-if="matchingDirection(member.uid)">
-          <div v-for="(step, index) in matchingDirection(member.uid).directions.routes[0].legs[0].steps" :key="index" class="direction-step">
-            <div class="step-info">
-              <p><strong>Step {{ index + 1 }}:</strong></p>
-              <p><strong>Instructions:</strong> {{ step.instructions }}</p>
-              <p><strong>Travel Mode:</strong> {{ step.travel_mode }}</p>
-              <p><strong>Distance:</strong> {{ step.distance.text }}</p>
-              <p><strong>Duration:</strong> {{ step.duration.text }}</p>
-            </div>
-          </div>
-  
-          <div class="summary">
-            <p><strong>Distance to Travel:</strong> {{ matchingDirection(member.uid).directions.routes[0].legs[0].distance.text }}</p>
-            <p><strong>Time to Travel:</strong> {{ matchingDirection(member.uid).directions.routes[0].legs[0].duration.text }}</p>
-            <p><strong>Arrival Time:</strong> {{ matchingDirection(member.uid).directions.routes[0].legs[0].arrival_time.text }}</p>
-            <p><strong>Departure Time:</strong> {{ matchingDirection(member.uid).directions.routes[0].legs[0].departure_time.text }}</p>
+  <div class="scrollablemaybe">
+    <!-- Check if a member is selected -->
+    <div v-if="selectedMember">
+      <button @click="clearSelection">&lt; Back</button>
+      <h3>{{ selectedMember.name }}'s Travel Guide</h3>
+      <div v-if="matchingDirection(selectedMember.uid)">
+        <div v-for="(step, index) in matchingDirection(selectedMember.uid).directions.routes[0].legs[0].steps" :key="index" class="direction-step">
+          <div class="step-info">
+            <p><strong>Step {{ index + 1 }}:</strong></p>
+            <p><strong>Instructions:</strong> {{ step.instructions }}</p>
+            <p><strong>Travel Mode:</strong> {{ step.travel_mode }}</p>
+            <p><strong>Distance:</strong> {{ step.distance.text }}</p>
+            <p><strong>Duration:</strong> {{ step.duration.text }}</p>
           </div>
         </div>
-        <hr />
+
+        <div class="summary">
+          <p><strong>Distance to Travel:</strong> {{ matchingDirection(selectedMember.uid).directions.routes[0].legs[0].distance.text }}</p>
+          <p><strong>Time to Travel:</strong> {{ matchingDirection(selectedMember.uid).directions.routes[0].legs[0].duration.text }}</p>
+          <p><strong>Arrival Time:</strong> {{ matchingDirection(selectedMember.uid).directions.routes[0].legs[0].arrival_time.text }}</p>
+          <p><strong>Departure Time:</strong> {{ matchingDirection(selectedMember.uid).directions.routes[0].legs[0].departure_time.text }}</p>
+        </div>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      groupDirections: Array,
-      place: Object,
-      placeDetails: Object,
-      groupMembers: Array,
+
+    <!-- Show list of members if no member is selected -->
+    <div v-else>
+      <div v-for="member in groupMembers" :key="member.uid" class="member-box" @click="selectMember(member)">
+        <h3>{{ member.name }}</h3>
+        <p><strong>Travel Time:</strong> {{ matchingDirection(member.uid)?.directions.routes[0].legs[0].duration.text || 'N/A' }}</p>
+        <p><strong>Distance:</strong> {{ matchingDirection(member.uid)?.directions.routes[0].legs[0].distance.text || 'N/A' }}</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    groupDirections: Array,
+    groupMembers: Array,
+  },
+  data() {
+    return {
+      selectedMember: null,
+    };
+  },
+  methods: {
+    matchingDirection(uid) {
+      return this.groupDirections.find(direction => direction.uid === uid);
     },
-    methods: {
-      // Method to find the matching direction object based on uid
-      matchingDirection(uid) {
-        return this.groupDirections.find(direction => direction.uid === uid);
-      }
-    }
-  };
-  </script>
-  
-  <style scoped>
-  .scrollablemaybe {
-    overflow-x: hidden; /* Disable horizontal scrolling */
-    overflow-y: auto;   /* Enable vertical scrolling */
-    max-height: 97.6%;  /* Adjust to the desired height */
-    padding: 10px;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
-  }
-  
-  .group-member {
-    margin-bottom: 20px;
-    color: white
-  }
-  
-  .group-member h3 {
-    font-size: 1.2em;
-    color: white
-  }
-  
-  .direction-step {
-    background-color: #000000;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-  }
-  
-  .summary {
-    margin-top: 10px;
-  }
-  
-  .summary p {
-    margin: 5px 0;
-  }
-  </style>
-  
-  
+    selectMember(member) {
+      this.selectedMember = member;
+    },
+    clearSelection() {
+      this.selectedMember = null;
+    },
+  },
+};
+</script>
+
+<style scoped>
+.scrollablemaybe {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 97.6%;
+  padding: 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.member-box {
+  background-color: #1E2021;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  margin-right: -10px;
+}
+
+.member-box:hover {
+  background-color: #333333;
+}
+
+.direction-step {
+  background-color: #000000;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.summary {
+  margin-top: 10px;
+}
+
+button {
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #666;
+}
+</style>
