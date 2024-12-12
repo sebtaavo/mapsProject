@@ -374,7 +374,7 @@ export default createStore({
       const newPlace = {
         name: place.name,
         formatted_address: state.clickedMarkerDetails.formatted_address,
-        international_phone_number: state.clickedMarkerDetails.international_phone_number,
+        international_phone_number: state.clickedMarkerDetails.international_phone_number || "N/A",
         opening_hours: state.clickedMarkerDetails.opening_hours.weekday_text,
         rating: state.clickedMarkerDetails.rating,
         price_level: state.clickedMarkerDetails.price_level !== undefined ? state.clickedMarkerDetails.price_level : "N/A",
@@ -382,7 +382,7 @@ export default createStore({
         photos: photoUrls,
         icon: state.clickedMarkerDetails.icon,
         place_id: place.place_id,
-        website: state.clickedMarkerDetails.website
+        website: state.clickedMarkerDetails.website || "N/A"
       };
 
       await updateDoc(groupRef, {
