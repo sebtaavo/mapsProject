@@ -647,6 +647,13 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: left;
+  
+}
+.scrollablemaybe {
+  max-height: 100%;
+}
+.direction-step {
+  width: calc(100% - 42px);
 }
 }
 
