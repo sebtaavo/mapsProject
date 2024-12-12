@@ -9,6 +9,7 @@
       :kickedMembers = "kickedMembers"
       :place = "detailsPlace"
       :groupHighlightedPlaces="groupHighlightedPlaces"
+      :savedGroups="savedGroups"
       @join-group="handleJoinGroup"
       @leave-group="handleLeaveGroup"
       @kick-member="handleKickMember"
@@ -17,6 +18,7 @@
       @keyupdate="handleUpdateGroupKey"
       @clicked-highlight="handleClickedHighlight"
       @remove-highlight="handleRemoveHighlight"
+      @groupselected="handleDropDownGroupKey"
     />
   </div>
   </template>
@@ -48,6 +50,9 @@
         adminUid() {
           return this.$store.getters.adminUid || '';
         },
+        savedGroups() {
+          return this.$store.getters.savedGroups || [];
+        },
         groupKey() {
           return this.$store.getters.groupKey || '';
         },
@@ -65,6 +70,10 @@
         }
     },
     methods: {
+      handleDropDownGroupKey(key){
+        console.log("Dropdown menu key chosen!");
+        this.$store.dispatch("dropdownKeyChange", key);
+      },
       handleJoinGroup() {
         console.log('Received order to join group in presenter.');
         this.$store.dispatch("joinGroup");

@@ -31,6 +31,21 @@
         <button v-if="groupMembers.length !== 0" class="group-button" @click="handleLeaveGroup">Leave Group</button>
         <hr class="divider" />
       </div>
+
+      <!-- Dropdown to select saved group -->
+      <div v-if="savedGroups.length" class="dropdown-container">
+        <label for="saved-group-select">Select a Saved Group:</label>
+        <select id="saved-group-select" @change="handleGroupSelect" class="dropdown">
+          <option value="">-- Select a Group --</option>
+          <option
+            v-for="group in savedGroups"
+            :key="group.key"
+            :value="group.key"
+          >
+            {{ group.name }}
+          </option>
+        </select>
+      </div>
   
   
       <div class="join-input-container">
@@ -86,6 +101,7 @@ export default {
     'keyupdate',
     'clicked-highlight',
     'remove-highlight',
+    'groupselected',
   ], 
     props: {
         user: {
@@ -95,6 +111,9 @@ export default {
         type: Object,
         },
         groupMembers: {
+        type: Array,
+        },
+        savedGroups:{
         type: Array,
         },
         adminUid: {
@@ -114,6 +133,13 @@ export default {
         },
     },
     methods: {
+        handleGroupSelect(event) {
+          console.log("Entered dropdown event receiver with value: ", event.target.value);
+          const selectedKey = event.target.value;
+          if (selectedKey) {
+            this.$emit('groupselected', selectedKey); // Emit selected group key
+          }
+        },
         handleJoinGroup() {
             this.$emit('join-group');
         },
