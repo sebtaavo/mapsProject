@@ -13,7 +13,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace} from '@/js/Data.js';
+import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace, updateUserDocWithSavedGroup} from '@/js/Data.js';
 import{polyline_store} from './polylinestore.js';
 import { useRouter } from 'vue-router';
 
@@ -35,6 +35,7 @@ export default createStore({
     groupMemberMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     groupHighlightedPlaces: [],
     //for sidebar groups
+    groupName: '',
     groupKey: '',
     writtenGroupKey: '', //group key in sidebar - used for input field and translated to groupKey once we enter.
     groupMembers: [], 
@@ -49,10 +50,14 @@ export default createStore({
     clickedMarkerDetails: null,
     latestDirectionSearch: null,
     groupDetailsOpen: false,
+    //new for group saving
+    savedGroups: [], //of the structure {key: .... , name: ....}
   },
   getters: {
+    groupName: (state) => state.groupName,
     groupDetailsOpen: (state) => state.groupDetailsOpen,//determines if user is currently looking at the group travel details after clicking in sidebar
     clickedMarkerDetails: (state) => state.clickedMarkerDetails, 
+    savedGroups: (state) => state.savedGroups,//this one for groups from persistence
     isAuthenticated: (state) => !!state.user,
     user: (state) => state.user,
     center: (state) => state.center,
@@ -74,6 +79,11 @@ export default createStore({
     groupHighlightedPlaces: (state) => state.groupHighlightedPlaces,
   },
   mutations: {
+
+    SET_GROUPKEY_FROM_DROPDOWN(state, key){
+        console.log("current written group key: ", state.writtenGroupKey);
+        state.writtenGroupKey = key;
+    },
     SET_USER(state, user) {
         state.user = user;
         userSubscription(state);
@@ -304,20 +314,21 @@ export default createStore({
             coords: state.userCoords
           }
         ],
-        kickedMembers: [] 
+        kickedMembers: [], 
+        name: 'New group'
       });
   
       const userRef = doc(db, "users", state.user.uid);
-      await setDoc(userRef, { groupKey: newGroupKey });
-
+      await setDoc(userRef, { groupKey: newGroupKey }); //add to personal list too
+      state.groupName = 'New group';
       state.groupKey = newGroupKey;
       state.adminUid = state.user.uid;
       
       //like comment subscribe
       groupSubscription(state);
-
-
       console.log(`Group created successfully! Share your key: ${newGroupKey}`);
+      updateUserDocWithSavedGroup(state);
+
     } catch (error) {
       console.error("Error creating group: ", error);
       console.log("An error occurred while creating the group.");
@@ -411,7 +422,7 @@ export default createStore({
       if (userSnap.exists()) {
         const userData = userSnap.data();
         state.groupKey = userData.groupKey || '';
-
+        state.savedGroups = userData.savedGroups || []; //new for saved groups
         if (state.groupKey) {
           groupSubscription(state);
         }
@@ -430,7 +441,8 @@ export default createStore({
     const userRef = doc(db, "users", state.user.uid);
     const groupRef = doc(db, "groups", state.groupKey);
     try {
-        await setDoc(userRef, { groupKey: '' });
+        await setDoc(userRef, { groupKey: '' }, {merge: true});
+        //have to remove group from savedGroups on this line too.
         const groupSnap = await getDoc(groupRef);
         if (!groupSnap.exists()) {
             console.error("The group does not exist.");
@@ -485,10 +497,11 @@ export default createStore({
       });
       groupSubscription(state);
       console.log("Successfully joined the group!");
-      //update the key field in the users collection for this user
       await updateDoc(userRef, {
         groupKey: state.groupKey,
       });
+
+      updateUserDocWithSavedGroup(state); //only updates if its new
 
     }catch(error){
       console.log("Error joining group: ", error);
@@ -640,6 +653,9 @@ export default createStore({
     updateUserCoords({commit}, coords){
       commit('UPDATE_USER_COORDS', coords);
     },
+    dropdownKeyChange({commit}, key){
+      commit('SET_GROUPKEY_FROM_DROPDOWN', key);
+    }
   },
   modules: {
   },

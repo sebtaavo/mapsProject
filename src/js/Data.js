@@ -1,5 +1,10 @@
 import { 
   doc, 
+  getDoc, 
+  setDoc, 
+  updateDoc, 
+  arrayRemove, 
+  arrayUnion, 
   onSnapshot 
 } from "firebase/firestore";
 import { getFirestore } from 'firebase/firestore';
@@ -21,6 +26,7 @@ export function groupSubscription(state){
       const subscription = onSnapshot(groupDocRef, (docSnapshot) => {
         if (docSnapshot.exists()) {
           const groupData = docSnapshot.data();
+          state.groupName = groupData.name || '';
           state.groupMembers = groupData.members || [];
           state.kickedMembers = groupData.kickedMembers || [];
           state.adminUid = groupData.adminUid || '';
@@ -160,6 +166,51 @@ export function CLEAR_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state) {
   state.highlightMapMarkers = [];
 };
 
+export async function updateUserDocWithSavedGroup(state){
+        const db = getFirestore();
+        const userRef = doc(db, "users", state.user.uid);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+            const userData = userDoc.data();
+            if (!Array.isArray(userData.savedGroups)) {
+                 await setDoc(userRef, { savedGroups: [] }, { merge: true }); //
+                 userData.savedGroups = [];
+            }
+            //add group to saved groups if its not already there
+            if (!userData.savedGroups.some((group) => group.key === state.groupKey)) {
+              await updateDoc(userRef, {
+                  savedGroups: arrayUnion({ name: state.groupName, key: state.groupKey }),
+              });
+          } else {
+              console.log("Group key already exists in savedGroups");
+          }
+        } else {
+            console.error("User document does not exist.");
+        }
+};
+
+export async function removeSavedGroupFromUserDoc(state, thisKey) {
+  const db = getFirestore();
+  const userRef = doc(db, "users", state.user.uid);
+  const userDoc = await getDoc(userRef);
+
+  if (userDoc.exists()) {
+      const userData = userDoc.data();
+
+      if (Array.isArray(userData.savedGroups)) {
+          // Filter out the group with the matching key
+          const updatedGroups = userData.savedGroups.filter((group) => group.key !== thisKey);
+          await updateDoc(userRef, {
+              savedGroups: updatedGroups
+          });
+      } else {
+          console.error("savedGroups is not an array in the user document.");
+      }
+  } else {
+      console.error("User document does not exist.");
+  }
+}
+
 export function userSubscription(state){
   const db = getFirestore();
   if (state.userUnsubscribe) {
@@ -177,7 +228,9 @@ export function userSubscription(state){
     if (docSnapshot.exists()) {
       const userData = docSnapshot.data();
       state.groupKey = userData.groupKey || '';
-      if(state.groupKey === ''){//happens if we were kicked
+      state.savedGroups = userData.savedGroups || [];
+
+      if(state.groupKey === ''){//happens if we were kicked , consider removing savedGroups from here.
         state.groupMembers = [];
         state.kickedMembers = [];
         state.adminUid = null;
