@@ -1,32 +1,16 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
-import SidebarPresenter from '@/presenters/SidebarPresenter.vue';
-import MapPresenter from './presenters/MapPresenter.vue';
-import NavbarPresenter from './presenters/NavbarPresenter.vue';
-import DetailsPresenter from './presenters/DetailsPresenter.vue';
-import StartPresenter from './presenters/StartPresenter.vue';
-import { computed } from 'vue';
+import { defineComponent } from 'vue';
+import { RouterView } from 'vue-router'; // Import RouterView
 import { useStore } from 'vuex';
 
-export function VueRoot(props) {//this is a presenter.
+export default defineComponent({//we can only do this and incorporate a "template" in a jsx define component if we have the build on runtime setting in vite config
+  name: 'VueRoot',
+  setup() {
     const store = useStore();
-    const isAuthenticated = computed(() => store.getters.isAuthenticated);
-
-  return (
+    return { isAuthenticated: store.getters.isAuthenticated };
+  },
+  template: `
     <div>
-      {isAuthenticated.value ? (
-        <>
-          <NavbarPresenter class="navbar" />
-          <div class="main-container">
-            <div class="left-section">
-              <MapPresenter />
-            </div>
-            <DetailsPresenter />
-            <SidebarPresenter />
-          </div>
-        </>
-      ) : (
-        <StartPresenter />
-      )}
+      <RouterView /> <!-- Dynamically render components based on the route -->
     </div>
-  );
-}
+  `,
+});

@@ -15,7 +15,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace} from '@/js/Data.js';
 import{polyline_store} from './polylinestore.js';
-
+import { useRouter } from 'vue-router';
 
 const firebaseApp = initializeApp(config);
 const auth = getAuth(firebaseApp);
@@ -73,6 +73,11 @@ export default createStore({
     SET_USER(state, user) {
         state.user = user;
         userSubscription(state);
+        if(user == null){
+          window.location.hash="#/main";
+        }else{
+          window.location.hash="#/map";
+        }
     },
     SET_AUTH_INITIALIZED(state, initialized) {
         state.authInitialized = initialized;

@@ -127,7 +127,7 @@ export async function RENDER_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state){
               });
               newPolyline.addListener("click", () => {
                 console.log(`Polyline clicked: ${newPolyline}`);
-                console.log(`Coordinates: ${place.geometry.location.lat()}, ${place.geometry.location.lng()}`);
+                console.log(`Coordinates: ${place.coords.lat}, ${place.coords.lng}`);
               });
 
               polyline_store.clearUserLines();
@@ -164,7 +164,7 @@ export function userSubscription(state){
   }
   //reference to the group document in Firestore
   if (!state.user) {
-    console.error("Could not subscribe to user on launch: user uid is missing or invalid. Probably not logged in.");
+    console.log("Could not subscribe to user on launch: user uid is missing or invalid. Probably not logged in.");
     return;
   }
   const userDocRef = doc(db, "users", state.user.uid);
