@@ -164,10 +164,10 @@
     margin-left: 20px;
   }
 
-  .opening-hours {
+  .opening-hours, .phone-number-details, .website-details {
     margin: 8px 0;
     margin-left: 20px;
     font-style: italic;
-}
+  }
 </style>
 

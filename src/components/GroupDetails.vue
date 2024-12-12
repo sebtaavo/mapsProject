@@ -3,7 +3,7 @@
     <!-- Check if a member is selected -->
     <div v-if="selectedMember">
       <button @click="clearSelection">&lt; Back</button>
-      <h3>{{ selectedMember.name }}'s Travel Guide</h3>
+      <h4>{{ selectedMember.name }}'s Travel Instructions</h4>
       <div v-if="matchingDirection(selectedMember.uid)">
         <div v-for="(step, index) in matchingDirection(selectedMember.uid).directions.routes[0].legs[0].steps" :key="index" class="direction-step">
           <div class="step-info">
@@ -68,6 +68,7 @@ export default {
   padding: 10px;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  width: 300px;
 }
 
 .member-box {
@@ -78,6 +79,9 @@ export default {
   cursor: pointer;
   color: white;
   margin-right: -10px;
+  margin-left: 5px;
+  word-wrap: break-word;
+  
 }
 
 .member-box:hover {
@@ -89,10 +93,12 @@ export default {
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
+  word-wrap: break-word;
 }
 
 .summary {
   margin-top: 10px;
+  word-wrap: break-word;
 }
 
 button {
@@ -102,6 +108,7 @@ button {
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
+  user-select:  none;
 }
 
 button:hover {
