@@ -26,10 +26,13 @@
 
     <!-- Show list of members if no member is selected -->
     <div v-else>
-      <div v-for="member in groupMembers" :key="member.uid" class="member-box" @click="selectMember(member)">
-        <h3>{{ member.name }}</h3>
-        <p><strong>Travel Time:</strong> {{ matchingDirection(member.uid)?.directions.routes[0].legs[0].duration.text || 'N/A' }}</p>
-        <p><strong>Distance:</strong> {{ matchingDirection(member.uid)?.directions.routes[0].legs[0].distance.text || 'N/A' }}</p>
+      <h2 class="travel-info-title" style="margin-left: 10px;">Travel Info</h2>
+      <div class="travel-info-container">
+        <div v-for="member in groupMembers" :key="member.uid" class="member-box" @click="selectMember(member)">
+          <h3>{{ member.name }}</h3>
+          <p><strong>Travel Time:</strong> {{ matchingDirection(member.uid)?.directions.routes[0].legs[0].duration.text || 'N/A' }}</p>
+          <p><strong>Distance:</strong> {{ matchingDirection(member.uid)?.directions.routes[0].legs[0].distance.text || 'N/A' }}</p>
+        </div>
       </div>
     </div>
   </div>

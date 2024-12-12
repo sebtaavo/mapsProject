@@ -278,7 +278,7 @@ body {
   height: 97.6%;
   overflow-x: hidden;
   overflow-y: auto;
-  max-height: 98%;
+  
   padding: 10px;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -608,28 +608,51 @@ body {
  * Gör sidan responsive
  **********************************/
 
-@media (max-width: 600px) {
+@media (max-width: 1152px) {
   .sidebar {
-    width: 100%;
+    width: 96.3%;
     position: relative; 
     order: 1; 
     height: auto; 
-  }
-
-  .categories {
-    position: relative; 
-    bottom: 0;
+    margin-top: 20px;
+    height: calc(100% + 50px);
   }
 
   .main-container {
     flex-direction: column; 
   }
 
-  .map-section {
-    height: 50vh;
+  .place-image {
+    width: 100%;
+    height: auto;
+    margin: 16px auto;
+    display: block;
+    margin-top: -10px;
+    margin-left: 1%;
+  }
+  .scrollablemaybe{
+    width: 100%;
+  }
+  .member-box {
+    margin-left: 10px;
+  }
+  .member-box:not(:first-child) {
+    margin-left: 10px;
+  }
+  .member-box:not(:last-child) {
+    margin-right: 10px;
   }
 
-  body {
-    overflow-y: auto; 
+  .travel-info-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+}
+}
+
+@media (max-width: 550px) {
+  .search-container {
+    margin-top: 30px;
+    width: 50%;
   }
 }
