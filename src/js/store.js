@@ -34,7 +34,6 @@ export default createStore({
     highlightMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     groupMemberMapMarkers: [], //in the shape of {long, lat, {locationObject}}
     groupHighlightedPlaces: [],
-    groupDirectionsToHighlight: [],
     //for sidebar groups
     groupKey: '',
     writtenGroupKey: '', //group key in sidebar - used for input field and translated to groupKey once we enter.
@@ -49,9 +48,10 @@ export default createStore({
     groupMidpoint: null,
     clickedMarkerDetails: null,
     latestDirectionSearch: null,
+    groupDetailsOpen: false,
   },
   getters: {
-    groupDirectionsToHighlight: (state) => state.groupDirectionsToHighlight,
+    groupDetailsOpen: (state) => state.groupDetailsOpen,//determines if user is currently looking at the group travel details after clicking in sidebar
     clickedMarkerDetails: (state) => state.clickedMarkerDetails, 
     isAuthenticated: (state) => !!state.user,
     user: (state) => state.user,
@@ -211,11 +211,14 @@ export default createStore({
   } catch (error) {
       console.error("Error fetching directions:", error);
   }
+  console.log("Search for directions for group gave: ", state.latestGroupDirectionSearch);
+  state.groupDetailsOpen = true;
   },
 
   CLOSE_DETAILS_VIEW(state){
     state.clickedMarkerDetails = null;
     state.clickedMarkerPlace = null;
+    state.groupDetailsOpen = false;
     polyline_store.clearUserLines();
     polyline_store.clearGroupLines();
   },

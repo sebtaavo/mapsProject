@@ -3,6 +3,7 @@ import SidebarPresenter from '@/presenters/SidebarPresenter.vue';
 import MapPresenter from '@/presenters/MapPresenter.vue';
 import NavbarPresenter from '@/presenters/NavbarPresenter.vue';
 import DetailsPresenter from '@/presenters/DetailsPresenter.vue';
+import GroupDetailsPresenter from '@/presenters/GroupDetailsPresenter.vue';
 import StartPresenter from '@/presenters/StartPresenter.vue';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
@@ -22,6 +23,7 @@ const routes = [
             <div class="left-section">
               <MapPresenter />
             </div>
+            <GroupDetailsPresenter/>
             <DetailsPresenter />
             <SidebarPresenter />
           </div>
@@ -32,6 +34,7 @@ const routes = [
         MapPresenter,
         SidebarPresenter,
         DetailsPresenter,
+        GroupDetailsPresenter,
       },
     },
     meta: { requiresAuth: true }, //requires authentication
