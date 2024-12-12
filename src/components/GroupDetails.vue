@@ -45,17 +45,23 @@
   </script>
   
   <style scoped>
-
-  .scrollablemaybe{
-    overflow: auto,
+  .scrollablemaybe {
+    overflow-x: hidden; /* Disable horizontal scrolling */
+    overflow-y: auto;   /* Enable vertical scrolling */
+    max-height: 97.6%;  /* Adjust to the desired height */
+    padding: 10px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
   }
+  
   .group-member {
     margin-bottom: 20px;
+    color: white
   }
   
   .group-member h3 {
     font-size: 1.2em;
-    color: #333;
+    color: white
   }
   
   .direction-step {
@@ -73,4 +79,5 @@
     margin: 5px 0;
   }
   </style>
+  
   
