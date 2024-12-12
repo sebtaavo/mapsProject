@@ -233,6 +233,9 @@ export function userSubscription(state){
       state.savedGroups = userData.savedGroups || [];
 
       if(state.groupKey === ''){//happens if we were kicked , consider removing savedGroups from here.
+        if(state.groupUnsubscribe){
+          state.groupUnsubscribe();
+        }
         state.groupMembers = [];
         state.kickedMembers = [];
         state.adminUid = null;
