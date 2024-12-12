@@ -89,7 +89,8 @@ export async function RENDER_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state){
       console.log(`Clicked highlight marker: ${place.name}`);
       console.log(`Coordinates: ${place.coords.lat}, ${place.coords.lng}`);
       state.clickedMarkerPlace = place;
-
+      state.clickedMarkerDetails = place;
+      state.groupDetailsOpen = false;
       //draw polyline
       //DRAWS POLYLINE
       try {
