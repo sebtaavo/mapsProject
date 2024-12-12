@@ -147,43 +147,4 @@ export default {
 
 <style scoped>
 
-.highlighted-places {
-  display: flex;
-  flex-direction: column;
-  gap: 8px; 
-  margin-top:35;
-  margin-left:20;
-}
-
-
-.place-row {
-  display: flex;
-  align-items: center;
-  gap: 8px; 
-}
-
-.place-icon {
-  width: 32px;
-  height: 32px;
-  object-fit: contain; 
-}
-
-.place-name {
-  flex-grow: 1; 
-  font-size: 16px;
-  color: #333;
-}
-
-.remove-button {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 4px;
-}
-
-.remove-button:hover {
-  color: red;
-}
 </style>

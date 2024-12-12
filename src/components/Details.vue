@@ -1,7 +1,7 @@
 <template>
-    <div v-if="place" id="details" class="sidebar">
+    <div v-if="place" id="detailsText" class="sidebar">
       <button @click = "emitUserCloses" class="closeSidebarButton">X</button>
-      <h2 class="place-name">{{ place.name }}</h2>
+      <h2 class="place-name-2">{{ place.name }}</h2>
   
        <!-- Image conditional rendering -->
       <img 
@@ -43,9 +43,9 @@
         No phone number registered.
       </p>
       <p class="website-details" v-if="websiteString">
-        {{ placeDetails.website }}
+        <a :href="placeDetails.website" target="_blank" rel="noopener noreferrer">{{ placeDetails.website }}</a>
       </p>
-      <p class="website-details" v-else-if="!websiteString">
+      <p class="website-details" v-else>
         No website registered.
       </p>
       
@@ -129,45 +129,3 @@
   },
   };
   </script>
-
-  <style scoped>
-  .details {
-    padding: 16px;
-    font-family: Arial, sans-serif;
-    margin-left: 20px;
-  }
-
-  #details h2{
-    margin-left: 20px;
-    text-decoration: underline;
-  }
-  
-  .place-image {
-    width: 95%;
-    height: auto;
-    margin: 16px auto;
-    display: block;
-    margin-top: -10px;
-  }
-  .place-name {
-    width: 80%;
-    height: auto;
-    margin: 16px auto;
-    display: block;
-    margin-top: 20px;
-  }
-  
-  .address,
-  .rating,
-  .price-level {
-    margin: 8px 0;
-    margin-left: 20px;
-  }
-
-  .opening-hours, .phone-number-details, .website-details {
-    margin: 8px 0;
-    margin-left: 20px;
-    font-style: italic;
-  }
-</style>
-

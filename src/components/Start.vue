@@ -37,35 +37,3 @@ export default {
   },
 };
 </script>
-
-
-<style scoped>
-.background-video-wrapper {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.background-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Ensures the video covers the whole area */
-  z-index: -1; /* Sends the video behind other content */
-}
-
-.content-overlay {
-  position: relative;
-  z-index: 1; /* Ensures content appears above the video */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: white; /* Adjust text color for better visibility */
-}
-
-</style>

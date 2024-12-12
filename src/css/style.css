@@ -62,6 +62,38 @@ body {
 }
 
 /**********************************
+ * Startup
+ **********************************/
+
+.background-video-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1; 
+}
+
+.content-overlay {
+  position: relative;
+  z-index: 1; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: white; 
+}
+
+/**********************************
  * Navbaren (Hela baren på toppen)
  **********************************/
 
@@ -179,7 +211,7 @@ body {
   top: 10px;
   left: 50%; 
   transform: translateX(-50%); 
-  z-index: 20; 
+  z-index: 10; 
   margin-top: -0.5rem;
   padding: 1rem;
   box-sizing: border-box;
@@ -244,12 +276,12 @@ body {
   position: relative;
   z-index: 10;
   height: 97.6%;
-  overflow-x: hidden; /* Disable horizontal scrolling */
-  overflow-y: auto;   /* Enable vertical scrolling */
-  max-height: 98%;  /* Adjust to the desired height */
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 98%;
   padding: 10px;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 /* Gruppmedlemmar*/
 .group-members {
@@ -393,16 +425,12 @@ body {
 .place-row {
   box-sizing: border-box;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
   align-items: center;
+  gap: 8px;
   margin: 1px auto;
   margin-top: 15px;
   margin-bottom: -8px;
   width: 90%;
-  color: white;
-}
-.place-name {
   color: white;
 }
 
@@ -445,6 +473,137 @@ body {
 }
 
 
+.highlighted-places {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; 
+  margin-top:35;
+  margin-left:20;
+}
+
+
+.place-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain; 
+}
+
+.place-name {
+  flex-grow: 1; 
+  font-size: 16px;
+  color: #333;
+}
+
+.remove-button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.remove-button:hover {
+  color: red;
+}
+
+/* Details */
+
+.detailsText {
+  padding: 16px;
+  font-family: Arial, sans-serif;
+  margin-left: 20px;
+}
+
+#detailsText h2{
+  margin-left: 20px;
+  text-decoration: underline;
+}
+
+.place-image {
+  width: 95%;
+  height: auto;
+  margin: 16px auto;
+  display: block;
+  margin-top: -10px;
+}
+.place-name-2 {
+  width: 80%;
+  height: auto;
+  margin: 16px auto;
+  display: block;
+  margin-top: 20px;
+}
+
+.address,
+.rating,
+.price-level {
+  margin: 8px 0;
+  margin-left: 20px;
+}
+
+.opening-hours, .phone-number-details, .website-details {
+  margin: 8px 0;
+  margin-left: 20px;
+  font-style: italic;
+}
+
+/* Travel Details */
+
+.scrollablemaybe {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 97.6%;
+  padding: 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  width: 300px;
+}
+
+.member-box {
+  background-color: #1E2021;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+  margin-right: -10px;
+  margin-left: 5px;
+  word-wrap: break-word;
+  
+}
+
+.member-box:hover {
+  background-color: #333333;
+}
+
+.direction-step {
+  background-color: #000000;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  word-wrap: break-word;
+}
+
+.summary {
+  margin-top: 10px;
+  word-wrap: break-word;
+}
+
+.leaveDirectionsButton {
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select:  none;
+}
+
+.leaveDirectionsButton:hover {
+  background-color: #666;
+}
+
 /**********************************
  * Gör sidan responsive
  **********************************/
@@ -474,5 +633,3 @@ body {
     overflow-y: auto; 
   }
 }
-
-
