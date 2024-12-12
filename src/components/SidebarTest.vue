@@ -88,6 +88,11 @@
 <script>
 export default {
   name:'SidebarTest',
+  data(){
+    return {
+      grpNum: 0,
+    };
+  },
   mounted() {
 
     },
@@ -180,7 +185,8 @@ export default {
                 console.log('User clicked OK: ', data);
                 let returnData = data;
                 if(data === ''){
-                  returnData = `${this.user.name}`;
+                  this.grpNum = this.grpNum + 1;
+                  returnData = "Group number " + this.grpNum;
                 }
                 this.$emit('actually-create-group', returnData); //emit up the desired name for the new group
               }).onCancel(() => {

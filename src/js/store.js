@@ -512,7 +512,8 @@ export default createStore({
         groupKey: state.groupKey,
       });
 
-      updateUserDocWithSavedGroup(state); //only updates if its new
+      const newGroupKey = state.groupKey;
+      updateUserDocWithSavedGroup(state, newGroupKey); //only updates if its new
 
     }catch(error){
       console.log("Error joining group: ", error);
