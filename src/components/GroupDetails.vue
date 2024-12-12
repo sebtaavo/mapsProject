@@ -25,7 +25,7 @@
     </div>
 
     <!-- Show list of members if no member is selected -->
-    <div v-else>
+    <div class="buggybastard" v-else>
       <h2 class="travel-info-title" style="margin-left: 10px;">Travel Info</h2>
       <div class="travel-info-container">
         <div v-for="member in groupMembers" :key="member.uid" class="member-box" @click="selectMember(member)">
