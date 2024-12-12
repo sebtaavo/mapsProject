@@ -23,7 +23,10 @@
               {{ day }}
             </p>
             <!-- Display the open_now status if it exists -->
-            <p v-if="openingHours.open_now">
+            <p v-if="openingHours.open_now == 'See timetable above'">
+              <strong>Status:</strong> See timetable above.
+            </p>
+            <p v-else-if="openingHours.open_now">
               <strong>Status:</strong> {{ openingHours.open_now ? "Open now" : "Closed now"}}
             </p>
         </div>
@@ -87,7 +90,15 @@
     return null; // No image to display
   },
     openingHours() {
-      if (this.placeDetails && this.placeDetails.opening_hours) {
+      console.log("Place: ", this.place);
+      console.log("Place details: ", this.placeDetails);
+      if(this.place._addedFromPersistence){
+        return {
+          weekday_text: this.place.opening_hours || [],
+          open_now: "See timetable above",
+        };
+      }
+      else if (this.placeDetails && this.placeDetails.opening_hours) {
         // If placeDetails has opening_hours, return both weekday_text and open_now if available
         return {
           weekday_text: this.placeDetails.opening_hours.weekday_text || [],

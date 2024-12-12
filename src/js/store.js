@@ -159,6 +159,7 @@ export default createStore({
   },
 
   async FIND_GROUP_DIRECTIONS(state, place) { // uses: clicked marker place clicked marker details
+    state.map.setCenter({ lat: place.coords.lat, lng: place.coords.lng });
     console.log("Draw for group");
     state.clickedMarkerDetails = null;
     state.clickedMarkerPlace = place;
