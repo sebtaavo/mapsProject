@@ -235,7 +235,9 @@ export function userSubscription(state){
       if(state.groupKey === ''){//happens if we were kicked , consider removing savedGroups from here.
         if(state.groupUnsubscribe){
           state.groupUnsubscribe();
+          throwRegularAlert('Left group', 'You have been removed from the group.', null);
         }
+
         state.groupMembers = [];
         state.kickedMembers = [];
         state.adminUid = null;
@@ -328,3 +330,28 @@ export async function fetchDetailsForPlace(state, place){
     console.error("Error in fetching places:", error);
 }
 }
+import Swal from 'sweetalert2';
+export function throwRegularAlert(stringTitle, stringBody, optionalFunc){
+  Swal.fire({
+    title: stringTitle,
+    text: stringBody,
+    backdrop: true,
+    confirmButtonText: 'OK',
+    color: '#fff',
+    background: '#181A1B',
+    confirmButtonColor: '#9F7AEA',
+    customClass: {
+      popup: 'alert-dialog-popup',
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      console.log('OK clicked:', result.value);
+      //if we passed a func, call it
+      if(optionalFunc !== null){
+        optionalFunc();
+      }
+    } else if (result.isDismissed) {
+      console.log('User left the dialog without pressing OK. np.');
+    }
+  });
+};

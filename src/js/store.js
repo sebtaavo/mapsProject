@@ -13,7 +13,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace, updateUserDocWithSavedGroup} from '@/js/Data.js';
+import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert} from '@/js/Data.js';
 import{polyline_store} from './polylinestore.js';
 import { useRouter } from 'vue-router';
 
@@ -305,6 +305,7 @@ export default createStore({
     state.groupName = name;
 
     if (!state.user || state.groupKey) {
+      throwRegularAlert('Failed to create a group','Log in to create a group.', null);
       console.log("You need to be logged in to create a group. Or you cannot create a group while you have one active.");
       return;
     }
@@ -341,6 +342,7 @@ export default createStore({
 
     } catch (error) {
       console.error("Error creating group: ", error);
+      throwRegularAlert('Failed to create group', 'An error occured while saving the group to the databse. Sorry for the inconvenience.', null);
       console.log("An error occurred while creating the group.");
     }
   },
@@ -364,6 +366,7 @@ export default createStore({
       );
       if (isPlaceAlreadyAdded) {
         console.log("Place is already added to the group.");
+        throwRegularAlert('Pin already added!', 'That pin has already been added by another group member.', null);
         return; //exit since the place is already present
       }
 
@@ -390,6 +393,7 @@ export default createStore({
       });
 
     }catch(error){
+      throwRegularAlert('Error', 'An error occured while sending the pin information to your group. Sorry for the inconvenience.', null);
       console.log("Error pushing new place to persistence in group: ", error);
     }
   },
@@ -486,10 +490,12 @@ export default createStore({
       const groupSnap = await getDoc(groupRef);
       if (!groupSnap.exists()) {
         console.log("The group does not exist.");
+        throwRegularAlert('Could not join group', 'The given group key is not connected to any active group. Verify the spelling.', null);
         return;
       }
       if(groupSnap.data().kickedMembers.includes(state.user.uid)){
         console.log("Could not join group. You've been kicked from this group before.");
+        throwRegularAlert('Could not join group', 'You could not join the given group because youve been kicked from it before.', null);
         state.groupKey = '';
         return;
       }
@@ -522,7 +528,7 @@ export default createStore({
     async KICK_MEMBER(state, member){
       state.kickedMembers.push(member);
       if (!state.user || !state.groupKey) {
-        console.log("You need to be logged in and have a valid group key to join a group");
+        console.log("You need to be logged in and have a valid group key to kick a person from a group");
         return;
       }
       try{
