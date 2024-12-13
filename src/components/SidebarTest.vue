@@ -32,7 +32,7 @@
       <hr class="divider" />
     </div>
 
-    <div v-if="savedGroups.length" class="dropdown-container">
+    <div v-if="savedGroups.length && !groupMembers.length" class="dropdown-container">
       <label for="saved-group-select">Select a Saved Group:</label>
       <select id="saved-group-select" @change="handleGroupSelect" class="dropdown">
         <option value="">-- Select a Saved Group --</option>
@@ -46,23 +46,43 @@
       </select>
     </div>
 
-    <div class="join-input-container">
-      <input
-        type="text"
-        :value="groupMembers.length ? groupKey : writtenGroupKey"
-        placeholder="Join Through Key"
-        class="join-input"
-        id="join-input"
-        @keyup.enter="handleJoinGroup"
-        @input="handleUpdateGroupKey"
-        :disabled="groupMembers.length !== 0"
-      />
-      <button v-if="groupKey" class="copy-group-key-button" @click="copyGroupKey">
-        Copy Group Key
-      </button>
+    <div 
+  class="join-input-container" 
+  :class="{ 'in-group': groupMembers.length > 0 }"
+    >
+      <div class="join-input-wrapper">
+        <input
+          type="text"
+          :value="groupMembers.length ? groupKey : writtenGroupKey"
+          placeholder="Join Through Key"
+          class="join-input"
+          id="join-input"
+          @keyup.enter="handleJoinGroup"
+          @input="handleUpdateGroupKey"
+          :disabled="groupMembers.length !== 0"
+        />
+        <button 
+          v-if="groupMembers.length === 0" 
+          class="enter-group-button" 
+          @click="handleJoinGroup"
+        >
+          Enter
+        </button>
+      </div>
+      <button 
+  v-if="groupMembers.length" 
+  class="copy-group-key-button" 
+  :class="{ 'move-up': groupMembers.length > 0 }"
+  @click="copyGroupKey"
+>
+  Copy Group Key
+</button>
+
     </div>
 
-    <div v-if="user && groupKey === ''" class="create-group-container">
+
+
+    <div v-if="user && !groupMembers.length" class="create-group-container">
       <button class="create-group-button" @click="handleRequestCreateGroup">
         Create Your Own Group
       </button>
@@ -86,7 +106,6 @@
         />
         <span 
           class="place-name" 
-          style="color: white" 
           @click="highlightWasClicked(groupHighlightedPlaces[index])"
         >
           {{ place.name }}
@@ -231,3 +250,5 @@ export default {
   },
 };
 </script>
+
+

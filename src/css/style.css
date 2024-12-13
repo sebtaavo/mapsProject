@@ -308,6 +308,7 @@ body {
   align-items: center;
   margin-bottom: 1rem;
   color: #ffffff;
+  cursor: pointer;
 }
 
 .member-icon {
@@ -361,35 +362,57 @@ body {
 }
   
 /* Joina med key */
-
+/* Default styles (not in a group) */
 .join-input-container {
   user-select: none;
   position: relative;
   width: 100%;
-  text-align: center;
   margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column; /* Ensure children stack vertically */
+  align-items: center; /* Center the content horizontally */
+  gap: 0.5rem; /* Space between rows */
+}
+
+.join-input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 90%; /* Default width when not in a group */
+  background-color: #1E2021;
+  border: 1px solid #4a5568;
+  box-sizing: border-box;
 }
 
 .join-input {
-  width: 90%;
-  box-sizing: border-box;
+  flex-grow: 1;
   padding: 0.56rem 1rem 0.5rem;
-  background-color: #1E2021;
-  border: 1px solid #4a5568;
+  background-color: transparent;
+  border: none;
   color: #ffffff;
   font-size: 1rem;
-  display: block;
-  margin: 0 auto;
-}
-
-.join-input:not(:placeholder-shown) {
   text-align: left;
 }
 
-.join-input::placeholder {
-  color: #a0aec0;
-  float: center;
+.enter-group-button {
+  padding: 0.56rem 1rem;
+  background-color: #4a5568;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  white-space: nowrap;
 }
+
+.enter-group-button:hover {
+  background-color: #2d3748;
+}
+
+/* Styles when in a group */
+.join-input-container.in-group .join-input-wrapper {
+  margin-top: -20px;
+  width: 90%; /* Input field takes the full width when in a group */
+}
+
 
 /* Create your group knapp */
 
@@ -489,9 +512,13 @@ body {
 }
 
 .place-name {
-  flex-grow: 1; 
+  flex-grow: 1;
   font-size: 16px;
-  color: #333;
+  color: white;
+}
+
+.place-name:hover {
+  color: #4499d1;
 }
 
 .remove-button {
@@ -712,10 +739,14 @@ body {
   color: #a0aec0;
   font-size: 1rem;
   display: block;
-  margin: 0.5rem auto 0;
+  margin: 0.5rem auto 0; /* Default margin */
   text-align: center;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.copy-group-key-button.move-up {
+  margin-top: -0.1rem; /* Move the button upwards */
 }
 
 .copy-group-key-button:hover {
