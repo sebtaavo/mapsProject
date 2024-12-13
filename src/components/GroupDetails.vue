@@ -18,8 +18,8 @@
         <div class="summary">
           <p><strong>Distance to Travel:</strong> {{ matchingDirection(selectedMember.uid).directions.routes[0].legs[0].distance.text }}</p>
           <p><strong>Time to Travel:</strong> {{ matchingDirection(selectedMember.uid).directions.routes[0].legs[0].duration.text }}</p>
-          <p><strong>Arrival Time:</strong> {{ matchingDirection(selectedMember.uid).directions.routes[0].legs[0].arrival_time.text }}</p>
-          <p><strong>Departure Time:</strong> {{ matchingDirection(selectedMember.uid).directions.routes[0].legs[0].departure_time.text }}</p>
+          <p><strong>Arrival Time:</strong> {{ matchingDirection(selectedMember.uid).directions.routes[0].legs[0].arrival_time ? matchingDirection(selectedMember.uid).directions.routes[0].legs[0].arrival_time.text : 'N/A' }}</p>
+          <p><strong>Departure Time:</strong> {{ matchingDirection(selectedMember.uid).directions.routes[0].legs[0].departure_time ? matchingDirection(selectedMember.uid).directions.routes[0].legs[0].departure_time.text : 'N/A' }}</p>
         </div>
       </div>
     </div>
