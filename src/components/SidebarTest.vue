@@ -106,6 +106,7 @@
         />
         <span 
           class="place-name" 
+
           @click="highlightWasClicked(groupHighlightedPlaces[index])"
         >
           {{ place.name }}
