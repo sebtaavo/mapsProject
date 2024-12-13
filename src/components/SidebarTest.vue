@@ -86,6 +86,7 @@
 
 
 <script>
+import Swal from 'sweetalert2';
 export default {
   name:'SidebarTest',
   data(){
@@ -159,40 +160,39 @@ export default {
             this.$emit('kick-member', member);
         },
         handleRequestCreateGroup() {
-            this.$emit('create-group'); 
-            //CREATE DIALOGUE FROM QUASAR
-            this.$q.dialog({
-                title: 'Choose a group name.',
-                message: 'The invite key is generated separately after this step. Copy and send the key to your friends!',
-                ok: 'OK',
-                cancel: 'Cancel',
-                persistent: true,  // Keeps the dialog open if clicked outside
-                class: 'custom-dialog', // Add custom class to the dialog
-                style: 'background-color: black; color: white;', // Direct styling
-                ok: {
-                  color: 'black', // Make the OK button text white
-                },
-                cancel: {
-                  color: 'black', // Make the Cancel button text white
-                },
-                // Adding a prompt input with white text and black background
-                prompt: {
-                  model: '',  // The input field's model value
-                  type: 'text',  // Input type (e.g., text, number)
-                  style: 'background-color: white; color: black;',  // Input field customization
-                }
-              }).onOk((data) => {
-                console.log('User clicked OK: ', data);
-                let returnData = data;
-                if(data === ''){
-                  this.grpNum = this.grpNum + 1;
-                  returnData = "Group number " + this.grpNum;
-                }
-                this.$emit('actually-create-group', returnData); //emit up the desired name for the new group
-              }).onCancel(() => {
-                console.log('User clicked Cancel');
-          });
-        },
+    this.$emit('create-group'); 
+
+          //this uses a custom dialogue component from sweetalert2: https://sweetalert2.github.io/
+    Swal.fire({
+      title: 'Choose a group name',
+      text: 'The invite key is generated separately after this step. Copy and send the key to your friends!',
+      input: 'text', // Enables a prompt input
+      inputPlaceholder: 'Enter group name...',
+      backdrop: true,
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      color: '#fff',
+      background: '#181A1B',
+      confirmButtonColor: '#9F7AEA',
+      cancelButtonColor: '#FF0000',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        popup: 'custom-dialog-popup', // Custom popup class
+        title: 'custom-dialog-title', // Custom title class
+        input: 'custom-dialog-input', // Custom input field class
+        confirmButton: 'custom-confirm-btn', // Custom confirm button class
+        cancelButton: 'custom-cancel-btn' // Custom cancel button class
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log('OK clicked:', result.value);
+        // Handle the confirmed value here
+        this.$emit('actually-create-group', result.value || 'Default Group Name');
+      } else if (result.isDismissed) {
+        console.log('User canceled or closed the dialog');
+      }
+    });
+      },
         handleMemberWasClicked(member) {
             this.$emit('clicked-member', member); 
         },
@@ -210,8 +210,3 @@ export default {
   },
 };
 </script>
-
-
-<style scoped>
-
-</style>
