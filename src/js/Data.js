@@ -359,7 +359,7 @@ export function throwSavedGroupManagementPopup(state, selectOptions){
   const newArray = selectOptions.map(option => option.name);
   Swal.fire({
     title: "Choose a group to remove",
-    text: "Choose a group from the dropdown and press confirm to remove, or cancel to exit the window without making any changes.",
+    text: "Choose a group from the dropdown and press 'Delete selected', or cancel to exit the window without making any changes.",
     input: "select",
     inputPlaceholder: '-- Choose a saved group --',
     inputOptions: newArray,
@@ -378,7 +378,7 @@ export function throwSavedGroupManagementPopup(state, selectOptions){
       if(result.value){//if we actually chose something that isnt just the default value.
         console.log('OK clicked:', result.value, ' equivalent to group: ', selectOptions[result.value]); //this is the index in the array.
         removeSavedGroupFromUserDoc(state, selectOptions[result.value].key);
-        throwRegularAlert("Removed group",'Removed ' + selectOptions[result.value].name + ' from saved groups!', null);
+        throwRegularAlert("Removed group",'Removed ' + selectOptions[result.value].name + ' from saved groups! Join the group again with its join-key to re-save it.', null);
       }
       else{
         throwRegularAlert("No group selected",'You did not select a group. No changes were made.', null);
