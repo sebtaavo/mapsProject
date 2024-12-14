@@ -43,7 +43,7 @@
         No phone number registered.
       </p>
       <p class="website-details" v-if="websiteString">
-        <a :href="placeDetails.website" target="_blank" rel="noopener noreferrer">{{ placeDetails.website }}</a>
+        <a style="color: #4499d1;" :href="placeDetails.website" target="_blank" rel="noopener noreferrer">{{ placeDetails.website }}</a>
       </p>
       <p class="website-details" v-else>
         No website registered.

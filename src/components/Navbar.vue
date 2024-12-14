@@ -5,7 +5,7 @@
       <span class="title">Where do we meet?</span>
     </div>
     <div class="auth-section">
-      <button id="authButton" class="icon-container" @click="handleManageSavedGroups">
+      <button id="authButton" class="icon-container2" @click="handleManageSavedGroups">
         Manage saved groups
       </button>
       <button id="authButton" class="icon-container" @click="handleAuthClick">

@@ -148,9 +148,30 @@ body {
   padding: 0.5rem 1rem;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
-  margin-right: 48px;
+  margin-right: 30px;
   margin-top: 0rem;
   user-select: none;
+}
+
+.icon-container2 {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: #9f7aea;
+  border-radius: 9999px;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  margin-right: 14px;
+  margin-top: 0rem;
+  user-select: none;
+}
+
+.icon-container2:hover {
+  background-color: #8c5ce9;
+  transform: scale(1.05);
 }
 
 .icon-container-start-page {
@@ -304,6 +325,7 @@ body {
   margin-bottom: 1rem;
   margin-left: 1rem;
   margin-top: 1rem;
+  user-select: none;
 }
 .group-pins-text {
   margin-bottom: 1rem;
@@ -324,6 +346,10 @@ body {
   margin-bottom: 1rem;
   color: #ffffff;
   cursor: pointer;
+}
+
+.member-item:hover {
+  color: #4499d1;
 }
 
 .member-icon {
@@ -375,25 +401,75 @@ body {
   width: 100%; 
   user-select: none;
 }
-  
+
+/* Dropdown */
+
+.dropdown-container {
+  user-select: none;
+  position: relative;
+  width: 100%;
+  text-align: center;
+  margin-top: -0.5rem;
+}
+
+.dropdown {
+  width: 90%;
+  box-sizing: border-box;
+  padding: 0.56rem 1rem 0.5rem;
+  background-color: #1E2021;
+  border: 1px solid #4a5568;
+  color: #a0aec0; 
+  font-size: 1rem;
+  display: block;
+  margin: 0 auto;
+  margin-top: 18px;
+}
+
+.dropdown-title {
+  color: #a0aec0;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  height: 30%;
+  margin-top: -15px;
+}
+
+.dropdownLabel{
+  color: #a0aec0;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  height: 30%;
+  margin-top: -15px;
+}
+
+.custom-dropdown {
+  background-color: #181A1B; 
+  color: #fff;
+}
+
+.custom-dropdown option {
+  background-color: #181A1B; 
+  color: #fff;  
+}
+
 /* Joina med key */
-/* Default styles (not in a group) */
-/* Original styles remain unchanged */
+
 .join-input-container {
   user-select: none;
   position: relative;
   width: 100%;
   margin-top: 0.5rem;
   display: flex;
-  flex-direction: column; /* Ensure children stack vertically */
-  align-items: center; /* Center the content horizontally */
-  gap: 0.5rem; /* Space between rows */
+  flex-direction: column; 
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .join-input-wrapper {
   display: flex;
   align-items: center;
-  width: 90%; /* Default width when not in a group */
+  width: 90%; 
   background-color: #1E2021;
   border: 1px solid #4a5568;
   box-sizing: border-box;
@@ -423,16 +499,41 @@ body {
   background-color: #2d3748;
 }
 
-/* Styles when in a group */
 .join-input-container.in-group .join-input-wrapper {
   margin-top: -20px;
-  width: 90%; /* Input field takes the full width when in a group */
+  width: 90%; 
 }
 
-/* New conditional styles */
 .no-saved-groups {
-  margin-top: -17px; /* Move the container up */
+  margin-top: -17px;
 }
+
+/* Copy group key */
+
+.copy-group-key-button {
+  width: 90%;
+  padding: 0.56rem 1rem 0.5rem;
+  background-color: #1E2021;
+  border: 1px solid #4a5568;
+  color: #a0aec0;
+  font-size: 1rem;
+  display: block;
+  margin: 0.5rem auto 0; /* Default margin */
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.copy-group-key-button.move-up {
+  margin-top: -0.1rem; /* Move the button upwards */
+}
+
+.copy-group-key-button:hover {
+  background-color: #8c5ce9;
+  color: #ffffff;
+}
+
+/* Create own group key */
 
 .create-group-container {
   user-select: none;
@@ -442,9 +543,8 @@ body {
   margin-top: 0.5rem;
 }
 
-/* Add conditional style for create group container */
 .create-group-container.no-saved-groups {
-  margin-top: 6px; /* Move the container up */
+  margin-top: 6px; 
 }
 
 .create-group-button {
@@ -465,7 +565,6 @@ body {
   background-color: #8c5ce9;
   color: #ffffff;
 }
-
 
 /* Pinnade ställen */
 
@@ -598,7 +697,6 @@ body {
   margin-left: 20px;
   font-style: italic;
 }
-
 /* Travel Details */
 
 .scrollablemaybe {
@@ -724,73 +822,22 @@ body {
     width: 50%;
   }
 }
-.dropdown-container {
-  user-select: none;
-  position: relative;
-  width: 100%;
-  text-align: center;
-  margin-top: -0.5rem;
-}
 
-.dropdown {
-  width: 90%;
-  box-sizing: border-box;
-  padding: 0.56rem 1rem 0.5rem;
-  background-color: #1E2021;
-  border: 1px solid #4a5568;
-  color: #a0aec0; 
-  font-size: 1rem;
-  display: block;
-  margin: 0 auto;
-  margin-top: 18px;
-}
+@media (max-width: 500px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem 1rem;
+    height: 3,2rem;
+  }
 
-.dropdown-title {
-  color: #a0aec0;
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-  text-align: center;
-  height: 30%;
-  margin-top: -15px;
-}
+  .icon-container {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
 
-.dropdownLabel{
-  color: #a0aec0;
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-  text-align: center;
-  height: 30%;
-  margin-top: -15px;
-}
-
-.copy-group-key-button {
-  width: 90%;
-  padding: 0.56rem 1rem 0.5rem;
-  background-color: #1E2021;
-  border: 1px solid #4a5568;
-  color: #a0aec0;
-  font-size: 1rem;
-  display: block;
-  margin: 0.5rem auto 0; /* Default margin */
-  text-align: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.copy-group-key-button.move-up {
-  margin-top: -0.1rem; /* Move the button upwards */
-}
-
-.copy-group-key-button:hover {
-  background-color: #8c5ce9;
-  color: #ffffff;
-}
-.custom-dropdown {
-  background-color: #181A1B; /* Black background for the dropdown */
-  color: #fff;           /* White text */
-}
-
-.custom-dropdown option {
-  background-color: #181A1B; /* Black background for dropdown options */
-  color: #fff;           /* White text for options */
+  .icon-container2 {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
 }
