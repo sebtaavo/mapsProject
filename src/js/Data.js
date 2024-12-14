@@ -375,7 +375,7 @@ export function throwSavedGroupManagementPopup(state, selectOptions){
     },
   }).then((result) => {
     if (result.isConfirmed) {
-      if(result.value.key){//if we actually chose something that isnt just the default value.
+      if(result.value){//if we actually chose something that isnt just the default value.
         console.log('OK clicked:', result.value, ' equivalent to group: ', selectOptions[result.value]); //this is the index in the array.
         removeSavedGroupFromUserDoc(state, selectOptions[result.value].key);
         throwRegularAlert("Removed group",'Removed ' + selectOptions[result.value].name + ' from saved groups!', null);
