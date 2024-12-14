@@ -2,7 +2,7 @@
   <div class="navbar">
     <div class="logo">
       <img src="@/images/PurpleUser.svg" class="user-icon" />
-      <span class="title">GroupFinder</span>
+      <span class="title">Where do we meet?</span>
     </div>
     <div class="auth-section">
       <button id="authButton" class="icon-container" @click="handleManageSavedGroups">
