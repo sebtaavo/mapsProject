@@ -197,7 +197,7 @@ export async function removeSavedGroupFromUserDoc(state, thisKey) {
 
   if (userDoc.exists()) {
       const userData = userDoc.data();
-
+      console.log("When removing saved group, found data: ", userData);
       if (Array.isArray(userData.savedGroups)) {
           // Filter out the group with the matching key
           const updatedGroups = userData.savedGroups.filter((group) => group.key !== thisKey);
@@ -352,6 +352,40 @@ export function throwRegularAlert(stringTitle, stringBody, optionalFunc){
       }
     } else if (result.isDismissed) {
       console.log('User left the dialog without pressing OK. np.');
+    }
+  });
+};
+export function throwSavedGroupManagementPopup(state, selectOptions){
+  const newArray = selectOptions.map(option => option.name);
+  Swal.fire({
+    title: "Choose a group to remove",
+    text: "Choose a group from the dropdown and press confirm to remove, or cancel to exit the window without making any changes.",
+    input: "select",
+    inputPlaceholder: '-- Choose a saved group --',
+    inputOptions: newArray,
+    backdrop: true,
+    showCancelButton: true,
+    confirmButtonText: 'Delete selected',
+    color: '#fff',
+    background: '#181A1B',
+    confirmButtonColor: '#9F7AEA',
+    customClass: {
+      popup: 'alert-dialog-popup',
+      input: 'custom-dropdown',
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      if(result.value.key){//if we actually chose something that isnt just the default value.
+        console.log('OK clicked:', result.value, ' equivalent to group: ', selectOptions[result.value]); //this is the index in the array.
+        removeSavedGroupFromUserDoc(state, selectOptions[result.value].key);
+        throwRegularAlert("Removed group",'Removed ' + selectOptions[result.value].name + ' from saved groups!', null);
+      }
+      else{
+        throwRegularAlert("No group selected",'You did not select a group. No changes were made.', null);
+      }
+    } else if (result.isDismissed) {
+      console.log('User left the dialog without pressing OK. np.');
+      throwRegularAlert("No changes made",'No groups were removed.', null);
     }
   });
 };

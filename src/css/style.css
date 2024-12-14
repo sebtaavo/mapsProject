@@ -754,3 +754,12 @@ body {
   background-color: #8c5ce9;
   color: #ffffff;
 }
+.custom-dropdown {
+  background-color: #181A1B; /* Black background for the dropdown */
+  color: #fff;           /* White text */
+}
+
+.custom-dropdown option {
+  background-color: #181A1B; /* Black background for dropdown options */
+  color: #fff;           /* White text for options */
+}

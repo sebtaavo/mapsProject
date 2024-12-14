@@ -33,7 +33,7 @@
     </div>
 
     <div v-if="savedGroups.length && !groupMembers.length" class="dropdown-container">
-      <label for="saved-group-select">Select a Saved Group:</label>
+      <label for="saved-group-select">Saved groups:</label>
       <select id="saved-group-select" @change="handleGroupSelect" class="dropdown">
         <option value="">-- Select a Saved Group --</option>
         <option

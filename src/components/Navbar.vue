@@ -5,6 +5,9 @@
       <span class="title">GroupFinder</span>
     </div>
     <div class="auth-section">
+      <button id="authButton" class="icon-container" @click="handleManageSavedGroups">
+        Manage saved groups
+      </button>
       <button id="authButton" class="icon-container" @click="handleAuthClick">
         {{ authButtonText }}
       </button>
@@ -33,6 +36,9 @@ export default {
     handleAuthClick() {
       this.$emit(this.isAuthenticated ? 'logout' : 'login');
     },
+    handleManageSavedGroups(){
+      this.$emit('handlesaves');
+    }
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div>
-      <Navbar :isAuthenticated="isAuthenticated" @login="login" @logout="logout" />
+      <Navbar :isAuthenticated="isAuthenticated" @login="login" @logout="logout" @handlesaves="manageSaves"/>
     </div>
   </template>
   
@@ -17,7 +17,7 @@
       ...mapGetters(["isAuthenticated"]),
     },
     methods: {
-      ...mapActions(["login", "logout"]),
+      ...mapActions(["login", "logout", "manageSaves"]),
     },
     created() {
       this.$store.dispatch("initializeAuth");

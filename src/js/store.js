@@ -13,7 +13,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert} from '@/js/Data.js';
+import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert, throwSavedGroupManagementPopup} from '@/js/Data.js';
 import{polyline_store} from './polylinestore.js';
 import { useRouter } from 'vue-router';
 
@@ -80,6 +80,9 @@ export default createStore({
   },
   mutations: {
 
+    OPEN_MANAGE_SAVES_POPUP(state){
+      throwSavedGroupManagementPopup(state, state.savedGroups);
+    },
     //FOR PROMPTING A GROUP NAME
     SET_GROUP_NAME_PROMPT_TRUE(state){
       state.promptGroupName = true;
@@ -479,6 +482,7 @@ export default createStore({
     state.groupKey = state.writtenGroupKey;
     if (!state.user || !state.groupKey) {
       console.log("You need to be logged in and have a valid group key to join a group");
+      throwRegularAlert('Could not join group', 'No key was entered into the Join Through Key-field. Please try again with an active key, or create your own group.', null);
       return;
     }
 
@@ -682,7 +686,10 @@ export default createStore({
     },
     removePromptForName({commit}, name){
       commit('GROUP_NAME_PROMPT_DONE', name);
-    }
+    },
+    manageSaves({commit}){
+      commit('OPEN_MANAGE_SAVES_POPUP');
+    },
   },
   modules: {
   },
