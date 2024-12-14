@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import { getFirestore } from 'firebase/firestore';
 import{polyline_store} from './polylinestore.js';
+import store from './store.js';
 
 export function groupSubscription(state){
       const db = getFirestore();
@@ -388,4 +389,76 @@ export function throwSavedGroupManagementPopup(state, selectOptions){
       throwRegularAlert("No changes made",'No groups were removed.', null);
     }
   });
+};
+
+export function clearSearchMapMarkers(state){
+  state.locationMapMarkers.forEach((marker) => {
+    marker.setVisible(false);
+    marker.setMap(null);
+    marker = null;
+  });
+  state.locationMapMarkers = [];
+};
+
+
+export async function dataSearchMapWithCurrentQuery(state){
+  if (!state.currentMapSearchQuery.trim()) {
+    console.log("Please enter a search query.");
+    return;
+  }
+
+  try {
+    const { PlacesService } = await google.maps.importLibrary("places");
+    
+    const request = {
+      query: state.currentMapSearchQuery,
+      location: new google.maps.LatLng(state.groupMidpoint.lat, state.groupMidpoint.lng),
+      radius: 1000, //in meters
+      fields: ["name", "geometry", "business_status", "website", "openingHours", "opening_hours"],
+    };
+
+    const service = new PlacesService(state.map); // Use the map passed as a prop
+
+    service.textSearch(request, async (results, status) => {
+      console.log('Search results:', results);
+      console.log('Search status:', status);
+      clearSearchMapMarkers(state);
+
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        state.latestPlaceSearch = results;
+        console.log('Updated model to include latest place search result: ', state.latestPlaceSearch);
+
+        if (state.map instanceof google.maps.Map) {
+          const { LatLngBounds } = await google.maps.importLibrary("core");
+          const bounds = new LatLngBounds();
+
+          //add marker coordinates to model
+          results.forEach((place) => {
+            const mapMarker = new google.maps.Marker({
+              map: state.map,
+              position: place.geometry.location,
+              title: place.name,
+            });
+            //this is what registers a click on this specific marker on the map.
+            mapMarker.addListener("click", () => {
+              console.log(`Marker clicked: ${place.name}`);
+              console.log(`Coordinates: ${place.geometry.location.lat()}, ${place.geometry.location.lng()}`);
+              store.dispatch('userInterestedInLocation', place);
+            });
+
+            bounds.extend(place.geometry.location);
+            store.dispatch('addLocationMarker', mapMarker);
+          });
+          state.map.fitBounds(bounds); // Fit map to bounds of the markers
+        } else {
+          console.error("Map is not valid");
+        }
+      } else {
+        alert("No results found.");
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching places:", error);
+    alert("An error occurred while fetching places.");
+  }
 };
