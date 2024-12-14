@@ -48,45 +48,47 @@
 
     <div 
   class="join-input-container" 
-  :class="{ 'in-group': groupMembers.length > 0 }"
-    >
-      <div class="join-input-wrapper">
-        <input
-          type="text"
-          :value="groupMembers.length ? groupKey : writtenGroupKey"
-          placeholder="Join Through Key"
-          class="join-input"
-          id="join-input"
-          @keyup.enter="handleJoinGroup"
-          @input="handleUpdateGroupKey"
-          :disabled="groupMembers.length !== 0"
-        />
-        <button 
-          v-if="groupMembers.length === 0" 
-          class="enter-group-button" 
-          @click="handleJoinGroup"
-        >
-          Enter
-        </button>
-      </div>
-      <button 
-  v-if="groupMembers.length" 
-  class="copy-group-key-button" 
-  :class="{ 'move-up': groupMembers.length > 0 }"
-  @click="copyGroupKey"
+  :class="{ 'in-group': groupMembers.length > 0, 'no-saved-groups': savedGroups.length === 0 }"
 >
-  Copy Group Key
-</button>
+  <div class="join-input-wrapper">
+    <input
+      type="text"
+      :value="groupMembers.length ? groupKey : writtenGroupKey"
+      placeholder="Join Through Key"
+      class="join-input"
+      id="join-input"
+      @keyup.enter="handleJoinGroup"
+      @input="handleUpdateGroupKey"
+      :disabled="groupMembers.length !== 0"
+    />
+    <button 
+      v-if="groupMembers.length === 0" 
+      class="enter-group-button" 
+      @click="handleJoinGroup"
+    >
+      Enter
+    </button>
+  </div>
+  <button 
+    v-if="groupMembers.length" 
+    class="copy-group-key-button" 
+    :class="{ 'move-up': groupMembers.length > 0 }"
+    @click="copyGroupKey"
+  >
+    Copy Group Key
+  </button>
+</div>
 
-    </div>
+<div 
+  v-if="user && !groupMembers.length" 
+  class="create-group-container" 
+  :class="{ 'no-saved-groups': savedGroups.length === 0 }"
+>
+  <button class="create-group-button" @click="handleRequestCreateGroup">
+    Create Your Own Group
+  </button>
+</div>
 
-
-
-    <div v-if="user && !groupMembers.length" class="create-group-container">
-      <button class="create-group-button" @click="handleRequestCreateGroup">
-        Create Your Own Group
-      </button>
-    </div>
 
     <span class="group-pins-heading" v-if="groupMembers.length > 0">Group pins</span>
     <div class="group-pins-text" v-if="!(groupHighlightedPlaces.length > 0) && groupMembers.length > 0"><!--this div is only shown if we dont have any pins yet-->

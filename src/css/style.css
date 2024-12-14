@@ -378,6 +378,7 @@ body {
   
 /* Joina med key */
 /* Default styles (not in a group) */
+/* Original styles remain unchanged */
 .join-input-container {
   user-select: none;
   position: relative;
@@ -428,8 +429,10 @@ body {
   width: 90%; /* Input field takes the full width when in a group */
 }
 
-
-/* Create your group knapp */
+/* New conditional styles */
+.no-saved-groups {
+  margin-top: -17px; /* Move the container up */
+}
 
 .create-group-container {
   user-select: none;
@@ -437,6 +440,11 @@ body {
   width: 100%;
   text-align: center;
   margin-top: 0.5rem;
+}
+
+/* Add conditional style for create group container */
+.create-group-container.no-saved-groups {
+  margin-top: 6px; /* Move the container up */
 }
 
 .create-group-button {
@@ -457,6 +465,7 @@ body {
   background-color: #8c5ce9;
   color: #ffffff;
 }
+
 
 /* Pinnade ställen */
 
@@ -515,7 +524,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px; 
-  margin-top:35;
+  margin-top:-20px;
   margin-left:20;
 }
 
@@ -698,6 +707,14 @@ body {
 }
   .closeSidebarButton{
     margin-right: 20px;
+  }
+  .group-button {
+    width: 94%;
+    display: block;
+    margin: 0 auto;
+  }
+  .divider {
+    width: 95%; 
   }
 }
 
