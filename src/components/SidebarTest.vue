@@ -1,13 +1,13 @@
 <template>
   <div class="sidebar" v-if="!place">
     <div class="group-members" v-if="groupMembers">
-      <h2 class="heading">Group Members</h2>
+      <h2 class="heading" v-if="groupMembers.length > 0">Group Members</h2>
       <ul class="member-list">
         <li v-if="!user" class="member-item">
-          Please log in to use the app.
+          <br>Please log in to use the app.
         </li>
         <li v-else-if="groupMembers.length === 0" class="member-item">
-          Join or create a group to get started!
+         <br> Join or create a group to get started!
         </li>
         <li
           v-if="user"
@@ -88,10 +88,10 @@
       </button>
     </div>
 
-    <span class="group-pins-heading">Group pins</span>
-    <div class="group-pins-text" v-if="!(groupHighlightedPlaces.length > 0)"><!--this div is only shown if we dont have any pins yet-->
-      No locations pinned by group yet. Use the search bar in the map and click on the markers to start exploring!<br><br>
-      If you then press the 'Pin me' button in the details window of the place you've opened, the pin will appear for the entire group!<br><br>
+    <span class="group-pins-heading" v-if="groupMembers.length > 0">Group pins</span>
+    <div class="group-pins-text" v-if="!(groupHighlightedPlaces.length > 0) && groupMembers.length > 0"><!--this div is only shown if we dont have any pins yet-->
+      Locations pinned by your group goes here! Use the search bar on the map and click on the markers to start exploring!<br><br>
+      If you are in a group, the 'Pin me' button in the details window of the place you've opened will cause for the pin to appear for the entire group!<br><br>
       Clicking the pinned location in the sidebar will give you travel information for all group members.
     </div>
 
