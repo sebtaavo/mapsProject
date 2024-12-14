@@ -88,6 +88,13 @@
       </button>
     </div>
 
+    <span class="group-pins-heading">Group pins</span>
+    <div class="group-pins-text" v-if="!(groupHighlightedPlaces.length > 0)"><!--this div is only shown if we dont have any pins yet-->
+      No locations pinned by group yet. Use the search bar in the map and click on the markers to start exploring!<br><br>
+      If you then press the 'Pin me' button in the details window of the place you've opened, the pin will appear for the entire group!<br><br>
+      Clicking the pinned location in the sidebar will give you travel information for all group members.
+    </div>
+
     <div
       class="highlighted-places"
       style="cursor: pointer; user-select: none;"

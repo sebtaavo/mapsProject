@@ -298,6 +298,20 @@ body {
   margin-bottom: 1rem;
 }
 
+.group-pins-heading {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+.group-pins-text {
+  margin-bottom: 1rem;
+  margin-left: 1rem;
+  margin-top: 0.1rem;
+  margin-right: 1rem;
+}
+
 .member-list {
   list-style: none;
   padding: 0;
