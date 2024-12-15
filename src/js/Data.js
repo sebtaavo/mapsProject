@@ -320,7 +320,7 @@ export async function fetchDetailsForPlace(state, place){
       // Fetch detailed information
       service.getDetails(detailsRequest, (placeDetails, detailsStatus) => {
         if (detailsStatus === google.maps.places.PlacesServiceStatus.OK) {
-          console.log("Place details:", placeDetails);
+          console.log("Place mega details:", placeDetails);
           state.clickedMarkerDetails = placeDetails;
         } else {
           console.error("Error fetching place details:", detailsStatus);
