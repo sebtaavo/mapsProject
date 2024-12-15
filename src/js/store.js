@@ -13,7 +13,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert, throwSavedGroupManagementPopup} from '@/js/Data.js';
+import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert, throwSavedGroupManagementPopup, dataSearchMapWithCurrentQuery, clearSearchMapMarkers} from '@/js/Data.js';
 import{polyline_store} from './polylinestore.js';
 import { useRouter } from 'vue-router';
 
@@ -50,6 +50,7 @@ export default createStore({
     clickedMarkerDetails: null,
     latestDirectionSearch: null,
     groupDetailsOpen: false,
+    currentMapSearchQuery: '',
     //new for group saving
     savedGroups: [], //of the structure {key: .... , name: ....}
   },
@@ -82,6 +83,13 @@ export default createStore({
 
     OPEN_MANAGE_SAVES_POPUP(state){
       throwSavedGroupManagementPopup(state, state.savedGroups);
+    },
+    SEARCH_MAP_WITH_CURRENT_QUERY(state){
+      dataSearchMapWithCurrentQuery(state);
+    },
+    UPDATE_CURRENT_MAP_SEARCH_QUERY(state, value){
+      state.currentMapSearchQuery = value;
+      clearSearchMapMarkers(state);//this removes old map markers if you edit the search bar content
     },
     //FOR PROMPTING A GROUP NAME
     SET_GROUP_NAME_PROMPT_TRUE(state){
@@ -689,6 +697,12 @@ export default createStore({
     },
     manageSaves({commit}){
       commit('OPEN_MANAGE_SAVES_POPUP');
+    },
+    searchMapWithCurrentQuery({commit}){
+      commit('SEARCH_MAP_WITH_CURRENT_QUERY');
+    },
+    updateCurrentMapSearchQuery({commit}, value){
+      commit('UPDATE_CURRENT_MAP_SEARCH_QUERY', value);
     },
   },
   modules: {

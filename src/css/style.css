@@ -339,11 +339,15 @@ body {
   padding: 0;
   margin: 0;
 }
+
 .member-item, .member-item-title {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  cursor: pointer;
 }
+
 .member-item:hover {
   color: #4499d1;
 }
