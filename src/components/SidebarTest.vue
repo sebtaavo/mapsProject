@@ -6,7 +6,7 @@
         <li v-if="!user" class="member-item">
           <br>Please log in to use the app.
         </li>
-        <li v-else-if="groupMembers.length === 0" class="member-item-title">
+        <li v-else-if="groupMembers.length === 0" class="member-item">
          <br> Join or create a group to get started!
         </li>
         <li

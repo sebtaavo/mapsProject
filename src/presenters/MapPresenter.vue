@@ -4,7 +4,7 @@
       <Map @ready="handleMapReady" @coords="handleUserCoords"/>
     </div>
     <div class = "search-container">
-      <SearchBar @search-for-places="handleSearchMapWithCurrentQuery" @update-search-query="handleUpdateSearchQuery"></SearchBar>
+      <SearchBar :map = map></SearchBar>
     </div>
   </div>
 </template>
@@ -26,14 +26,6 @@
       handleUserCoords(coords) {
         console.log('Received user coords in parent:', coords);
         this.$store.dispatch("updateUserCoords", coords); //send map to model.
-      },
-      handleUpdateSearchQuery(value) {
-        console.log('Received order to update search query in parent:', value);
-        this.$store.dispatch("updateCurrentMapSearchQuery", value); //send map to model.
-      },
-      handleSearchMapWithCurrentQuery() {
-        console.log('Received order to perform map search in parent.');
-        this.$store.dispatch("searchMapWithCurrentQuery"); //send map to model.
       },
     },
     computed:{
