@@ -462,3 +462,39 @@ export async function dataSearchMapWithCurrentQuery(state){
     alert("An error occurred while fetching places.");
   }
 };
+
+export async function createUserDocIfNoneExists(state) {
+  const db = getFirestore();
+
+  // Check if the state has a valid user object
+  if (!state.user || !state.user.uid) {
+    console.error("Cannot create user document: user is missing or invalid.");
+    return;
+  }
+
+  // Reference to the user's document
+  const userDocRef = doc(db, "users", state.user.uid);
+
+  try {
+    // Check if the document exists
+    const userDocSnapshot = await getDoc(userDocRef);
+
+    if (!userDocSnapshot.exists()) {
+      console.log("User document does not exist. Creating a new one...");
+
+      // Create the user document with default data
+      const defaultUserData = {
+        groupKey: "",
+        savedGroups: [],
+      };
+
+      await setDoc(userDocRef, defaultUserData);
+
+      console.log("User document created successfully.");
+    } else {
+      console.log("User document already exists. No action needed.");
+    }
+  } catch (error) {
+    console.error("Error creating or checking user document:", error);
+  }
+}

@@ -13,7 +13,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert, throwSavedGroupManagementPopup, dataSearchMapWithCurrentQuery, clearSearchMapMarkers} from '@/js/Data.js';
+import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert, throwSavedGroupManagementPopup, dataSearchMapWithCurrentQuery, clearSearchMapMarkers, createUserDocIfNoneExists} from '@/js/Data.js';
 import{polyline_store} from './polylinestore.js';
 import { useRouter } from 'vue-router';
 
@@ -105,6 +105,7 @@ export default createStore({
     },
     SET_USER(state, user) {
         state.user = user;
+        createUserDocIfNoneExists(state);
         userSubscription(state);
         if(user == null){
           window.location.hash="#/main";
