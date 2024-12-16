@@ -33,9 +33,9 @@
     </div>
 
     <div v-if="savedGroups.length && !groupMembers.length" class="dropdown-container">
-      <label for="saved-group-select">Saved groups:</label>
+      <label for="saved-group-select">Previous groups:</label>
       <select id="saved-group-select" @change="handleGroupSelect" class="dropdown">
-        <option value="">-- Select a Saved Group --</option>
+        <option value="">-- Select a Previous Group --</option>
         <option
           v-for="group in savedGroups"
           :key="group.key"

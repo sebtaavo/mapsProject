@@ -449,7 +449,7 @@ export default createStore({
       if (userSnap.exists()) {
         const userData = userSnap.data();
         state.groupKey = userData.groupKey || '';
-        state.savedGroups = userData.savedGroups || []; //new for saved groups
+        state.savedGroups = userData.savedGroups || []; //new for previous groups
         if (state.groupKey) {
           groupSubscription(state);
         }

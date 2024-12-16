@@ -5,8 +5,8 @@
       <span class="title">Where do we meet?</span>
     </div>
     <div class="auth-section">
-      <button id="authButton" class="icon-container2" @click="handleManageSavedGroups">
-        Manage saved groups
+      <button v-if="savedGroups.length" id="authButton" class="icon-container2" @click="handleManageSavedGroups">
+        Manage Previous groups
       </button>
       <button id="authButton" class="icon-container" @click="handleAuthClick">
         {{ authButtonText }}
@@ -22,6 +22,9 @@ export default {
     isAuthenticated: {
       type: Boolean,
       required: true,
+    },
+    savedGroups: {
+      type: Array,
     },
   },
   computed: {

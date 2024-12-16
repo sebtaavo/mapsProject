@@ -1,6 +1,7 @@
 <template>
     <div>
-      <Navbar :isAuthenticated="isAuthenticated" @login="login" @logout="logout" @handlesaves="manageSaves"/>
+      <Navbar :isAuthenticated="isAuthenticated" :savedGroups="savedGroups" @login="login" @logout="logout" @handlesaves="manageSaves"/>
+
     </div>
   </template>
   
@@ -14,7 +15,7 @@
       Navbar,
     },
     computed: {
-      ...mapGetters(["isAuthenticated"]),
+      ...mapGetters(["isAuthenticated", "savedGroups"]),
     },
     methods: {
       ...mapActions(["login", "logout", "manageSaves"]),
