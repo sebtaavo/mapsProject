@@ -387,16 +387,16 @@ export default createStore({
       : ["https://via.placeholder.com/150"];  // Default if no photos
 
       const newPlace = {
-        name: place.name,
-        formatted_address: state.clickedMarkerDetails.formatted_address,
+        name: place.name || "N/A",
+        formatted_address: state.clickedMarkerDetails.formatted_address || "N/A",
         international_phone_number: state.clickedMarkerDetails.international_phone_number || "N/A",
-        opening_hours: state.clickedMarkerDetails.opening_hours.weekday_text,
-        rating: state.clickedMarkerDetails.rating || 'N/A',
+        opening_hours: state.clickedMarkerDetails.opening_hours ? state.clickedMarkerDetails.opening_hours.weekday_text : "N/A",
+        rating: state.clickedMarkerDetails.rating || "N/A",
         price_level: state.clickedMarkerDetails.price_level !== undefined ? state.clickedMarkerDetails.price_level : "N/A",
         coords: {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()},
         photos: photoUrls,
-        icon: state.clickedMarkerDetails.icon,
-        place_id: place.place_id,
+        icon: state.clickedMarkerDetails.icon || "N/A",
+        place_id: place.place_id || "N/A",
         website: state.clickedMarkerDetails.website || "N/A"
       };
 

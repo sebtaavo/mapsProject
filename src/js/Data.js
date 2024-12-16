@@ -356,6 +356,21 @@ export function throwRegularAlert(stringTitle, stringBody, optionalFunc){
     }
   });
 };
+
+export function throwMessageAlert(stringTitle, timer = 1000) {
+  return Swal.fire({
+    position: "bottom",
+    width: 300,
+    title: stringTitle,
+    showConfirmButton: false,
+    timer: timer
+  }).then((result) => {
+    if (result.dismiss === Swal.DismissReason.timer) {
+      console.log('Message alert closed by timer');
+    }
+  });
+}
+
 export function throwSavedGroupManagementPopup(state, selectOptions){
   const newArray = selectOptions.map(option => option.name);
   Swal.fire({

@@ -130,6 +130,7 @@
 
 <script>
 import Swal from 'sweetalert2';
+import { throwMessageAlert } from '../js/Data';
 export default {
   name: 'SidebarTest',
   data() {
@@ -250,7 +251,7 @@ export default {
       if (this.groupKey) {
         navigator.clipboard.writeText(this.groupKey)
           .then(() => {
-            console.log('Group key copied to clipboard:', this.groupKey);
+            throwMessageAlert("Copied group key", 1000);
           })
           .catch((err) => {
             console.error('Failed to copy group key:', err);

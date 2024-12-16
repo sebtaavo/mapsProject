@@ -54,6 +54,7 @@
   </template>
 
   <script>
+  import { throwMessageAlert } from '../js/Data';
   export default {
     props: {
       place: Object,
@@ -63,6 +64,7 @@
     methods: {
     emitUserInterested() {
       this.$emit('userinterested', this.place); 
+      throwMessageAlert("Location Pinned!", 1000);
     },
     emitUserCloses() {
       this.$emit('close'); 
