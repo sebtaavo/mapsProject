@@ -49,7 +49,7 @@
         No website registered.
       </p>
       
-      <button v-if="groupMembers.length !== 0" class="interest-button" @click="emitUserInterested">Pin me!</button>
+      <button v-if="groupMembers.length !== 0 && !placeAlreadyRegistered" class="interest-button" @click="emitUserInterested">Pin me!</button>
     </div>
   </template>
 
@@ -60,6 +60,7 @@
       place: Object,
       placeDetails: Object,
       groupMembers: Array,
+      groupHighlightedPlaces: Array,
     },
     methods: {
     emitUserInterested() {
@@ -128,6 +129,19 @@
       }
       return null; // No opening hours to display
     },
+    placeAlreadyRegistered() {
+    if (!this.place || !this.place.formatted_address) {
+      return false; // No place or address to check against
+    }
+
+    if (!Array.isArray(this.groupHighlightedPlaces)) {
+      return false; // groupHighlightedPlaces is not a valid array
+    }
+    // Check if any place in groupHighlightedPlaces has the same formatted_address as this.place
+    return this.groupHighlightedPlaces.some(
+      (highlightedPlace) => highlightedPlace.formatted_address === this.place.formatted_address
+    );
+  },
   },
   };
   </script>

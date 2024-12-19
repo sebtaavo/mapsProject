@@ -4,6 +4,7 @@
       :place=clickedMarkerPlace
       :placeDetails=clickedMarkerDetails
       :groupMembers=groupMembers
+      :groupHighlightedPlaces = groupHighlightedPlaces
       @userinterested="handleUserInterested" 
       @close="handleUserClosingDetails"
     />
@@ -36,6 +37,9 @@
           },
           clickedMarkerDetails(){
             return this.$store.getters.clickedMarkerDetails || null;
+          },
+          groupHighlightedPlaces(){
+            return this.$store.getters.groupHighlightedPlaces || [];
           }
 
       }
