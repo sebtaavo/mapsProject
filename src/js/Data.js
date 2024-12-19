@@ -395,6 +395,7 @@ export function throwSavedGroupManagementPopup(state, selectOptions){
         console.log('OK clicked:', result.value, ' equivalent to group: ', selectOptions[result.value]); //this is the index in the array.
         removeSavedGroupFromUserDoc(state, selectOptions[result.value].key);
         throwRegularAlert("Removed group",'Removed ' + selectOptions[result.value].name + ' from previous groups! Join the group again with its join-key to re-save it.', null);
+        store.dispatch('leaveGroup');
       }
       else{
         throwRegularAlert("No group selected",'You did not select a group. No changes were made.', null);
@@ -445,6 +446,7 @@ export async function throwManualPositionUpdatePopup(state){
                 lat: location.lat(),
                 lng: location.lng(),
               });
+              polyline_store.clearUserLines();
             }
           } else {
             console.error("Geocoding failed:", status);
