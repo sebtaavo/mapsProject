@@ -178,7 +178,7 @@ export default createStore({
         state.groupMidpoint = coords;
       }
       console.log("updated user coords to: ", state.userCoords);
-      throwRegularAlert("Located user", "We located you on the map! If your position is off you can update it manually from the navbar.", null);
+      throwRegularAlert("Located user", "We located you on the map! If your position is off you can update it manually from the top right of the map.", null);
     },
 
   SET_GROUP_UNSUBSCRIBE(state, unsubscribe) {

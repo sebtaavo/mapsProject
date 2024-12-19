@@ -208,6 +208,7 @@ body {
   width: 100%;
   height: 100.668%;
   z-index: 10;
+  position: relative; /* Ensures the button can be positioned on top */
 }
 
 .map-and-search {
@@ -286,6 +287,37 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.icon-container3 {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  border-radius: 2px;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  margin-left: auto;
+  margin-top: 0rem;
+  user-select: none;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added border shadow */
+
+  /* Positioning for the button */
+  position: absolute;
+  top: 55px; /* Adjust as needed for placement */
+  right: 10px; /* Adjust as needed for placement */
+  z-index: 1000; /* Ensures it stays on top of the map */
+}
+
+.gps-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+} 
   
 /**********************************
  * Sidofält

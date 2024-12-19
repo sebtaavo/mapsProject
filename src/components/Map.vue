@@ -1,7 +1,7 @@
 <template>
   <div id="map" class="map"></div>
-  <button id="authButton" class = "icon-container2" @click = "handleUpdatePosition">
-    <img src="@/images/gpsicon.svg" alt="GPS Icon" />
+  <button id="authButton" class = "icon-container3" @click = "handleUpdatePosition">
+    <img src="@/images/gpsicon.svg" alt="GPS Icon" class="gps-icon"/>
   </button>
 </template>
 
