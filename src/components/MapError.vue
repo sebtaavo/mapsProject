@@ -1,8 +1,8 @@
 <template>
     <div id="map" class="map">
-        <span>You are seeing this because you have not given the app access to your location.<br>
-        Enable device location tracking in your browser, and then proceed by clicking the button<br>
-        below and refreshing the page.<br></span>
+        <span class="no-map-text">You are seeing this because you have not given the app access to your location.
+        Enable device location tracking in your browser, and then proceed by clicking the button
+        below and refreshing the page.</span>
         <button id="authButton" class="icon-container-start-page" @click="findMe">Update my position</button>
 
     </div>
