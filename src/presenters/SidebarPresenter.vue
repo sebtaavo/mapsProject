@@ -11,6 +11,7 @@
       :groupHighlightedPlaces="groupHighlightedPlaces"
       :savedGroups="savedGroups"
       :userCoordsEmpty = "userCoordsEmpty"
+      :groupName = "groupName"
       @join-group="handleJoinGroup"
       @leave-group="handleLeaveGroup"
       @kick-member="handleKickMember"
@@ -76,6 +77,9 @@
             return true;
           }
           return Object.keys(this.$store.getters.userCoords).length === 0 && this.$store.getters.userCoords.constructor === Object;
+        },
+        groupName(){
+          return this.$store.getters.groupName || '';
         },
     },
     methods: {

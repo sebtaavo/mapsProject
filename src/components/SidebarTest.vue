@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar" v-if="!place && !userCoordsEmpty">
     <div class="group-members" v-if="groupMembers">
-      <h2 class="heading" v-if="groupMembers.length > 0">Group Members</h2>
+      <h2 class="heading" v-if="groupMembers.length > 0">{{groupName}}</h2>
       <ul class="member-list">
         <li v-if="!user" class="member-item">
           <br>Please log in to use the app.
@@ -156,6 +156,9 @@ export default {
     user: {
       type: Object,
     },
+    groupName:{
+      type: String,
+    },
     place: {
       type: Object,
     },
@@ -216,6 +219,9 @@ export default {
         showCancelButton: true,
         confirmButtonText: 'OK',
         color: '#fff',
+        inputAttributes: {
+      maxlength: 18,  //restrict the input to 18 characters
+    },
         background: '#181A1B',
         confirmButtonColor: '#9F7AEA',
         cancelButtonColor: '#FF0000',
