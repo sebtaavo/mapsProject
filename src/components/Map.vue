@@ -1,4 +1,7 @@
 <template>
+  <div v-if="this.loading" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+      <img src="@/images/loadingspinner2.gif"/>
+  </div>
   <div id="map" class="map"></div>
   <button id="authButton" class = "icon-container3" @click = "handleUpdatePosition">
     <img src="@/images/gpsicon.svg" alt="GPS Icon" class="gps-icon"/>
@@ -10,6 +13,7 @@ export default {
   data() {
     return {
       map: null,
+      loading: true,
     };
   },
   async mounted() {
@@ -18,6 +22,7 @@ export default {
     await this.initMap();
 
     this.$emit("ready", this.map);
+    this.loading = false;
   },
   methods: {
     loadGoogleMapsAPI() {
