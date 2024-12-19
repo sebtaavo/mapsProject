@@ -5,6 +5,9 @@
       <span class="title">Where do we meet?</span>
     </div>
     <div class="auth-section">
+      <button id="authButton" class = "icon-container2" @click = "handleUpdatePosition">
+        <img src="@/images/gpsicon.svg" alt="GPS Icon" />
+      </button>
       <button v-if="savedGroups.length" id="authButton" class="icon-container2" @click="handleManageSavedGroups">
         Manage Previous groups
       </button>
@@ -41,7 +44,10 @@ export default {
     },
     handleManageSavedGroups(){
       this.$emit('handlesaves');
-    }
+    },
+    handleUpdatePosition(){
+      this.$emit('handlepositionupdate');
+    },
   },
 };
 </script>

@@ -406,6 +406,62 @@ export function throwSavedGroupManagementPopup(state, selectOptions){
   });
 };
 
+export async function throwManualPositionUpdatePopup(state){
+  Swal.fire({
+    title: "Update position manually",
+    text: "Enter your current location address. We will then find your position using google maps.",
+    backdrop: true,
+    confirmButtonText: 'OK',
+    showCancelButton: true,
+    input: "text",
+    inputLabel: "Your street address.",
+    color: '#fff',
+    background: '#181A1B',
+    confirmButtonColor: '#9F7AEA',
+    customClass: {
+      popup: 'alert-dialog-popup',
+    },
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      console.log('OK clicked:', result.value);
+      const searchText = result.value;
+      //api call occurs here to find geocoding
+      try{
+        if (!searchText.trim()) {
+          console.log("Please enter a valid address or place name.");
+          return;
+        }
+        const { Geocoder } = await google.maps.importLibrary("geocoding");
+        const geocoder = new Geocoder();
+        const request = {
+          address: searchText, // The address or place name to geocode
+        };
+        geocoder.geocode(request, (results, status) => {
+          if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+            const location = results[0].geometry.location;
+            console.log(`Latitude: ${location.lat()}, Longitude: ${location.lng()}`);
+            if(location && location.lat() && location.lng()){
+              store.dispatch("updateUserCoords", {
+                lat: location.lat(),
+                lng: location.lng(),
+              });
+            }
+          } else {
+            console.error("Geocoding failed:", status);
+            throwRegularAlert("No such place", "Verify your spelling and try again.", null);
+          }
+        });
+      }catch (error) {
+        console.error("Error geocoding address:", error);
+        alert("An error occurred while retrieving coordinates.");
+      }
+      //api call occurs here to findgeocoding
+    } else if (result.isDismissed) {
+      console.log('User left the dialog without pressing OK. np.');
+    }
+  });
+}
+
 export function clearSearchMapMarkers(state){
   state.locationMapMarkers.forEach((marker) => {
     marker.setVisible(false);

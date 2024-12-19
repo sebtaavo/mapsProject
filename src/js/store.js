@@ -13,7 +13,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert, throwSavedGroupManagementPopup, dataSearchMapWithCurrentQuery, clearSearchMapMarkers, createUserDocIfNoneExists} from '@/js/Data.js';
+import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, throwManualPositionUpdatePopup, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert, throwSavedGroupManagementPopup, dataSearchMapWithCurrentQuery, clearSearchMapMarkers, createUserDocIfNoneExists} from '@/js/Data.js';
 import{polyline_store} from './polylinestore.js';
 import { useRouter } from 'vue-router';
 
@@ -56,6 +56,7 @@ export default createStore({
   },
   getters: {
     groupName: (state) => state.groupName,
+    userCoords: (state) => state.userCoords,
     groupDetailsOpen: (state) => state.groupDetailsOpen,//determines if user is currently looking at the group travel details after clicking in sidebar
     clickedMarkerDetails: (state) => state.clickedMarkerDetails, 
     savedGroups: (state) => state.savedGroups,//this one for groups from persistence
@@ -80,7 +81,9 @@ export default createStore({
     groupHighlightedPlaces: (state) => state.groupHighlightedPlaces,
   },
   mutations: {
-
+    HANDLE_MANUAL_POSITION_UPDATE(state){
+      throwManualPositionUpdatePopup(state);
+    },
     OPEN_MANAGE_SAVES_POPUP(state){
       throwSavedGroupManagementPopup(state, state.savedGroups);
     },
@@ -171,6 +174,7 @@ export default createStore({
         state.groupMidpoint = coords;
       }
       console.log("updated user coords to: ", state.userCoords);
+      throwRegularAlert("Located user", "We located you on the map! If your position is off you can update it manually from the navbar.", null);
     },
 
   SET_GROUP_UNSUBSCRIBE(state, unsubscribe) {
@@ -704,6 +708,10 @@ export default createStore({
     },
     updateCurrentMapSearchQuery({commit}, value){
       commit('UPDATE_CURRENT_MAP_SEARCH_QUERY', value);
+    },
+    handleManualPositionUpdate({commit}){
+      commit('HANDLE_MANUAL_POSITION_UPDATE');
+      console.log("made it to store from handlee manual position update");
     },
   },
   modules: {
