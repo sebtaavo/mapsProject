@@ -35,8 +35,10 @@ export function groupSubscription(state){
           state.groupHighlightedPlaces = groupData.places || [];
           console.log("group mid point is: ", state.groupMidpoint);
           //render the group members on the map
-          CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
-          RENDER_GROUP_MEMBER_MARKERS_ON_MAP(state);
+          if(state.groupMembers.length > 0 && state.map !== null){
+            CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
+            RENDER_GROUP_MEMBER_MARKERS_ON_MAP(state);
+          }
           //render the highlight pins set by group members and self on the map
           CLEAR_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state);
           RENDER_GROUP_HIGHLIGHT_MARKERS_ON_MAP(state);

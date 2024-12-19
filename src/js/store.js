@@ -13,7 +13,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, throwManualPositionUpdatePopup, updateUserPositionInGroup, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert, throwSavedGroupManagementPopup, dataSearchMapWithCurrentQuery, clearSearchMapMarkers, createUserDocIfNoneExists} from '@/js/Data.js';
+import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, RENDER_GROUP_MEMBER_MARKERS_ON_MAP, throwManualPositionUpdatePopup, updateUserPositionInGroup, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert, throwSavedGroupManagementPopup, dataSearchMapWithCurrentQuery, clearSearchMapMarkers, createUserDocIfNoneExists} from '@/js/Data.js';
 import{polyline_store} from './polylinestore.js';
 import { useRouter } from 'vue-router';
 
@@ -159,6 +159,11 @@ export default createStore({
     },
     SET_MAP(state, map) {
       state.map = map;
+      if(state.groupMembers.length > 0){
+        CLEAR_GROUP_MEMBER_MAP_MARKERS(state);
+        RENDER_GROUP_MEMBER_MARKERS_ON_MAP(state);
+      }
+      
   },
   LEAVE_GROUP(state){
     state.groupKey = null;
