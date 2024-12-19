@@ -10,6 +10,7 @@
       :place = "detailsPlace"
       :groupHighlightedPlaces="groupHighlightedPlaces"
       :savedGroups="savedGroups"
+      :userCoordsEmpty = "userCoordsEmpty"
       @join-group="handleJoinGroup"
       @leave-group="handleLeaveGroup"
       @kick-member="handleKickMember"
@@ -69,7 +70,13 @@
         },
         groupHighlightedPlaces(){
           return this.$store.getters.groupHighlightedPlaces || [];
-        }
+        },
+        userCoordsEmpty() {
+          if(this.$store.getters.userCoords === null ||this.$store.getters.userCoords === undefined){
+            return true;
+          }
+          return Object.keys(this.$store.getters.userCoords).length === 0 && this.$store.getters.userCoords.constructor === Object;
+        },
     },
     methods: {
       handleClosePrompt(){

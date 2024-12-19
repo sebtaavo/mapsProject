@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar" v-if="!place">
+  <div class="sidebar" v-if="!place && !userCoordsEmpty">
     <div class="group-members" v-if="groupMembers">
       <h2 class="heading" v-if="groupMembers.length > 0">Group Members</h2>
       <ul class="member-list">
@@ -182,6 +182,9 @@ export default {
     },
     groupHighlightedPlaces: {
       type: Array,
+    },
+    userCoordsEmpty:{
+      type: Boolean,
     },
   },
   methods: {
