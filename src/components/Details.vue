@@ -1,8 +1,11 @@
 <template>
     <div v-if="place" id="detailsText" class="sidebar">
       <button @click = "emitUserCloses" class="closeSidebarButton">X</button>
+      <button v-if="groupMembers.length !== 0 && !placeAlreadyRegistered" class="interest-button" @click="emitUserInterested">
+        <img src="@/images/pinme.svg" alt="Pin me!" class="pin-icon" /> Pin this location
+      </button>
       <h2 class="place-name-2">{{ place.name }}</h2>
-  
+      
        <!-- Image conditional rendering -->
       <img 
         v-if="imageUrl" 
@@ -10,6 +13,7 @@
         alt="Photo of the place"
         class="place-image" 
       />
+      
       <p class="address">{{ place.formatted_address }}</p>
   
         <div class="opening-hours" v-if="openingHours">
@@ -49,7 +53,7 @@
         No website registered.
       </p>
       
-      <button v-if="groupMembers.length !== 0 && !placeAlreadyRegistered" class="interest-button" @click="emitUserInterested">Pin me!</button>
+      
     </div>
   </template>
 

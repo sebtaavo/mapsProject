@@ -380,6 +380,11 @@ body {
   cursor: pointer;
 }
 
+.member-item-title{
+  margin-top: -25px;
+  font-size: 2.4rem;
+}
+
 .member-item:hover {
   color: #4499d1;
 }
@@ -615,16 +620,17 @@ body {
 .closeSidebarButton {
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 15px;
   background-color: #1E2021;
   border: none;
   color: #ffffff;
   font-size: 1.2rem;
-  padding: 0.5rem 1rem;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
   user-select: none;
+  width: 40px;
+  height: 40px;
 
 }
 
@@ -634,22 +640,31 @@ body {
 
 .interest-button {
   background-color: #1E2021;
-  width: 80%;
-  border-radius: 9999px;
+  width: 162px;
+  height: 40px;
+  border-radius: 5px;
   border: none;
   color: #ffffff;
   font-size: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
-  display: block;
-  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 13px;
+  gap: 8px;
 }
 
 .interest-button:hover {
   background-color: #8c5ce9;
 }
 
+.pin-icon {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+}
 
 .highlighted-places {
   display: flex;
@@ -750,9 +765,9 @@ body {
   cursor: pointer;
   color: white;
   margin-right: -10px;
-  margin-left: 5px;
+  margin-left:7px;
   word-wrap: break-word;
-  width: 96%;
+  width: 87.5%;
   
 }
 
