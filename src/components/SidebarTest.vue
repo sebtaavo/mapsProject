@@ -90,7 +90,7 @@
 </div>
 
 
-    <span class="group-pins-heading" v-if="groupMembers.length > 0">Group pins</span>
+    <span class="group-pins-heading" v-if="groupMembers.length > 0">Group pins & travel info</span>
     <div class="group-pins-text" v-if="!(groupHighlightedPlaces.length > 0) && groupMembers.length > 0"><!--this div is only shown if we dont have any pins yet-->
       Locations pinned by your group goes here! Use the search bar on the map and click on the markers to start exploring!<br><br>
       If you are in a group, the 'Pin me' button in the details window of the place you've opened will cause for the pin to appear for the entire group!<br><br>
