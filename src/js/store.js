@@ -470,7 +470,7 @@ export default createStore({
   async CLEAR_PERSISTENCE_USER_GROUP(state) {
     const db = getFirestore();
     if (!state.groupKey) {
-        console.error("Cannot clear group: Group key is not set.");
+        console.log("Cannot clear user from group and user group key since group key is not currently set. This is normal if called when not currently inside a group.");
         return;
     }
     const userRef = doc(db, "users", state.user.uid);
