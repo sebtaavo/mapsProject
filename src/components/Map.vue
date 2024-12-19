@@ -1,5 +1,8 @@
 <template>
   <div id="map" class="map"></div>
+  <button id="authButton" class = "icon-container2" @click = "handleUpdatePosition">
+    <img src="@/images/gpsicon.svg" alt="GPS Icon" />
+  </button>
 </template>
 
 <script>
@@ -46,6 +49,9 @@ export default {
       if (this.map) {
         this.map.setCenter({ lat, lng });
       }
+    },
+    handleUpdatePosition(){
+      this.$emit('handlepositionupdate');
     },
   },
 };

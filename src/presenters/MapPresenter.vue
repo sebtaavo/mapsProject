@@ -1,7 +1,7 @@
 <template>
   <div class = "map-and-search">
     <div class = "map-container" v-if="!userCoordsEmpty">
-      <Map @ready="handleMapReady" @coords="handleUserCoords"/>
+      <Map @ready="handleMapReady" @coords="handleUserCoords" @handlepositionupdate="handleManualPositionUpdate"/>
     </div>
     <div class = "map-container" v-if="userCoordsEmpty">
       <MapError @coords="handleUserCoords"/>
@@ -39,6 +39,10 @@
       handleSearchMapWithCurrentQuery() {
         console.log('Received order to perform map search in parent.');
         this.$store.dispatch("searchMapWithCurrentQuery"); //send map to model.
+      },
+      handleManualPositionUpdate(){
+        this.$store.dispatch("handleManualPositionUpdate");
+        console.log("Received order in parent to updated user's position manually");
       },
     },
     computed:{
