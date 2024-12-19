@@ -471,6 +471,39 @@ export function clearSearchMapMarkers(state){
   state.locationMapMarkers = [];
 };
 
+export async function updateUserPositionInGroup(state, coords){
+  const db = getFirestore();
+  const groupRef = doc(db, "groups", state.groupKey);
+  try{
+  const groupDoc = await getDoc(groupRef);
+
+  if (groupDoc.exists()) {
+      const groupData = groupDoc.data();
+      console.log("Data in group when updating user position ", groupData);
+      if (Array.isArray(groupData.members)) {
+
+        const updatedMembers = groupData.members.map(member => {
+          if (member.uid === state.user.uid) {
+            return {
+              ...member,
+              coords: { lat: coords.lat, lng: coords.lng }, // Update the coordinates
+            };
+          }
+          return member; // Return other members unchanged
+        });
+        await updateDoc(groupRef, { members: updatedMembers });
+        console.log("User position updated successfully in group doc!");
+      } else {
+          console.error("members is not an array in the group document.");
+      }
+  } else {
+      console.error("Group document does not exist.");
+  }
+}catch (error) {
+  console.error("Error updating user position in group:", error);
+}
+};
+
 
 export async function dataSearchMapWithCurrentQuery(state){
   if (!state.currentMapSearchQuery.trim()) {

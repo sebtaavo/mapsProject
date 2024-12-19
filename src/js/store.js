@@ -13,7 +13,7 @@ import {
   onSnapshot 
 } from "firebase/firestore";
 import { v4 as uuidv4 } from 'uuid';
-import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, throwManualPositionUpdatePopup, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert, throwSavedGroupManagementPopup, dataSearchMapWithCurrentQuery, clearSearchMapMarkers, createUserDocIfNoneExists} from '@/js/Data.js';
+import {groupSubscription, userSubscription, CLEAR_GROUP_MEMBER_MAP_MARKERS, throwManualPositionUpdatePopup, updateUserPositionInGroup, fetchDetailsForPlace, updateUserDocWithSavedGroup, throwRegularAlert, throwSavedGroupManagementPopup, dataSearchMapWithCurrentQuery, clearSearchMapMarkers, createUserDocIfNoneExists} from '@/js/Data.js';
 import{polyline_store} from './polylinestore.js';
 import { useRouter } from 'vue-router';
 
@@ -170,6 +170,10 @@ export default createStore({
   },
     UPDATE_USER_COORDS(state, coords){
       state.userCoords = coords;
+      if(state.groupKey !== ''){ //if we are in a group
+        console.log("Attempting to update position in group");
+        updateUserPositionInGroup(state, coords);
+      }
       if(state.groupMidpoint === null){
         state.groupMidpoint = coords;
       }
