@@ -215,7 +215,7 @@ body {
   max-height: 300px;
 }
 
-.icon-container-start-page {
+.icon-container-start-page2 {
   box-sizing: border-box;
   display: inline-flex;
   flex-direction: column;
@@ -232,10 +232,30 @@ body {
   height: auto;
 }
 
-.icon-container-start-page:hover {
+.icon-container-start-page2:hover {
   background-color: #8c5ce9;
 }
+.icon-container-start-page {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: #9f7aea;
+  border-radius: 9999px;
+  border: none;
+  padding: 0.5rem 5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  margin-right: 0px;
+  margin-top: 10px;
+  user-select: none;
+}
 
+
+.icon-container-start-page:hover {
+  background-color: #8c5ce9;
+  transform: scale(1.05);
+}
 
 .map-and-search {
   position: relative;
@@ -801,7 +821,7 @@ body {
 }
 
 .direction-step {
-  background-color: #000000;
+  background-color: #1E2021;
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
@@ -814,17 +834,18 @@ body {
 }
 
 .leaveDirectionsButton {
-  background-color: #444;
+  background-color: #1E2021;
   color: white;
   border: none;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
   user-select:  none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .leaveDirectionsButton:hover {
-  background-color: #666;
+  background-color: #8c5ce9;
 }
 
 /**********************************
