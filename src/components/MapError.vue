@@ -1,12 +1,16 @@
 <template>
-    <div id="map" class="map">
-        <span class="no-map-text">You are seeing this because you have not given the app access to your location.
+  <div id="map" class="map">
+    <div class="map-content">
+      <span class="no-map-text">
+        You are seeing this because you have not given the app access to your location.
         Enable device location tracking in your browser, and then proceed by clicking the button
-        below and refreshing the page.</span>
-        <button id="authButton" class="icon-container-start-page" @click="findMe">Update my position</button>
-
+        below and refreshing the page.
+      </span>
+      <button id="authButton" class="icon-container-start-page2" @click="findMe">Update my position</button>
     </div>
-  </template>
+  </div>
+</template>
+
   
   <script>
   import {throwRegularAlert} from '../js/Data.js';
