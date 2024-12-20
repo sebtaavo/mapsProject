@@ -328,8 +328,9 @@ export default createStore({
   async CREATE_NEW_GROUP(state, name){
     console.log("name sent to firebase is: ", name);
     state.groupName = name;
+    state.groupKey = '';
 
-    if (!state.user || state.groupKey) {
+    if (!state.user || state.groupKey !== '') {
       throwRegularAlert('Failed to create a group','Log in to create a group.', null);
       console.log("You need to be logged in to create a group. Or you cannot create a group while you have one active.");
       return;
