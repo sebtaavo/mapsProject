@@ -69,7 +69,7 @@ necessary and called, while others are called "dry" in the files where they are 
 │   ├── Map.vue           <-- View responsible for containing the embedded Google Maps "map" object.<br/>
 │   ├── MapError.vue      <-- Fallback view responsible for telling the user to enable device location tracking.<br/>
 │   ├── Navbar.vue        <-- View responsible for containing the navbar/banner on top of the page with the login/logout button.<br/>
-│   ├── SearchBar.vue     <-- View handling Google Maps searches via input, improperly linked directly to the model.<br/>
+│   ├── SearchBar.vue     <-- View handling Google Maps searches via input.<br/>
 │   ├── SidebarTest.vue   <-- View managing current group info, pinned places, and group creation/joining. "Test" is inaccurate.<br/>
 │   └── Start.vue         <-- View for a start page which lets the user log in. User is redirected here if logged out. <br/>
 ├── css<br/>
