@@ -52,6 +52,15 @@ the page.
 The CSS sometimes does not show the map properly when on a mobile device and inside of a group. This can make it incredibly difficult
 or impossible to even perform a search as the search bar is hidden by the sidebar view.
 
+## Third party components
+
+This project uses the html embedded google map component from Google's Javascript API. This map is initialized and bound to a div in the 
+Map.vue component in the folder "components". 
+
+It also uses the public and free library "sweetalert2", which can be found at: "https://sweetalert2.github.io/". This is how we handle
+all popups in the app, dialogues and alerts alike. Some of the calls are written as functions in the Data.js file and then imported where
+necessary and called, while others are called "dry" in the files where they are generated.
+
 ## Project File Structure
 /src<br/>
 ├── components            <-- Where we keep our .vue components. These are our views.<br/>
