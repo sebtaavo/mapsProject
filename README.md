@@ -15,34 +15,29 @@ group of friends can find a place to meet up that is a fair distance from all of
 
 ## Future Implementations
 
-We are not sure yet how difficult it would be to incorporate some sort of travel time API into the search results, and calculate the travel time
-(or even travel methods) for each group member to a suggested destination, but if it turns out to be simple it is something that we would love to do.
-
-We also have not yet made the UI look the way we want it to, and most things are largely placeholder. We want it to be more intuitive than it currently is
-at the mid-way point of the project.
-
-Some code has yet to be refactored in some files as well, and we have views such as "SearchBar.vue" which is currently performing tasks that should be emitted
-to the presenter and then asked to be handled in the model. Additionally, "store.js" has a lot of duplicate
-code in it as well as mutations and actions that are no longer used and need to be removed. This is also a priority of ours.
+In the future we would like to make the user interface more responsive, especially on mobile devices, and to allow the user to choose
+their preferred travel method. Right now, the app calculates travel distances assuming that the user will use public transport, but
+the API also allows us to request travel information for users that might want to drive a car to the destination or walk the entire way.
 
 ## Known Bugs
 
-There are some known bugs that we have yet to sort out. Chief among them is the fact that upon initially loading the page it sometimes does not properly retrieve
-the logged in user's group information on the map. This works on localhost but not on deployment, which we are looking into.
+If the user is using an adblocker such as uBlock or AdguardExtra, the page will initially not load and the user has to manually refresh 
+the page.
 
-Additionally, logging out while being in a group sometimes can cause pretty serious errors. Logging out while being in a group and then attempting to add a pin to the group's
-collection (which they should not be able to do, since they are logged out and  thus not part of any group) will throw a firebase error which, although it is checked, sometimes
-makes it so that the user can't then log back in again. Sometimes the logged out user can still see the group information of the group they left as well, which should not be the
-case.
+The CSS sometimes does not show the map properly when on a mobile device and inside of a group. This can make it incredibly difficult
+or impossible to even perform a search as the search bar is hidden by the sidebar view.
 
 ## Project File Structure
 /src<br/>
-├── components  <-- Where we keep our .vue components. These are our views.<br/>
-│   ├── Details.vue       <-- View displaying Google.maps.Place info, updated via map marker click.<br/>
+├── components            <-- Where we keep our .vue components. These are our views.<br/>
+│   ├── Details.vue       <-- View displaying Google.maps.Place API info, updated via map marker click.<br/>
+|   ├── GroupDetails.vue  <-- View displaying Google.maps.Directions API info, updated via group pin click.<br/>
 │   ├── Map.vue           <-- View responsible for containing the embedded Google Maps "map" object.<br/>
+|   ├── MapError.vue      <-- Fallback view responsible for telling the user to enable device location tracking.<br/>
 │   ├── Navbar.vue        <-- View responsible for containing the navbar/banner on top of the page with the login/logout button.<br/>
 │   ├── SearchBar.vue     <-- View handling Google Maps searches via input, improperly linked directly to the model.<br/>
-│   └── SidebarTest.vue   <-- View managing current group info, pinned places, and group creation/joining.<br/>
+|   ├── SidebarTest.vue   <-- View managing current group info, pinned places, and group creation/joining. "Test" is inaccurate.<br/>
+│   └── Start.vue         <-- View for a start page which lets the user log in. User is redirected here if logged out. <br/>
 ├── css<br/>
 │   ├── fonts             <-- Contains fonts used in the app.<br/>
 │   └── style.css         <-- Style document handling app-wide CSS, with scattered CSS to be refactored here.<br/>
@@ -51,13 +46,17 @@ case.
 │   ├── Data.js           <-- Contains helper methods used by the model.<br/>
 │   ├── firebaseAuth.js   <-- Contains helper methods used for authenticating the user with Firebase.<br/>
 │   ├── firebaseConfig.js <-- Contains important code for configuring and initializing Firebase.<br/>
+|   ├── polylinestore.js  <-- Contains the currently rendered polylines on the map which are incompatible with vuex.<br/>
+|   ├── router.js         <-- Router for the app. Redirects user if not authenticated with a google account.<br/>
 │   └── store.js          <-- Vuex model with state, getters, mutations, and actions. Actions commit mutations; getters pass info to views.<br/>
-├── presenters            <-- Contains the presenters that communicate with the model and views.<br/>
-│   ├── DetailsPresenter.vue   <-- Presenter for Details.vue, linking clicked places to view and user interest to model.<br/>
-│   ├── MapPresenter.vue       <-- Presenter for Map.vue and SearchBar.vue, retrieving user coordinates and map instance, not fully integrated.<br/>
-│   ├── NavbarPresenter.vue    <-- Presenter for the Navbar.vue view. Relays user's wishes to login/logout to the model.<br/>
-│   └── SidebarPresenter.vue   <-- Presenter for SidebarTest.vue, relaying group actions to the model and passing current group info to the view.<br/>
-├── views                 <-- Deprecated folder for views. Not used and will be deleted.<br/>
+├── presenters            <-- Contains the presenters that communicate info from the views to the model and vice versa.<br/>
+│   ├── DetailsPresenter.vue        <-- Presenter for Details.vue.<br/>
+│   ├── GroupDetailsPresenter.vue   <-- Presenter for GroupDetails.vue.<br/>
+│   ├── MapPresenter.vue            <-- Presenter for Map.vue and SearchBar.vue.<br/>
+│   ├── NavbarPresenter.vue         <-- Presenter for the Navbar.vue.<br/>
+|   ├── SidebarPresenter.vue        <-- Presenter for SidebarTest.vue, relaying group actions to the model and passing current group info to the view.<br/>
+│   └── StartPresenter.vue          <-- Presenter for the startpage Start.vue.<br/>
+├── views                 <-- Deprecated folder for views. We use the components directory instead. Not used and will be deleted.<br/>
 ├── index.jsx             <-- Bootstrapping file creating the app, binding the Vuex store and Vue3Geolocation for fetching user coordinates.<br/>
 ├── VueRoot.jsx           <-- Root div used when bootstrapping. Initializes all presenters.<br/>
 ├── index.html            <-- Root document for browser access, defining the Vue app mounting point and loading the Google Maps JavaScript API.<br/>
