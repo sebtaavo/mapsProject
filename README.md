@@ -65,12 +65,12 @@ necessary and called, while others are called "dry" in the files where they are 
 /src<br/>
 ├── components            <-- Where we keep our .vue components. These are our views.<br/>
 │   ├── Details.vue       <-- View displaying Google.maps.Place API info, updated via map marker click.<br/>
-|   ├── GroupDetails.vue  <-- View displaying Google.maps.Directions API info, updated via group pin click.<br/>
+│   ├── GroupDetails.vue  <-- View displaying Google.maps.Directions API info, updated via group pin click.<br/>
 │   ├── Map.vue           <-- View responsible for containing the embedded Google Maps "map" object.<br/>
-|   ├── MapError.vue      <-- Fallback view responsible for telling the user to enable device location tracking.<br/>
+│   ├── MapError.vue      <-- Fallback view responsible for telling the user to enable device location tracking.<br/>
 │   ├── Navbar.vue        <-- View responsible for containing the navbar/banner on top of the page with the login/logout button.<br/>
 │   ├── SearchBar.vue     <-- View handling Google Maps searches via input, improperly linked directly to the model.<br/>
-|   ├── SidebarTest.vue   <-- View managing current group info, pinned places, and group creation/joining. "Test" is inaccurate.<br/>
+│   ├── SidebarTest.vue   <-- View managing current group info, pinned places, and group creation/joining. "Test" is inaccurate.<br/>
 │   └── Start.vue         <-- View for a start page which lets the user log in. User is redirected here if logged out. <br/>
 ├── css<br/>
 │   ├── fonts             <-- Contains fonts used in the app.<br/>
@@ -80,15 +80,15 @@ necessary and called, while others are called "dry" in the files where they are 
 │   ├── Data.js           <-- Contains helper methods used by the model.<br/>
 │   ├── firebaseAuth.js   <-- Contains helper methods used for authenticating the user with Firebase.<br/>
 │   ├── firebaseConfig.js <-- Contains important code for configuring and initializing Firebase.<br/>
-|   ├── polylinestore.js  <-- Contains the currently rendered polylines on the map which are incompatible with vuex.<br/>
-|   ├── router.js         <-- Router for the app. Redirects user if not authenticated with a google account.<br/>
+│   ├── polylinestore.js  <-- Contains the currently rendered polylines on the map which are incompatible with vuex.<br/>
+│   ├── router.js         <-- Router for the app. Redirects user if not authenticated with a google account.<br/>
 │   └── store.js          <-- Vuex model with state, getters, mutations, and actions. Actions commit mutations; getters pass info to views.<br/>
 ├── presenters            <-- Contains the presenters that communicate info from the views to the model and vice versa.<br/>
 │   ├── DetailsPresenter.vue        <-- Presenter for Details.vue.<br/>
 │   ├── GroupDetailsPresenter.vue   <-- Presenter for GroupDetails.vue.<br/>
 │   ├── MapPresenter.vue            <-- Presenter for Map.vue and SearchBar.vue.<br/>
 │   ├── NavbarPresenter.vue         <-- Presenter for the Navbar.vue.<br/>
-|   ├── SidebarPresenter.vue        <-- Presenter for SidebarTest.vue, relaying group actions to the model and passing current group info to the view.<br/>
+│   ├── SidebarPresenter.vue        <-- Presenter for SidebarTest.vue, relaying group actions to the model and passing current group info to the view.<br/>
 │   └── StartPresenter.vue          <-- Presenter for the startpage Start.vue.<br/>
 ├── views                 <-- Deprecated folder for views. We use the components directory instead. Not used and will be deleted.<br/>
 ├── index.jsx             <-- Bootstrapping file creating the app, binding the Vuex store and Vue3Geolocation for fetching user coordinates.<br/>
