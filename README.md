@@ -27,7 +27,7 @@ search results will have a bias to a point somewhere between everyone. Click on 
 place. If you like the place, click the pin button on top of the details view. It should now appear for everyone in the group pins section
 should they want to inspect it.
 
-4. Click on a group pin see travel information to that destination for your entire group. If any member has a cumbersome trip, we just
+4. Click on a group pin to see travel information to that destination for your entire group. If any member has a cumbersome trip, we just
 keep on browsing for a better location!
 
 5. If you want to leave and join another group, simply press the leave group button and repeat from step 2. If you want to re-join the
