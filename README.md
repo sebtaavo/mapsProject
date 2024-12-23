@@ -6,18 +6,43 @@ which they can send to their friends. Their friends, who are joining another per
 input field and press enter.
 
 Once users are in a group together, they will see one another on the embedded google map. Now, if they search
-for places on google maps such as "Bars" or "Ramen restaurants" they will be shown markers on the map. They can click on
-those markers to see more detailed information about them. If they "pin" those markers, they appear for the entire group and everyone
-can partake in the suggested meeting place.
+for places on google maps such as "Bars" or "Ramen restaurants" they will be shown markers on the map. Importantly, the search results
+are generated with a bias to the geographical center point between all members. This way, a group of friends can find a place to meet
+up that is a fair distance from all of them. They can click on those markers to see more detailed information about them. If they "pin" 
+markers, they appear for the entire group under the Group pins section, and everyone can partake in the suggested meeting place. All 
+group members can then click on the group pins to locally display travel information for each group member to said destination, and 
+decide if its a good meeting spot.
 
-Importantly, the search results given by the engine are tailored to be somewhere near the middle of all group members. This way, a
-group of friends can find a place to meet up that is a fair distance from all of them.
+## Quick guide
+
+1. Load the page. Log in to a google account using the log-in button. Make sure that you allow device location tracking in your browser.
+If you did not allow device location tracking, you will be taken to a fallback page that guides you to complete this step first.
+
+2. You should now be in the app. Join a friend's group through an invite key they send you, or create your own group and send the key
+to your friends. You should now see each other on the map, and the group is saved to your account should you wish to join it quickly
+in the future.
+
+3. Search for locations or activities you might wish to meet at with your friends. For example, "Asian food" or "Billiards" The 
+search results will have a bias to a point somewhere between everyone. Click on any such marker to see more information about the
+place. If you like the place, click the pin button on top of the details view. It should now appear for everyone in the group pins section
+should they want to inspect it.
+
+4. Click on a group pin see travel information to that destination for your entire group. If any member has a cumbersome trip, we just
+keep on browsing for a better location!
+
+5. If you want to leave and join another group, simply press the leave group button and repeat from step 2. If you want to re-join the
+same group, that group should now be available in a drop-down menu for easy access. If you want to remove the group from that dropdown,
+press the "Manage groups" button in the Navbar and remove it from there.
 
 ## Future Implementations
 
 In the future we would like to make the user interface more responsive, especially on mobile devices, and to allow the user to choose
 their preferred travel method. Right now, the app calculates travel distances assuming that the user will use public transport, but
 the API also allows us to request travel information for users that might want to drive a car to the destination or walk the entire way.
+
+We would also like to implement a voting/polling system so that the group can clearly indicate their like/dislike of group pin suggestions.
+We imagine there to be an upvote/downvote system such that the group can easily track which location is currently the most liked among all
+the suggestions in the group pins section.
 
 ## Known Bugs
 
