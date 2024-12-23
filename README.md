@@ -22,7 +22,7 @@ If you did not allow device location tracking, you will be taken to a fallback p
 to your friends. You should now see each other on the map, and the group is saved to your account should you wish to join it quickly
 in the future.
 
-3. Search for locations or activities you might wish to meet at with your friends. For example, "Asian food" or "Billiards" The 
+3. Search for locations or activities you might wish to meet at with your friends. For example, "Asian food" or "Billiards". The 
 search results will have a bias to a point somewhere between everyone. Click on any such marker to see more information about the
 place. If you like the place, click the pin button on top of the details view. It should now appear for everyone in the group pins section
 should they want to inspect it.
