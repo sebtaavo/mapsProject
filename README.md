@@ -46,7 +46,7 @@ the suggestions in the group pins section.
 
 ## Known Bugs
 
-If the user is using an adblocker such as uBlock or AdguardExtra, the page will initially not load and the user has to manually refresh 
+If the user is using an adblocker such as uBlock or AdguardExtra, the page will sometimes not load after logging in and the user has to manually refresh 
 the page.
 
 The CSS sometimes does not show the map properly when on a mobile device and inside of a group. This can make it incredibly difficult
