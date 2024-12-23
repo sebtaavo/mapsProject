@@ -46,7 +46,6 @@ gap: Anger avståndet mellan grid-objekt.
   font-weight: normal;
   font-style: normal;
 }
-
 body {
   background-color: #181A1B;
   color: #ffffff;
@@ -56,6 +55,7 @@ body {
 }
 
 .main-container {
+  position: relative;
   display: flex;
   height: 93.205vh;
   margin-top: 3.818rem;
@@ -265,7 +265,7 @@ body {
 
 .map-container {
   width: 100%;
-  height: 93.8vh;
+  height: 100%;
   
   position: absolute;
   top: 0;
@@ -852,18 +852,28 @@ body {
  * Gör sidan responsive
  **********************************/
 
-@media (max-width: 1152px) {
+ @media (max-width: 1152px) {
+  .icon-container3 {
+    margin-right: 20px;
+    margin-top: 10px;
+  }
+  #map {
+    top: 10px;
+    width: calc(100% - 40px);
+    height: 54%;
+    margin: 0 20px;
+    border-radius: 10px;
+  }
   .sidebar {
     width: calc(100% - 20px);
-    position: relative; 
-    order: 1; 
-    height: auto; 
-    margin-top: 20px;
-    height: calc(100% + 50px);
+    position: absolute;
+    order: 1;
+    height: auto;
+    margin-top: -41vh;
   }
 
   .main-container {
-    flex-direction: column; 
+    flex-direction: column;
   }
 
   .place-image {
@@ -874,44 +884,55 @@ body {
     margin-top: -10px;
     margin-left: 20px;
   }
-  .scrollablemaybe{
+
+  .scrollablemaybe {
+    position: absolute;
     width: calc(100% - 20px);
-    height: 100%;
-    max-height: 100%;
+    z-index: 4000;
   }
+  .leaveDirectionsButton{
+    margin-top:1vh;
+  }
+
   .member-box {
     margin-left: 10px;
     width: 300px;
     margin-right: 10px;
   }
+
   .member-box:not(:first-child) {
     margin-left: 10px;
   }
+
   .member-box:not(:last-child) {
     margin-right: 10px;
   }
 
   .travel-info-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: left;
-}
-  .closeSidebarButton{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+  }
+
+  .closeSidebarButton {
     margin-right: 20px;
   }
+
   .group-button {
     width: 94%;
     display: block;
     margin: 0 auto;
   }
+
   .divider {
-    width: 95%; 
+    width: 95%;
   }
 }
 
-@media (max-width: 550px) {
+
+@media (max-width: 700px) {
   .search-container {
-    margin-top: 30px;
+    margin-top: 40px;
     width: 50%;
   }
 }
